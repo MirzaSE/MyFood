@@ -7,8 +7,12 @@ namespace MyFood.Application.Entities
     public class FoodEntity
     {
         public int Id { get; set; }
+<<<<<<< HEAD
 
         [MaxLength(500)]
+=======
+        [MaxLength(250)]
+>>>>>>> 63d6555 (Migrations and Data Seed)
         public string? Name { get; set; }
 
         [MaxLength(50)]

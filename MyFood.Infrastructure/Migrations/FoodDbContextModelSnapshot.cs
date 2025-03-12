@@ -17,11 +17,16 @@ namespace MyFood.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+<<<<<<< HEAD
                 .HasAnnotation("ProductVersion", "8.0.3")
+=======
+                .HasAnnotation("ProductVersion", "8.0.13")
+>>>>>>> 63d6555 (Migrations and Data Seed)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+<<<<<<< HEAD
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -155,6 +160,8 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+=======
+>>>>>>> 63d6555 (Migrations and Data Seed)
             modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -170,8 +177,13 @@ namespace MyFood.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+<<<<<<< HEAD
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+=======
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+>>>>>>> 63d6555 (Migrations and Data Seed)
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
@@ -181,6 +193,7 @@ namespace MyFood.Infrastructure.Migrations
 
                     b.ToTable("FoodItems");
                 });
+<<<<<<< HEAD
 
             modelBuilder.Entity("MyFood.Domain.Entities.ApplicationUser", b =>
                 {
@@ -297,6 +310,8 @@ namespace MyFood.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
+=======
+>>>>>>> 63d6555 (Migrations and Data Seed)
 #pragma warning restore 612, 618
         }
     }
