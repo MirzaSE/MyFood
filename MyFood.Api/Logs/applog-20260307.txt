@@ -1,0 +1,156 @@
+2026-03-07 11:59:39.183 +01:00 [INF] Executed DbCommand (269ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [MyFood_Database];
+2026-03-07 11:59:39.293 +01:00 [INF] Executed DbCommand (88ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [MyFood_Database] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2026-03-07 11:59:39.311 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-07 11:59:39.350 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2026-03-07 11:59:39.351 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-07 11:59:39.362 +01:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-07 11:59:39.370 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-07 11:59:39.376 +01:00 [INF] Applying migration '20250312150424_Initial'.
+2026-03-07 11:59:39.392 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [FoodItems] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(500) NULL,
+    [Type] nvarchar(50) NULL,
+    [Calories] int NOT NULL,
+    [Created] datetime2 NOT NULL,
+    CONSTRAINT [PK_FoodItems] PRIMARY KEY ([Id])
+);
+2026-03-07 11:59:39.406 +01:00 [INF] Executed DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250312150424_Initial', N'8.0.13');
+2026-03-07 11:59:39.410 +01:00 [INF] Applying migration '20250312162119_ReduceCharacters'.
+2026-03-07 11:59:39.511 +01:00 [INF] Executed DbCommand (96ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var0 sysname;
+SELECT @var0 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[FoodItems]') AND [c].[name] = N'Name');
+IF @var0 IS NOT NULL EXEC(N'ALTER TABLE [FoodItems] DROP CONSTRAINT [' + @var0 + '];');
+ALTER TABLE [FoodItems] ALTER COLUMN [Name] nvarchar(250) NULL;
+2026-03-07 11:59:39.512 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250312162119_ReduceCharacters', N'8.0.13');
+2026-03-07 11:59:46.206 +01:00 [INF] Executed DbCommand (62ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-07 11:59:46.240 +01:00 [INF] User profile is available. Using '/Users/lejladoric/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-03-07 11:59:46.244 +01:00 [INF] Creating key {32206bcd-59c2-4bcd-b87a-f027121c0070} with creation date 2026-03-07 10:59:46Z, activation date 2026-03-07 10:59:46Z, and expiration date 2026-06-05 10:59:46Z.
+2026-03-07 11:59:46.246 +01:00 [WRN] No XML encryptor configured. Key {32206bcd-59c2-4bcd-b87a-f027121c0070} may be persisted to storage in unencrypted form.
+2026-03-07 11:59:46.248 +01:00 [INF] Writing data to file '/Users/lejladoric/.aspnet/DataProtection-Keys/key-32206bcd-59c2-4bcd-b87a-f027121c0070.xml'.
+2026-03-07 11:59:46.395 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert
+2026-03-07 11:59:46.399 +01:00 [INF] Now listening on: https://localhost:7124
+2026-03-07 11:59:46.399 +01:00 [INF] Now listening on: http://localhost:5124
+2026-03-07 11:59:46.400 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-07 11:59:46.400 +01:00 [INF] Hosting environment: Development
+2026-03-07 11:59:46.400 +01:00 [INF] Content root path: /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api
+2026-03-07 11:59:59.822 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/ - null null
+2026-03-07 11:59:59.835 +01:00 [INF] Incoming request: GET /
+2026-03-07 11:59:59.855 +01:00 [INF] HTTP GET / responded 404 in 19.3470 ms
+2026-03-07 11:59:59.855 +01:00 [INF] Outgoing response: 404
+2026-03-07 11:59:59.856 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/ - 404 0 null 34.5622ms
+2026-03-07 11:59:59.857 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7124/, Response status code: 404
+2026-03-07 12:00:09.083 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5124/ - null null
+2026-03-07 12:00:09.085 +01:00 [INF] Incoming request: GET /
+2026-03-07 12:00:09.087 +01:00 [INF] HTTP GET / responded 307 in 1.4417 ms
+2026-03-07 12:00:09.087 +01:00 [INF] Outgoing response: 307
+2026-03-07 12:00:09.090 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5124/ - 307 0 null 6.4453ms
+2026-03-07 12:00:09.092 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/ - null null
+2026-03-07 12:00:09.093 +01:00 [INF] Incoming request: GET /
+2026-03-07 12:00:09.094 +01:00 [INF] HTTP GET / responded 404 in 1.1195 ms
+2026-03-07 12:00:09.094 +01:00 [INF] Outgoing response: 404
+2026-03-07 12:00:09.095 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/ - 404 0 null 2.6381ms
+2026-03-07 12:00:09.095 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7124/, Response status code: 404
+2026-03-07 12:00:22.815 +01:00 [INF] Application is shutting down...
+2026-03-07 12:02:25.051 +01:00 [INF] Executed DbCommand (15ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-07 12:02:25.080 +01:00 [INF] User profile is available. Using '/Users/lejladoric/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-03-07 12:02:25.194 +01:00 [INF] Now listening on: https://localhost:7124
+2026-03-07 12:02:25.194 +01:00 [INF] Now listening on: http://localhost:5124
+2026-03-07 12:02:25.194 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-07 12:02:25.195 +01:00 [INF] Hosting environment: Development
+2026-03-07 12:02:25.195 +01:00 [INF] Content root path: /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api
+2026-03-07 12:02:46.919 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/ - null null
+2026-03-07 12:02:46.931 +01:00 [INF] Incoming request: GET /
+2026-03-07 12:02:46.950 +01:00 [INF] HTTP GET / responded 404 in 17.9209 ms
+2026-03-07 12:02:46.950 +01:00 [INF] Outgoing response: 404
+2026-03-07 12:02:46.951 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/ - 404 0 null 32.934ms
+2026-03-07 12:02:46.952 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7124/, Response status code: 404
+2026-03-07 12:02:49.968 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/ - null null
+2026-03-07 12:02:49.971 +01:00 [INF] Incoming request: GET /
+2026-03-07 12:02:49.972 +01:00 [INF] HTTP GET / responded 404 in 1.3310 ms
+2026-03-07 12:02:49.973 +01:00 [INF] Outgoing response: 404
+2026-03-07 12:02:49.973 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/ - 404 0 null 4.6207ms
+2026-03-07 12:02:49.973 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7124/, Response status code: 404
+2026-03-07 12:03:35.424 +01:00 [INF] Application is shutting down...
+2026-03-07 12:03:48.010 +01:00 [INF] Executed DbCommand (14ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-07 12:03:48.041 +01:00 [INF] User profile is available. Using '/Users/lejladoric/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-03-07 12:03:48.135 +01:00 [INF] Now listening on: https://localhost:7124
+2026-03-07 12:03:48.135 +01:00 [INF] Now listening on: http://localhost:5124
+2026-03-07 12:03:48.136 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-07 12:03:48.136 +01:00 [INF] Hosting environment: Development
+2026-03-07 12:03:48.136 +01:00 [INF] Content root path: /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api
+2026-03-07 12:03:53.015 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger - null null
+2026-03-07 12:03:53.026 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger - 301 0 null 11.7282ms
+2026-03-07 12:03:53.034 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2026-03-07 12:03:53.056 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 21.5561ms
+2026-03-07 12:03:53.073 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2026-03-07 12:03:53.074 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - null null
+2026-03-07 12:03:53.074 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - null null
+2026-03-07 12:03:53.094 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-03-07 12:03:53.095 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-03-07 12:03:53.095 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 21.8007ms
+2026-03-07 12:03:53.095 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 22.1171ms
+2026-03-07 12:03:53.098 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2026-03-07 12:03:53.098 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 24.7211ms
+2026-03-07 12:03:53.411 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2026-03-07 12:03:53.416 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2026-03-07 12:03:53.417 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2026-03-07 12:03:53.417 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 0.8675ms
+2026-03-07 12:03:53.463 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 52.0725ms
+2026-03-07 12:16:02.997 +01:00 [INF] Application is shutting down...

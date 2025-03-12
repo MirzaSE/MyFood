@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+=======
+﻿  using Microsoft.EntityFrameworkCore;
+>>>>>>> b105ad4 (Week Three App)
 using MyFood.Application.Entities;
 using MyFood.Domain.Entities;
 

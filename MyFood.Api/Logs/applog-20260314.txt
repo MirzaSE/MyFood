@@ -1,0 +1,1056 @@
+2026-03-14 00:03:56.722 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-14 00:03:56.750 +01:00 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-14 00:03:56.753 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-14 00:03:56.754 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-14 00:03:56.764 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-14 00:03:56.768 +01:00 [INF] No migrations were applied. The database is already up to date.
+2026-03-14 00:05:02.426 +01:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-14 00:05:02.449 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-14 00:05:02.451 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-14 00:05:02.453 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-14 00:05:02.462 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-14 00:05:02.467 +01:00 [INF] Applying migration '20260313230500_AddIngredients'.
+2026-03-14 00:05:02.537 +01:00 [INF] Executed DbCommand (35ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Ingredients] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(260) NULL,
+    [Quantity] nvarchar(max) NULL,
+    [FoodId] int NOT NULL,
+    CONSTRAINT [PK_Ingredients] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Ingredients_FoodItems_FoodId] FOREIGN KEY ([FoodId]) REFERENCES [FoodItems] ([Id]) ON DELETE CASCADE
+);
+2026-03-14 00:05:02.550 +01:00 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Ingredients_FoodId] ON [Ingredients] ([FoodId]);
+2026-03-14 00:05:02.575 +01:00 [INF] Executed DbCommand (24ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260313230500_AddIngredients', N'8.0.13');
+2026-03-14 00:10:40.539 +01:00 [INF] Executed DbCommand (61ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 260), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 260), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 260), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 260), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-14 00:10:40.574 +01:00 [INF] User profile is available. Using '/Users/lejladoric/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-03-14 00:10:40.710 +01:00 [INF] Now listening on: https://localhost:7124
+2026-03-14 00:10:40.710 +01:00 [INF] Now listening on: http://localhost:5124
+2026-03-14 00:10:40.711 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-14 00:10:40.711 +01:00 [INF] Hosting environment: Development
+2026-03-14 00:10:40.711 +01:00 [INF] Content root path: /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api
+2026-03-14 00:10:48.897 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2026-03-14 00:10:48.939 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 42.1187ms
+2026-03-14 00:10:49.274 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2026-03-14 00:10:49.318 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 44.1655ms
+2026-03-14 00:16:47.371 +01:00 [INF] Application is shutting down...
+2026-03-14 00:16:56.449 +01:00 [INF] Executed DbCommand (16ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 260), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 260), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 260), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 260), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-14 00:16:56.479 +01:00 [INF] User profile is available. Using '/Users/lejladoric/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-03-14 00:16:56.593 +01:00 [INF] Now listening on: https://localhost:7124
+2026-03-14 00:16:56.593 +01:00 [INF] Now listening on: http://localhost:5124
+2026-03-14 00:16:56.594 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-14 00:16:56.594 +01:00 [INF] Hosting environment: Development
+2026-03-14 00:16:56.594 +01:00 [INF] Content root path: /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api
+2026-03-14 00:17:01.600 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2026-03-14 00:17:01.642 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 43.0677ms
+2026-03-14 00:17:01.962 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2026-03-14 00:17:02.027 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 64.4622ms
+2026-03-14 00:17:26.898 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5124/swagger - null null
+2026-03-14 00:17:26.903 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5124/swagger - 301 0 null 5.2141ms
+2026-03-14 00:17:26.905 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5124/swagger/index.html - null null
+2026-03-14 00:17:26.906 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5124/swagger/index.html - 200 null text/html;charset=utf-8 1.0429ms
+2026-03-14 00:17:26.947 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5124/swagger/swagger-ui.css - null null
+2026-03-14 00:17:26.954 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5124/swagger/swagger-ui-bundle.js - null null
+2026-03-14 00:17:26.954 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5124/swagger/swagger-ui-standalone-preset.js - null null
+2026-03-14 00:17:26.964 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-03-14 00:17:26.964 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-03-14 00:17:26.964 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5124/swagger/swagger-ui.css - 200 144929 text/css 17.4486ms
+2026-03-14 00:17:26.964 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 10.089ms
+2026-03-14 00:17:26.966 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2026-03-14 00:17:26.966 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 12.251ms
+2026-03-14 00:17:27.262 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5124/swagger/v1/swagger.json - null null
+2026-03-14 00:17:27.265 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5124/swagger/favicon-32x32.png - null null
+2026-03-14 00:17:27.265 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2026-03-14 00:17:27.265 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5124/swagger/favicon-32x32.png - 200 628 image/png 0.7275ms
+2026-03-14 00:17:27.267 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 4.9185ms
+2026-03-14 00:20:08.117 +01:00 [INF] Application is shutting down...
+2026-03-14 00:20:14.123 +01:00 [INF] Executed DbCommand (17ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 260), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 260), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 260), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 260), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-14 00:20:14.154 +01:00 [INF] User profile is available. Using '/Users/lejladoric/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-03-14 00:20:14.275 +01:00 [INF] Now listening on: https://localhost:7124
+2026-03-14 00:20:14.275 +01:00 [INF] Now listening on: http://localhost:5124
+2026-03-14 00:20:14.276 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-14 00:20:14.276 +01:00 [INF] Hosting environment: Development
+2026-03-14 00:20:14.276 +01:00 [INF] Content root path: /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api
+2026-03-14 00:20:18.744 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2026-03-14 00:20:18.788 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 44.2263ms
+2026-03-14 00:20:19.092 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2026-03-14 00:20:19.154 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 62.1955ms
+2026-03-14 00:20:52.712 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2026-03-14 00:20:52.718 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 6.6768ms
+2026-03-14 00:20:52.822 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/favicon.ico - null null
+2026-03-14 00:20:52.824 +01:00 [INF] Incoming request: GET /favicon.ico
+2026-03-14 00:20:52.847 +01:00 [INF] HTTP GET /favicon.ico responded 404 in 21.1296 ms
+2026-03-14 00:20:52.847 +01:00 [INF] Outgoing response: 404
+2026-03-14 00:20:52.847 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/favicon.ico - 404 0 null 25.3192ms
+2026-03-14 00:20:52.848 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7124/favicon.ico, Response status code: 404
+2026-03-14 00:24:47.977 +01:00 [INF] Application is shutting down...
+2026-03-14 00:24:53.352 +01:00 [INF] Executed DbCommand (18ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 260), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 260), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 260), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 260), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-14 00:24:53.381 +01:00 [INF] User profile is available. Using '/Users/lejladoric/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-03-14 00:24:53.501 +01:00 [INF] Now listening on: https://localhost:7124
+2026-03-14 00:24:53.501 +01:00 [INF] Now listening on: http://localhost:5124
+2026-03-14 00:24:53.502 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-14 00:24:53.502 +01:00 [INF] Hosting environment: Development
+2026-03-14 00:24:53.502 +01:00 [INF] Content root path: /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api
+2026-03-14 00:25:05.182 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2026-03-14 00:25:05.225 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 44.0122ms
+2026-03-14 00:25:05.540 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2026-03-14 00:25:05.588 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 47.4675ms
+2026-03-14 00:25:57.103 +01:00 [INF] Application is shutting down...
+2026-03-14 00:26:10.645 +01:00 [INF] Executed DbCommand (16ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 260), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 260), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 260), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 260), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-14 00:26:10.680 +01:00 [INF] User profile is available. Using '/Users/lejladoric/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-03-14 00:26:10.803 +01:00 [INF] Now listening on: https://localhost:7124
+2026-03-14 00:26:10.804 +01:00 [INF] Now listening on: http://localhost:5124
+2026-03-14 00:26:10.804 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-14 00:26:10.805 +01:00 [INF] Hosting environment: Development
+2026-03-14 00:26:10.805 +01:00 [INF] Content root path: /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api
+2026-03-14 00:26:17.313 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2026-03-14 00:26:17.355 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 42.6815ms
+2026-03-14 00:26:17.472 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2026-03-14 00:26:17.568 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 95.3322ms
+2026-03-14 00:29:26.158 +01:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/v1/ingredients - application/json-patch+json; x-api-version=1.0 61
+2026-03-14 00:29:26.167 +01:00 [INF] Incoming request: POST /api/v1/ingredients
+2026-03-14 00:29:26.171 +01:00 [INF] CORS policy execution successful.
+2026-03-14 00:29:26.191 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api)'
+2026-03-14 00:29:26.198 +01:00 [INF] Route matched with {action = "AddIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.IngredientDto] AddIngredient(MyFood.Application.Dtos.CreateIngredientDto) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 00:29:26.327 +01:00 [INF] Executed DbCommand (42ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 260), @p2='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Ingredients] ([FoodId], [Name], [Quantity])
+OUTPUT INSERTED.[Id]
+VALUES (@p0, @p1, @p2);
+2026-03-14 00:29:26.336 +01:00 [ERR] An exception occurred in the database while saving changes for context type 'MyFood.Infrastructure.Repositories.FoodDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+2026-03-14 00:29:26.338 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api) in 138.2652ms
+2026-03-14 00:29:26.338 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api)'
+2026-03-14 00:29:26.339 +01:00 [ERR] HTTP POST /api/v1/ingredients responded 500 in 170.0419 ms
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges()
+   at MyFood.Infrastructure.Repositories.IngredientSqlRepository.Save() in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Infrastructure/Repositories/IngredientSqlRepository.cs:line 56
+   at MyFood.Api.Controllers.v1.IngredientsController.AddIngredient(CreateIngredientDto createIngredientDto) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Controllers/v1/IngredientController.cs:line 70
+   at lambda_method76(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-03-14 00:29:26.344 +01:00 [ERR] An unhandled exception occurred.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges()
+   at MyFood.Infrastructure.Repositories.IngredientSqlRepository.Save() in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Infrastructure/Repositories/IngredientSqlRepository.cs:line 56
+   at MyFood.Api.Controllers.v1.IngredientsController.AddIngredient(CreateIngredientDto createIngredientDto) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Controllers/v1/IngredientController.cs:line 70
+   at lambda_method76(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Middleware/RequestLoggingMiddleware.cs:line 19
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Middleware/ExceptionHandlingMiddleware.cs:line 21
+2026-03-14 00:29:26.349 +01:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/v1/ingredients - 500 null application/json; x-api-version=1 191.2771ms
+2026-03-14 00:31:14.797 +01:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/v1/foods - application/json-patch+json; x-api-version=1.0 100
+2026-03-14 00:31:14.799 +01:00 [INF] Incoming request: POST /api/v1/foods
+2026-03-14 00:31:14.800 +01:00 [INF] CORS policy execution successful.
+2026-03-14 00:31:14.801 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.AddFood (MyFood.Api)'
+2026-03-14 00:31:14.803 +01:00 [INF] Route matched with {action = "AddFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.FoodDto] AddFood(Microsoft.AspNetCore.Mvc.ApiVersion, MyFood.Application.Dtos.FoodCreateDto) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2026-03-14 00:31:14.832 +01:00 [INF] Executed DbCommand (10ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 260), @p3='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [FoodItems] ([Calories], [Created], [Name], [Type])
+OUTPUT INSERTED.[Id]
+VALUES (@p0, @p1, @p2, @p3);
+2026-03-14 00:31:14.935 +01:00 [INF] Executed DbCommand (9ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2026-03-14 00:31:14.947 +01:00 [INF] Executing CreatedAtRouteResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2026-03-14 00:31:14.959 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.AddFood (MyFood.Api) in 155.7888ms
+2026-03-14 00:31:14.960 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.AddFood (MyFood.Api)'
+2026-03-14 00:31:14.960 +01:00 [INF] HTTP POST /api/v1/foods responded 201 in 160.2823 ms
+2026-03-14 00:31:14.960 +01:00 [INF] Outgoing response: 201
+2026-03-14 00:31:14.960 +01:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/v1/foods - 201 433 application/json; charset=utf-8; x-api-version=1 162.7381ms
+2026-03-14 00:31:34.719 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/ingredients - null null
+2026-03-14 00:31:34.720 +01:00 [INF] Incoming request: GET /api/v1/ingredients
+2026-03-14 00:31:34.723 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api)'
+2026-03-14 00:31:34.724 +01:00 [INF] Route matched with {action = "GetAllIngredients", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetAllIngredients() on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 00:31:34.733 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+ORDER BY [i].[Name]
+2026-03-14 00:31:34.733 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MyFood.Application.Dtos.IngredientDto, MyFood.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-03-14 00:31:34.734 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api) in 10.397ms
+2026-03-14 00:31:34.734 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api)'
+2026-03-14 00:31:34.734 +01:00 [INF] HTTP GET /api/v1/ingredients responded 200 in 14.2890 ms
+2026-03-14 00:31:34.734 +01:00 [INF] Outgoing response: 200
+2026-03-14 00:31:34.734 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/ingredients - 200 2 application/json; charset=utf-8; x-api-version=1 15.4133ms
+2026-03-14 00:32:07.541 +01:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/v1/ingredients - application/json-patch+json; x-api-version=1.0 61
+2026-03-14 00:32:07.541 +01:00 [INF] Incoming request: POST /api/v1/ingredients
+2026-03-14 00:32:07.541 +01:00 [INF] CORS policy execution successful.
+2026-03-14 00:32:07.541 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api)'
+2026-03-14 00:32:07.542 +01:00 [INF] Route matched with {action = "AddIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.IngredientDto] AddIngredient(MyFood.Application.Dtos.CreateIngredientDto) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 00:32:07.566 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 260), @p2='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Ingredients] ([FoodId], [Name], [Quantity])
+OUTPUT INSERTED.[Id]
+VALUES (@p0, @p1, @p2);
+2026-03-14 00:32:07.567 +01:00 [ERR] An exception occurred in the database while saving changes for context type 'MyFood.Infrastructure.Repositories.FoodDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+2026-03-14 00:32:07.567 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api) in 25.0416ms
+2026-03-14 00:32:07.567 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api)'
+2026-03-14 00:32:07.567 +01:00 [ERR] HTTP POST /api/v1/ingredients responded 500 in 25.9528 ms
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges()
+   at MyFood.Infrastructure.Repositories.IngredientSqlRepository.Save() in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Infrastructure/Repositories/IngredientSqlRepository.cs:line 56
+   at MyFood.Api.Controllers.v1.IngredientsController.AddIngredient(CreateIngredientDto createIngredientDto) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Controllers/v1/IngredientController.cs:line 70
+   at lambda_method76(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-03-14 00:32:07.568 +01:00 [ERR] An unhandled exception occurred.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges()
+   at MyFood.Infrastructure.Repositories.IngredientSqlRepository.Save() in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Infrastructure/Repositories/IngredientSqlRepository.cs:line 56
+   at MyFood.Api.Controllers.v1.IngredientsController.AddIngredient(CreateIngredientDto createIngredientDto) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Controllers/v1/IngredientController.cs:line 70
+   at lambda_method76(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Middleware/RequestLoggingMiddleware.cs:line 19
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Middleware/ExceptionHandlingMiddleware.cs:line 21
+2026-03-14 00:32:07.568 +01:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/v1/ingredients - 500 null application/json; x-api-version=1 27.7307ms
+2026-03-14 00:33:43.224 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/ingredients/0 - null null
+2026-03-14 00:33:43.226 +01:00 [INF] Incoming request: GET /api/v1/ingredients/0
+2026-03-14 00:33:43.226 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetSingleIngredient (MyFood.Api)'
+2026-03-14 00:33:43.228 +01:00 [INF] Route matched with {action = "GetSingleIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleIngredient(Int32) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 00:33:43.249 +01:00 [INF] Executed DbCommand (12ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 00:33:43.249 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-03-14 00:33:43.258 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.GetSingleIngredient (MyFood.Api) in 29.6408ms
+2026-03-14 00:33:43.258 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetSingleIngredient (MyFood.Api)'
+2026-03-14 00:33:43.259 +01:00 [INF] HTTP GET /api/v1/ingredients/0 responded 404 in 32.7968 ms
+2026-03-14 00:33:43.259 +01:00 [INF] Outgoing response: 404
+2026-03-14 00:33:43.259 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/ingredients/0 - 404 162 application/problem+json; charset=utf-8; x-api-version=1 34.3965ms
+2026-03-14 00:34:18.682 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/ingredients/0 - null null
+2026-03-14 00:34:18.682 +01:00 [INF] Incoming request: GET /api/v1/ingredients/0
+2026-03-14 00:34:18.683 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetSingleIngredient (MyFood.Api)'
+2026-03-14 00:34:18.683 +01:00 [INF] Route matched with {action = "GetSingleIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleIngredient(Int32) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 00:34:18.690 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 00:34:18.690 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-03-14 00:34:18.691 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.GetSingleIngredient (MyFood.Api) in 7.8106ms
+2026-03-14 00:34:18.691 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetSingleIngredient (MyFood.Api)'
+2026-03-14 00:34:18.691 +01:00 [INF] HTTP GET /api/v1/ingredients/0 responded 404 in 8.7239 ms
+2026-03-14 00:34:18.691 +01:00 [INF] Outgoing response: 404
+2026-03-14 00:34:18.691 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/ingredients/0 - 404 162 application/problem+json; charset=utf-8; x-api-version=1 9.4777ms
+2026-03-14 00:34:42.573 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/ingredients - null null
+2026-03-14 00:34:42.574 +01:00 [INF] Incoming request: GET /api/v1/ingredients
+2026-03-14 00:34:42.574 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api)'
+2026-03-14 00:34:42.574 +01:00 [INF] Route matched with {action = "GetAllIngredients", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetAllIngredients() on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 00:34:42.579 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+ORDER BY [i].[Name]
+2026-03-14 00:34:42.580 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MyFood.Application.Dtos.IngredientDto, MyFood.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-03-14 00:34:42.580 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api) in 5.7542ms
+2026-03-14 00:34:42.584 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api)'
+2026-03-14 00:34:42.584 +01:00 [INF] HTTP GET /api/v1/ingredients responded 200 in 10.1977 ms
+2026-03-14 00:34:42.584 +01:00 [INF] Outgoing response: 200
+2026-03-14 00:34:42.585 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/ingredients - 200 2 application/json; charset=utf-8; x-api-version=1 11.7283ms
+2026-03-14 00:34:57.722 +01:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/v1/ingredients - application/json-patch+json; x-api-version=1.0 61
+2026-03-14 00:34:57.722 +01:00 [INF] Incoming request: POST /api/v1/ingredients
+2026-03-14 00:34:57.722 +01:00 [INF] CORS policy execution successful.
+2026-03-14 00:34:57.722 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api)'
+2026-03-14 00:34:57.723 +01:00 [INF] Route matched with {action = "AddIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.IngredientDto] AddIngredient(MyFood.Application.Dtos.CreateIngredientDto) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 00:34:57.736 +01:00 [INF] Executed DbCommand (11ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 260), @p2='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Ingredients] ([FoodId], [Name], [Quantity])
+OUTPUT INSERTED.[Id]
+VALUES (@p0, @p1, @p2);
+2026-03-14 00:34:57.737 +01:00 [ERR] An exception occurred in the database while saving changes for context type 'MyFood.Infrastructure.Repositories.FoodDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+2026-03-14 00:34:57.744 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api) in 21.7235ms
+2026-03-14 00:34:57.745 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api)'
+2026-03-14 00:34:57.745 +01:00 [ERR] HTTP POST /api/v1/ingredients responded 500 in 22.4026 ms
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges()
+   at MyFood.Infrastructure.Repositories.IngredientSqlRepository.Save() in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Infrastructure/Repositories/IngredientSqlRepository.cs:line 56
+   at MyFood.Api.Controllers.v1.IngredientsController.AddIngredient(CreateIngredientDto createIngredientDto) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Controllers/v1/IngredientController.cs:line 70
+   at lambda_method76(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-03-14 00:34:57.750 +01:00 [ERR] An unhandled exception occurred.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Ingredients_FoodItems_FoodId". The conflict occurred in database "MyFood_Database", table "dbo.FoodItems", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDataReader.Read()
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+ClientConnectionId:4b3d604a-27b7-4279-b785-2103792e4673
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSet(Int32 startCommandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges()
+   at MyFood.Infrastructure.Repositories.IngredientSqlRepository.Save() in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Infrastructure/Repositories/IngredientSqlRepository.cs:line 56
+   at MyFood.Api.Controllers.v1.IngredientsController.AddIngredient(CreateIngredientDto createIngredientDto) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Controllers/v1/IngredientController.cs:line 70
+   at lambda_method76(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Middleware/RequestLoggingMiddleware.cs:line 19
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api/Middleware/ExceptionHandlingMiddleware.cs:line 21
+2026-03-14 00:34:57.753 +01:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/v1/ingredients - 500 null application/json; x-api-version=1 30.9276ms
+2026-03-14 00:35:56.372 +01:00 [INF] Request starting HTTP/2 PUT https://localhost:7124/api/v1/ingredients/0 - application/json-patch+json; x-api-version=1.0 61
+2026-03-14 00:35:56.373 +01:00 [INF] Incoming request: PUT /api/v1/ingredients/0
+2026-03-14 00:35:56.373 +01:00 [INF] CORS policy execution successful.
+2026-03-14 00:35:56.374 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api)'
+2026-03-14 00:35:56.377 +01:00 [INF] Route matched with {action = "UpdateIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.IngredientDto] UpdateIngredient(Int32, MyFood.Application.Dtos.UpdateIngredientDto) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 00:35:56.390 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 00:35:56.390 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-03-14 00:35:56.391 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api) in 13.7887ms
+2026-03-14 00:35:56.391 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api)'
+2026-03-14 00:35:56.391 +01:00 [INF] HTTP PUT /api/v1/ingredients/0 responded 404 in 17.5050 ms
+2026-03-14 00:35:56.391 +01:00 [INF] Outgoing response: 404
+2026-03-14 00:35:56.391 +01:00 [INF] Request finished HTTP/2 PUT https://localhost:7124/api/v1/ingredients/0 - 404 162 application/problem+json; charset=utf-8; x-api-version=1 19.1664ms
+2026-03-14 00:39:00.628 +01:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/authenticate/login - application/json-patch+json; x-api-version=1.0 50
+2026-03-14 00:39:00.631 +01:00 [INF] Incoming request: POST /api/authenticate/login
+2026-03-14 00:39:00.631 +01:00 [INF] CORS policy execution successful.
+2026-03-14 00:39:00.632 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.AuthenticateController.Login (MyFood.Api)'
+2026-03-14 00:39:00.633 +01:00 [INF] Route matched with {action = "Login", controller = "Authenticate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Login(MyFood.Application.Dtos.UserLoginDto) on controller MyFood.Api.Controllers.v1.AuthenticateController (MyFood.Api).
+2026-03-14 00:39:00.636 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-03-14 00:39:00.637 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.AuthenticateController.Login (MyFood.Api) in 2.9715ms
+2026-03-14 00:39:00.637 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.AuthenticateController.Login (MyFood.Api)'
+2026-03-14 00:39:00.637 +01:00 [INF] HTTP POST /api/authenticate/login responded 401 in 5.3339 ms
+2026-03-14 00:39:00.637 +01:00 [INF] Outgoing response: 401
+2026-03-14 00:39:00.637 +01:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/authenticate/login - 401 165 application/problem+json; charset=utf-8; x-api-version=1.0 9.4343ms
+2026-03-14 00:40:52.121 +01:00 [INF] Application is shutting down...
+2026-03-14 00:40:58.850 +01:00 [INF] Executed DbCommand (17ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 260), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 260), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 260), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 260), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-14 00:40:58.879 +01:00 [INF] User profile is available. Using '/Users/lejladoric/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-03-14 00:40:59.015 +01:00 [INF] Now listening on: https://localhost:7124
+2026-03-14 00:40:59.015 +01:00 [INF] Now listening on: http://localhost:5124
+2026-03-14 00:40:59.016 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-14 00:40:59.016 +01:00 [INF] Hosting environment: Development
+2026-03-14 00:40:59.016 +01:00 [INF] Content root path: /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api
+2026-03-14 00:55:33.503 +01:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/authenticate/login - application/json-patch+json; x-api-version=1.0 51
+2026-03-14 00:55:33.519 +01:00 [INF] Incoming request: POST /api/authenticate/login
+2026-03-14 00:55:33.521 +01:00 [INF] CORS policy execution successful.
+2026-03-14 00:55:33.538 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.AuthenticateController.Login (MyFood.Api)'
+2026-03-14 00:55:33.543 +01:00 [INF] Route matched with {action = "Login", controller = "Authenticate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Login(MyFood.Application.Dtos.UserLoginDto) on controller MyFood.Api.Controllers.v1.AuthenticateController (MyFood.Api).
+2026-03-14 00:55:33.576 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-03-14 00:55:33.589 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.AuthenticateController.Login (MyFood.Api) in 45.4449ms
+2026-03-14 00:55:33.590 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.AuthenticateController.Login (MyFood.Api)'
+2026-03-14 00:55:33.590 +01:00 [INF] HTTP POST /api/authenticate/login responded 401 in 70.2003 ms
+2026-03-14 00:55:33.591 +01:00 [INF] Outgoing response: 401
+2026-03-14 00:55:33.591 +01:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/authenticate/login - 401 165 application/problem+json; charset=utf-8; x-api-version=1.0 88.6929ms
+2026-03-14 00:58:18.638 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods - null null
+2026-03-14 00:58:18.643 +01:00 [INF] Incoming request: GET /api/v1/foods
+2026-03-14 00:58:18.646 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api)'
+2026-03-14 00:58:18.653 +01:00 [INF] Route matched with {action = "GetAllFoods", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetAllFoods(Microsoft.AspNetCore.Mvc.ApiVersion, MyFood.Application.QueryParameters) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2026-03-14 00:58:18.803 +01:00 [INF] Executed DbCommand (19ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+ORDER BY [f].[Name]
+OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+2026-03-14 00:58:18.825 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [FoodItems] AS [f]
+2026-03-14 00:58:18.841 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType2`2[[System.Collections.Generic.IEnumerable`1[[System.Object, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.List`1[[MyFood.Application.LinkDto, MyFood.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-03-14 00:58:18.862 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api) in 208.5114ms
+2026-03-14 00:58:18.862 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api)'
+2026-03-14 00:58:18.862 +01:00 [INF] HTTP GET /api/v1/foods responded 200 in 218.9018 ms
+2026-03-14 00:58:18.863 +01:00 [INF] Outgoing response: 200
+2026-03-14 00:58:18.864 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods - 200 19143 application/json; charset=utf-8; x-api-version=1 226.5033ms
+2026-03-14 01:00:17.738 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/12 - null null
+2026-03-14 01:00:17.741 +01:00 [INF] Incoming request: GET /api/v1/foods/12
+2026-03-14 01:00:17.744 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2026-03-14 01:00:17.746 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2026-03-14 01:00:17.768 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2026-03-14 01:00:17.771 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2026-03-14 01:00:17.771 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 24.8966ms
+2026-03-14 01:00:17.771 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2026-03-14 01:00:17.771 +01:00 [INF] HTTP GET /api/v1/foods/12 responded 200 in 29.7898 ms
+2026-03-14 01:00:17.772 +01:00 [INF] Outgoing response: 200
+2026-03-14 01:00:17.772 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/12 - 200 434 application/json; charset=utf-8; x-api-version=1 33.304ms
+2026-03-14 01:00:46.403 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/6 - null null
+2026-03-14 01:00:46.404 +01:00 [INF] Incoming request: GET /api/v1/foods/6
+2026-03-14 01:00:46.405 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2026-03-14 01:00:46.405 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2026-03-14 01:00:46.417 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2026-03-14 01:00:46.419 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2026-03-14 01:00:46.419 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 14.2167ms
+2026-03-14 01:00:46.419 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2026-03-14 01:00:46.419 +01:00 [INF] HTTP GET /api/v1/foods/6 responded 200 in 14.9438 ms
+2026-03-14 01:00:46.420 +01:00 [INF] Outgoing response: 200
+2026-03-14 01:00:46.420 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/6 - 200 432 application/json; charset=utf-8; x-api-version=1 16.6858ms
+2026-03-14 01:01:13.329 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/ingredients - null null
+2026-03-14 01:01:13.329 +01:00 [INF] Incoming request: GET /api/v1/ingredients
+2026-03-14 01:01:13.329 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api)'
+2026-03-14 01:01:13.331 +01:00 [INF] Route matched with {action = "GetAllIngredients", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetAllIngredients() on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 01:01:13.340 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+ORDER BY [i].[Name]
+2026-03-14 01:01:13.340 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MyFood.Application.Dtos.IngredientDto, MyFood.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-03-14 01:01:13.342 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api) in 10.7737ms
+2026-03-14 01:01:13.342 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api)'
+2026-03-14 01:01:13.342 +01:00 [INF] HTTP GET /api/v1/ingredients responded 200 in 13.1933 ms
+2026-03-14 01:01:13.343 +01:00 [INF] Outgoing response: 200
+2026-03-14 01:01:13.343 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/ingredients - 200 2 application/json; charset=utf-8; x-api-version=1 13.9926ms
+2026-03-14 01:01:17.414 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/ingredients - null null
+2026-03-14 01:01:17.414 +01:00 [INF] Incoming request: GET /api/v1/ingredients
+2026-03-14 01:01:17.415 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api)'
+2026-03-14 01:01:17.415 +01:00 [INF] Route matched with {action = "GetAllIngredients", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetAllIngredients() on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 01:01:17.419 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+ORDER BY [i].[Name]
+2026-03-14 01:01:17.420 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MyFood.Application.Dtos.IngredientDto, MyFood.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-03-14 01:01:17.420 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api) in 5.0307ms
+2026-03-14 01:01:17.420 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetAllIngredients (MyFood.Api)'
+2026-03-14 01:01:17.420 +01:00 [INF] HTTP GET /api/v1/ingredients responded 200 in 5.9636 ms
+2026-03-14 01:01:17.421 +01:00 [INF] Outgoing response: 200
+2026-03-14 01:01:17.421 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/ingredients - 200 2 application/json; charset=utf-8; x-api-version=1 6.7257ms
+2026-03-14 01:02:17.540 +01:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/v1/ingredients - application/json-patch+json; x-api-version=1.0 56
+2026-03-14 01:02:17.541 +01:00 [INF] Incoming request: POST /api/v1/ingredients
+2026-03-14 01:02:17.541 +01:00 [INF] CORS policy execution successful.
+2026-03-14 01:02:17.541 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api)'
+2026-03-14 01:02:17.543 +01:00 [INF] Route matched with {action = "AddIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.IngredientDto] AddIngredient(MyFood.Application.Dtos.CreateIngredientDto) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 01:02:17.567 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 260), @p2='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Ingredients] ([FoodId], [Name], [Quantity])
+OUTPUT INSERTED.[Id]
+VALUES (@p0, @p1, @p2);
+2026-03-14 01:02:17.573 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 01:02:17.574 +01:00 [INF] Executing CreatedAtRouteResult, writing value of type 'MyFood.Application.Dtos.IngredientDto'.
+2026-03-14 01:02:17.575 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api) in 31.7815ms
+2026-03-14 01:02:17.575 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api)'
+2026-03-14 01:02:17.575 +01:00 [INF] HTTP POST /api/v1/ingredients responded 201 in 34.1211 ms
+2026-03-14 01:02:17.575 +01:00 [INF] Outgoing response: 201
+2026-03-14 01:02:17.575 +01:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/v1/ingredients - 201 50 application/json; charset=utf-8; x-api-version=1 35.2073ms
+2026-03-14 01:02:47.184 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/ingredients/4 - null null
+2026-03-14 01:02:47.185 +01:00 [INF] Incoming request: GET /api/v1/ingredients/4
+2026-03-14 01:02:47.185 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetSingleIngredient (MyFood.Api)'
+2026-03-14 01:02:47.187 +01:00 [INF] Route matched with {action = "GetSingleIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleIngredient(Int32) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 01:02:47.202 +01:00 [INF] Executed DbCommand (10ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 01:02:47.204 +01:00 [INF] Executing OkObjectResult, writing value of type 'MyFood.Application.Dtos.IngredientDto'.
+2026-03-14 01:02:47.206 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.GetSingleIngredient (MyFood.Api) in 18.1258ms
+2026-03-14 01:02:47.209 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.GetSingleIngredient (MyFood.Api)'
+2026-03-14 01:02:47.209 +01:00 [INF] HTTP GET /api/v1/ingredients/4 responded 200 in 23.8550 ms
+2026-03-14 01:02:47.209 +01:00 [INF] Outgoing response: 200
+2026-03-14 01:02:47.210 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/ingredients/4 - 200 50 application/json; charset=utf-8; x-api-version=1 25.5846ms
+2026-03-14 01:03:26.023 +01:00 [INF] Request starting HTTP/2 PUT https://localhost:7124/api/v1/ingredients/4 - application/json-patch+json; x-api-version=1.0 67
+2026-03-14 01:03:26.025 +01:00 [INF] Incoming request: PUT /api/v1/ingredients/4
+2026-03-14 01:03:26.025 +01:00 [INF] CORS policy execution successful.
+2026-03-14 01:03:26.025 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api)'
+2026-03-14 01:03:26.028 +01:00 [INF] Route matched with {action = "UpdateIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.IngredientDto] UpdateIngredient(Int32, MyFood.Application.Dtos.UpdateIngredientDto) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 01:03:26.038 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 01:03:26.072 +01:00 [INF] Executed DbCommand (28ms) [Parameters=[@p3='?' (DbType = Int32), @p0='?' (DbType = Int32), @p1='?' (Size = 260), @p2='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Ingredients] SET [FoodId] = @p0, [Name] = @p1, [Quantity] = @p2
+OUTPUT 1
+WHERE [Id] = @p3;
+2026-03-14 01:03:26.073 +01:00 [INF] Executing OkObjectResult, writing value of type 'MyFood.Application.Dtos.IngredientDto'.
+2026-03-14 01:03:26.073 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api) in 45.6217ms
+2026-03-14 01:03:26.074 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api)'
+2026-03-14 01:03:26.074 +01:00 [INF] HTTP PUT /api/v1/ingredients/4 responded 200 in 48.6557 ms
+2026-03-14 01:03:26.074 +01:00 [INF] Outgoing response: 200
+2026-03-14 01:03:26.074 +01:00 [INF] Request finished HTTP/2 PUT https://localhost:7124/api/v1/ingredients/4 - 200 61 application/json; charset=utf-8; x-api-version=1 51.1219ms
+2026-03-14 01:06:13.381 +01:00 [INF] Request starting HTTP/2 PATCH https://localhost:7124/api/v1/ingredients/4 - application/json-patch+json; x-api-version=1.0 149
+2026-03-14 01:06:13.383 +01:00 [INF] Incoming request: PATCH /api/v1/ingredients/4
+2026-03-14 01:06:13.383 +01:00 [INF] CORS policy execution successful.
+2026-03-14 01:06:13.384 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.PartiallyUpdateIngredient (MyFood.Api)'
+2026-03-14 01:06:13.385 +01:00 [INF] Route matched with {action = "PartiallyUpdateIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.IngredientDto] PartiallyUpdateIngredient(Int32, Microsoft.AspNetCore.JsonPatch.JsonPatchDocument`1[MyFood.Application.Dtos.UpdateIngredientDto]) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 01:06:13.403 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 01:06:13.411 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[@p3='?' (DbType = Int32), @p0='?' (DbType = Int32), @p1='?' (Size = 260), @p2='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Ingredients] SET [FoodId] = @p0, [Name] = @p1, [Quantity] = @p2
+OUTPUT 1
+WHERE [Id] = @p3;
+2026-03-14 01:06:13.411 +01:00 [INF] Executing OkObjectResult, writing value of type 'MyFood.Application.Dtos.IngredientDto'.
+2026-03-14 01:06:13.411 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.PartiallyUpdateIngredient (MyFood.Api) in 25.5785ms
+2026-03-14 01:06:13.411 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.PartiallyUpdateIngredient (MyFood.Api)'
+2026-03-14 01:06:13.411 +01:00 [INF] HTTP PATCH /api/v1/ingredients/4 responded 200 in 27.9870 ms
+2026-03-14 01:06:13.411 +01:00 [INF] Outgoing response: 200
+2026-03-14 01:06:13.411 +01:00 [INF] Request finished HTTP/2 PATCH https://localhost:7124/api/v1/ingredients/4 - 200 52 application/json; charset=utf-8; x-api-version=1 30.0973ms
+2026-03-14 01:06:37.827 +01:00 [INF] Request starting HTTP/2 DELETE https://localhost:7124/api/v1/ingredients/4 - null null
+2026-03-14 01:06:37.828 +01:00 [INF] Incoming request: DELETE /api/v1/ingredients/4
+2026-03-14 01:06:37.828 +01:00 [INF] CORS policy execution successful.
+2026-03-14 01:06:37.828 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.RemoveIngredient (MyFood.Api)'
+2026-03-14 01:06:37.830 +01:00 [INF] Route matched with {action = "RemoveIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult RemoveIngredient(Int32) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 01:06:37.836 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 01:06:37.839 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 01:06:37.860 +01:00 [INF] Executed DbCommand (15ms) [Parameters=[@p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+DELETE FROM [Ingredients]
+OUTPUT 1
+WHERE [Id] = @p0;
+2026-03-14 01:06:37.865 +01:00 [INF] Executing StatusCodeResult, setting HTTP status code 204
+2026-03-14 01:06:37.866 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.RemoveIngredient (MyFood.Api) in 35.5974ms
+2026-03-14 01:06:37.866 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.RemoveIngredient (MyFood.Api)'
+2026-03-14 01:06:37.866 +01:00 [INF] HTTP DELETE /api/v1/ingredients/4 responded 204 in 37.9441 ms
+2026-03-14 01:06:37.866 +01:00 [INF] Outgoing response: 204
+2026-03-14 01:06:37.866 +01:00 [INF] Request finished HTTP/2 DELETE https://localhost:7124/api/v1/ingredients/4 - 204 null null 39.6317ms
+2026-03-14 01:10:18.005 +01:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/v1/ingredients - application/json-patch+json; x-api-version=1.0 56
+2026-03-14 01:10:18.007 +01:00 [INF] Incoming request: POST /api/v1/ingredients
+2026-03-14 01:10:18.007 +01:00 [INF] CORS policy execution successful.
+2026-03-14 01:10:18.008 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api)'
+2026-03-14 01:10:18.008 +01:00 [INF] Route matched with {action = "AddIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.IngredientDto] AddIngredient(MyFood.Application.Dtos.CreateIngredientDto) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 01:10:18.017 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 260), @p2='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Ingredients] ([FoodId], [Name], [Quantity])
+OUTPUT INSERTED.[Id]
+VALUES (@p0, @p1, @p2);
+2026-03-14 01:10:18.021 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 01:10:18.021 +01:00 [INF] Executing CreatedAtRouteResult, writing value of type 'MyFood.Application.Dtos.IngredientDto'.
+2026-03-14 01:10:18.022 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api) in 13.8522ms
+2026-03-14 01:10:18.022 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.AddIngredient (MyFood.Api)'
+2026-03-14 01:10:18.022 +01:00 [INF] HTTP POST /api/v1/ingredients responded 201 in 14.9970 ms
+2026-03-14 01:10:18.022 +01:00 [INF] Outgoing response: 201
+2026-03-14 01:10:18.023 +01:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/v1/ingredients - 201 50 application/json; charset=utf-8; x-api-version=1 17.1439ms
+2026-03-14 01:11:55.790 +01:00 [INF] Request starting HTTP/2 PUT https://localhost:7124/api/v1/ingredients/4 - application/json-patch+json; x-api-version=1.0 67
+2026-03-14 01:11:55.791 +01:00 [INF] Incoming request: PUT /api/v1/ingredients/4
+2026-03-14 01:11:55.791 +01:00 [INF] CORS policy execution successful.
+2026-03-14 01:11:55.791 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api)'
+2026-03-14 01:11:55.791 +01:00 [INF] Route matched with {action = "UpdateIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.IngredientDto] UpdateIngredient(Int32, MyFood.Application.Dtos.UpdateIngredientDto) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 01:11:55.798 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 01:11:55.799 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-03-14 01:11:55.799 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api) in 7.808ms
+2026-03-14 01:11:55.799 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api)'
+2026-03-14 01:11:55.799 +01:00 [INF] HTTP PUT /api/v1/ingredients/4 responded 404 in 8.4562 ms
+2026-03-14 01:11:55.800 +01:00 [INF] Outgoing response: 404
+2026-03-14 01:11:55.804 +01:00 [INF] Request finished HTTP/2 PUT https://localhost:7124/api/v1/ingredients/4 - 404 162 application/problem+json; charset=utf-8; x-api-version=1 14.7171ms
+2026-03-14 01:12:06.297 +01:00 [INF] Request starting HTTP/2 PUT https://localhost:7124/api/v1/ingredients/5 - application/json-patch+json; x-api-version=1.0 67
+2026-03-14 01:12:06.297 +01:00 [INF] Incoming request: PUT /api/v1/ingredients/5
+2026-03-14 01:12:06.298 +01:00 [INF] CORS policy execution successful.
+2026-03-14 01:12:06.298 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api)'
+2026-03-14 01:12:06.298 +01:00 [INF] Route matched with {action = "UpdateIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.IngredientDto] UpdateIngredient(Int32, MyFood.Application.Dtos.UpdateIngredientDto) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 01:12:06.302 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 01:12:06.309 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@p3='?' (DbType = Int32), @p0='?' (DbType = Int32), @p1='?' (Size = 260), @p2='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Ingredients] SET [FoodId] = @p0, [Name] = @p1, [Quantity] = @p2
+OUTPUT 1
+WHERE [Id] = @p3;
+2026-03-14 01:12:06.309 +01:00 [INF] Executing OkObjectResult, writing value of type 'MyFood.Application.Dtos.IngredientDto'.
+2026-03-14 01:12:06.310 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api) in 11.7576ms
+2026-03-14 01:12:06.310 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.UpdateIngredient (MyFood.Api)'
+2026-03-14 01:12:06.310 +01:00 [INF] HTTP PUT /api/v1/ingredients/5 responded 200 in 12.4114 ms
+2026-03-14 01:12:06.310 +01:00 [INF] Outgoing response: 200
+2026-03-14 01:12:06.310 +01:00 [INF] Request finished HTTP/2 PUT https://localhost:7124/api/v1/ingredients/5 - 200 61 application/json; charset=utf-8; x-api-version=1 13.2922ms
+2026-03-14 01:13:14.795 +01:00 [INF] Request starting HTTP/2 PATCH https://localhost:7124/api/v1/ingredients/5 - application/json-patch+json; x-api-version=1.0 149
+2026-03-14 01:13:14.796 +01:00 [INF] Incoming request: PATCH /api/v1/ingredients/5
+2026-03-14 01:13:14.796 +01:00 [INF] CORS policy execution successful.
+2026-03-14 01:13:14.796 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.IngredientsController.PartiallyUpdateIngredient (MyFood.Api)'
+2026-03-14 01:13:14.796 +01:00 [INF] Route matched with {action = "PartiallyUpdateIngredient", controller = "Ingredients"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[MyFood.Application.Dtos.IngredientDto] PartiallyUpdateIngredient(Int32, Microsoft.AspNetCore.JsonPatch.JsonPatchDocument`1[MyFood.Application.Dtos.UpdateIngredientDto]) on controller MyFood.Api.Controllers.v1.IngredientsController (MyFood.Api).
+2026-03-14 01:13:14.809 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [i].[Id], [i].[FoodId], [i].[Name], [i].[Quantity]
+FROM [Ingredients] AS [i]
+WHERE [i].[Id] = @__id_0
+2026-03-14 01:13:14.816 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@p3='?' (DbType = Int32), @p0='?' (DbType = Int32), @p1='?' (Size = 260), @p2='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Ingredients] SET [FoodId] = @p0, [Name] = @p1, [Quantity] = @p2
+OUTPUT 1
+WHERE [Id] = @p3;
+2026-03-14 01:13:14.817 +01:00 [INF] Executing OkObjectResult, writing value of type 'MyFood.Application.Dtos.IngredientDto'.
+2026-03-14 01:13:14.817 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.IngredientsController.PartiallyUpdateIngredient (MyFood.Api) in 19.1986ms
+2026-03-14 01:13:14.817 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.IngredientsController.PartiallyUpdateIngredient (MyFood.Api)'
+2026-03-14 01:13:14.817 +01:00 [INF] HTTP PATCH /api/v1/ingredients/5 responded 200 in 21.4311 ms
+2026-03-14 01:13:14.817 +01:00 [INF] Outgoing response: 200
+2026-03-14 01:13:14.818 +01:00 [INF] Request finished HTTP/2 PATCH https://localhost:7124/api/v1/ingredients/5 - 200 52 application/json; charset=utf-8; x-api-version=1 23.0632ms
