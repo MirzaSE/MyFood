@@ -5,7 +5,7 @@ namespace MyFood.Application.Entities
     public class FoodEntity
     {
         public int Id { get; set; }
-        [MaxLength(500)]
+        [MaxLength(250)]
         public string? Name { get; set; }
         [MaxLength(50)]
         public string? Type { get; set; }
