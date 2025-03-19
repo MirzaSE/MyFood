@@ -1,6 +1,4 @@
-﻿
-
-using MyFood.Application;
+﻿using MyFood.Application;
 using MyFood.Application.Entities;
 using MyFood.Infrastructure.Helpers;
 

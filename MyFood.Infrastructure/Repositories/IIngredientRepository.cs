@@ -1,13 +1,16 @@
+using MyFood.Application;
 using MyFood.Application.Entities;
 
 namespace MyFood.Infrastructure.Repositories
 {
     public interface IIngredientRepository
     {
-        Task AddIngredientAsync(IngredientEntity ingredient);
-        Task UpdateIngredientAsync(IngredientEntity ingredient);
-        Task DeleteIngredientAsync(int id);
-        Task<IngredientEntity> GetIngredientAsync(int id);
-        Task<List<IngredientEntity>> GetAllIngredientsAsync();
+        IngredientEntity GetSingle(int id);
+        void Add(IngredientEntity item);
+        void Delete(int id);
+        IngredientEntity Update(int id, IngredientEntity item);
+        IQueryable<IngredientEntity> GetAll(QueryParameters queryParameters);
+        int Count();
+        bool Save();
     }
 }
