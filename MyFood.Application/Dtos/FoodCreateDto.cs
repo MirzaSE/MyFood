@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MyFood.Application.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyFood.Application.Dtos
 {
@@ -9,5 +10,6 @@ namespace MyFood.Application.Dtos
         public string? Type { get; set; }
         public int Calories { get; set; }
         public DateTime Created { get; set; }
+      
     }
 }

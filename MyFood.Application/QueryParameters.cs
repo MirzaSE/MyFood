@@ -16,5 +16,9 @@ namespace MyFood.Application
         public string? Query { get; set; } = "";
 
         public string OrderBy { get; set; } = "Name";
+        public object GetTotalPages(int allItemCount)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

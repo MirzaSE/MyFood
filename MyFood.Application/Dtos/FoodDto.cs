@@ -1,4 +1,6 @@
-﻿namespace MyFood.Application.Dtos
+﻿using MyFood.Application.Entities;
+
+namespace MyFood.Application.Dtos
 {
     public class FoodDto
     {
@@ -7,5 +9,6 @@
         public string? Type { get; set; }
         public int Calories { get; set; }
         public DateTime Created { get; set; }
+        
     }
 }
