@@ -1,11 +1,7 @@
-﻿using MyFood.Application.Entities;
+﻿using System.Linq;
+using MyFood.Application.Entities;
 using MyFood.Application;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MyFood.Infrastructure.Helpers;
 
 namespace MyFood.Infrastructure.Repositories
@@ -38,7 +34,7 @@ namespace MyFood.Infrastructure.Repositories
             }
         }
 
-        public IngredientEntity Update(int id, IngredientEntity ingredient)
+        public IngredientEntity Update(IngredientEntity ingredient)
         {
             _foodDbContext.Ingredients.Update(ingredient);
             return ingredient;
@@ -59,19 +55,9 @@ namespace MyFood.Infrastructure.Repositories
                 .Take(queryParameters.PageCount);
         }
 
-        public int Count()
-        {
-            return _foodDbContext.FoodItems.Count();
-        }
-
         public bool Save()
         {
             return (_foodDbContext.SaveChanges() >= 0);
         }
-
-       
-
-        
     }
 }
-

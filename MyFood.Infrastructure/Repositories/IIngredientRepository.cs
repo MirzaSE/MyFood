@@ -8,10 +8,13 @@ namespace MyFood.Infrastructure.Repositories
        
             void Add(IngredientEntity item);
             void Delete(int id);
-            IngredientEntity Update(int id, IngredientEntity item);
+            IngredientEntity Update(IngredientEntity item);
+            IngredientEntity GetSingle(int id);
             IQueryable<IngredientEntity> GetAll(QueryParameters queryParameters);
-            int Count();
-            bool Save();
-        
+
+       
+        bool Save();
+
+
     }
 }

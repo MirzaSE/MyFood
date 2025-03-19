@@ -8,9 +8,7 @@ namespace MyFood.Application.Entities
         [MaxLength(250)]
         public string? Name { get; set; }
         [MaxLength(260)]
-        public string? Type { get; set; }
-        public int? FoodEntityId { get; set; }
-        public FoodEntity FoodEntity { get; set; }
+        public string? Quantity { get; set; }
         
     }
 }
