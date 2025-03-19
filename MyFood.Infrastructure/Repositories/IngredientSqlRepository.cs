@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
+using MyFood.Application.Dtos;
 using MyFood.Application.Entities;
 using MyFood.Infrastructure.Helpers;
 
@@ -35,6 +36,7 @@ public class IngredientSqlRepository : IIngredientSqlRepository
         return serviceResponse;
     }
 
+
     public async Task<ServiceResponse<IngredientEntity>> GetSingle(int id)
     {
         var serviceResponse = new ServiceResponse<IngredientEntity>();
@@ -45,6 +47,42 @@ public class IngredientSqlRepository : IIngredientSqlRepository
             return serviceResponse;
         }
         serviceResponse.Data = ingredient;
+        serviceResponse.Success = true;
+        return serviceResponse;
+    }
+    public async Task<ServiceResponse<IngredientEntity>> Update(IngredientUpdateDto item, int id)
+    {
+        var serviceResponse = new ServiceResponse<IngredientEntity>();
+        var ingredient = await _foodDbContext.Ingredients.FirstOrDefaultAsync(i => i.Id == id);
+
+        if (ingredient == null)
+        {
+            serviceResponse.Success = false;
+            return serviceResponse;
+        }
+        ingredient.Name = item.Name;
+        ingredient.Quantity = item.Quantity;
+        await _foodDbContext.SaveChangesAsync();
+        
+        serviceResponse.Data = ingredient;
+        serviceResponse.Success = true;
+        return serviceResponse;
+    }
+
+    public async Task<ServiceResponse<bool>> Delete(int id)
+    {
+        var serviceResponse = new ServiceResponse<bool>();
+        var ingredient = await _foodDbContext.Ingredients.FirstOrDefaultAsync(x => x.Id == id);
+        if (ingredient == null)
+        {
+            serviceResponse.Success = false;
+            serviceResponse.Data = false;
+            return serviceResponse;
+        }
+        _foodDbContext.Ingredients.Remove(ingredient);
+        await _foodDbContext.SaveChangesAsync();
+        
+        serviceResponse.Data = true;
         serviceResponse.Success = true;
         return serviceResponse;
     }

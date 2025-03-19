@@ -8,4 +8,5 @@ public class IngredientEntity
     [MaxLength(260)]
     public string? Name { get; set; }
     public string Quantity { get; set; } = string.Empty;
+    public int FoodEntityId { get; set; }
 }

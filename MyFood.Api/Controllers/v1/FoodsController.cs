@@ -75,7 +75,7 @@ namespace MyFood.Api.Controllers.v1
 
         [HttpGet]
         [Route("search", Name = nameof(SearchByName))]
-        public ActionResult SearchByName(ApiVersion version,[FromQuery] QueryParameters queryParameters, string name)
+        public ActionResult SearchByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, string name)
         {
             var foodItems = _foodRepository.SearchFoodsByName(name);
 
@@ -126,7 +126,8 @@ namespace MyFood.Api.Controllers.v1
         }
 
         [HttpPatch("{id:int}", Name = nameof(PartiallyUpdateFood))]
-        public ActionResult<FoodDto> PartiallyUpdateFood(ApiVersion version, int id, [FromBody] JsonPatchDocument<FoodUpdateDto> patchDoc)
+        public ActionResult<FoodDto> PartiallyUpdateFood(ApiVersion version, int id,
+            [FromBody] JsonPatchDocument<FoodUpdateDto> patchDoc)
         {
             if (patchDoc == null)
             {
@@ -231,6 +232,19 @@ namespace MyFood.Api.Controllers.v1
                 value = dtos,
                 links = links
             });
+        }
+
+        [HttpPost("{foodId:int}/add/ingredients")]
+        public async Task<ActionResult<ServiceResponse<FoodEntity>>> AddIngredients([FromRoute] int foodId,
+            [FromBody] List<IngredientLinkToFoodDto> ingredientsDtos)
+        {
+            var response = await _foodRepository.AddIngredientsToFood(foodId, ingredientsDtos);
+            if (!response.Success)
+            {
+                return NotFound(response);
+            }
+
+            return Ok(response);
         }
     }
 }

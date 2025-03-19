@@ -1,5 +1,7 @@
 ﻿using MyFood.Application;
+using MyFood.Application.Dtos;
 using MyFood.Application.Entities;
+using MyFood.Infrastructure.Helpers;
 
 namespace MyFood.Infrastructure.Repositories
 {
@@ -15,5 +17,7 @@ namespace MyFood.Infrastructure.Repositories
         IEnumerable<FoodEntity> SearchFoodsByName(string name);
         int Count();
         bool Save();
+
+        Task<ServiceResponse<FoodEntity>> AddIngredientsToFood(int foodId, List<IngredientLinkToFoodDto> ingredientDtos);
     }
 }

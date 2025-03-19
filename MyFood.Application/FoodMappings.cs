@@ -11,6 +11,10 @@ namespace MyFood.Api.MappingProfiles
             CreateMap<FoodEntity, FoodDto>().ReverseMap();
             CreateMap<FoodEntity, FoodUpdateDto>().ReverseMap();
             CreateMap<FoodEntity, FoodCreateDto>().ReverseMap();
+            
+            CreateMap<IngredientEntity, IngredientCreateDto>().ReverseMap();
+            CreateMap<IngredientEntity, IngredientLinkToFoodDto>().ReverseMap();
+            CreateMap<IngredientEntity, IngredientUpdateDto>().ReverseMap();
         }
     }
 }
