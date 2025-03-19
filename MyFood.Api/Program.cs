@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
@@ -11,6 +11,7 @@ using MyFood.Infrastructure.Helpers;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.EntityFrameworkCore;
+using MyFood.Application.Interfaces; // ✅ Added this for IIngredientRepository
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
-                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
+                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -37,12 +38,14 @@ builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
+// ✅ Register FoodDbContext (already present)
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-//opt.UseInMemoryDatabase("FoodDatabase"));
-opt.UseSqlServer(
-           builder.Configuration.GetConnectionString("DefaultConnection"),
-           b => b.MigrationsAssembly("MyFood.Infrastructure")));
+    opt.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
+// ✅ Register IngredientSqlRepository for dependency injection
+builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
@@ -67,7 +70,7 @@ if (app.Environment.IsDevelopment())
         });
 
     app.SeedData();
-} 
+}
 else
 {
     app.AddProductionExceptionHandling(loggerFactory);
