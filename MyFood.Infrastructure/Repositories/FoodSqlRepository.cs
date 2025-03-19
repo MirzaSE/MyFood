@@ -1,5 +1,6 @@
 ﻿
 
+using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
 using MyFood.Application.Entities;
 using MyFood.Infrastructure.Helpers;
@@ -72,6 +73,16 @@ namespace MyFood.Infrastructure.Repositories
             toReturn.Add(GetRandomItem("Dessert"));
 
             return toReturn;
+        }
+
+
+        public IEnumerable<FoodEntity> SearchFoodsByName(string name)
+        {
+            return _foodDbContext.FoodItems
+                .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
+                .ToList();
+
+            // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
         }
 
         private FoodEntity GetRandomItem(string type)
