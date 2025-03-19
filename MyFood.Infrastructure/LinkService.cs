@@ -90,6 +90,18 @@ namespace MyFood.Infrastructure
         }
 
 
+         public object ExpandSingleIngredientItem(object resource, int identifier, ApiVersion version)
+        {
+            var resourceToReturn = resource.ToDynamic() as IDictionary<string, object>;
+
+            var links = GetLinksForSingleItem(identifier, version);
+
+            resourceToReturn.Add("links", links);
+
+            return resourceToReturn;
+        }
+
+
         private IEnumerable<LinkDto> GetLinksForSingleItem(int id, ApiVersion version)
         {
             Type myType = (typeof(T));
