@@ -12,4 +12,15 @@ namespace MyFood.Application.Entities
         public int Calories { get; set; }
         public DateTime Created { get; set; }
     }
+
+    public class IngredientEntity
+    {
+        public int Id {get; set; }
+
+        public string? Name { get; set; }
+        [MaxLength(260)]
+
+        public int Quantity { get; set; }
+    }
+
 }
