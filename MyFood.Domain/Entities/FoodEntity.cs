@@ -11,5 +11,7 @@ namespace MyFood.Application.Entities
         public string? Type { get; set; }
         public int Calories { get; set; }
         public DateTime Created { get; set; }
+        
+        public List<IngredientEntity> Ingredients { get; set; }
     }
 }
