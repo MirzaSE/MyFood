@@ -11,6 +11,7 @@ using MyFood.Infrastructure.Helpers;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.EntityFrameworkCore;
+using MyFood.Api.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,12 +40,15 @@ builder.Services.AddVersioning();
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
 //opt.UseInMemoryDatabase("FoodDatabase"));
+
 opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
+
+builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
 
 var app = builder.Build();
 
