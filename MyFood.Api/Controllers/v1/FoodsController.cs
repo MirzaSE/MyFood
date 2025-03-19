@@ -73,6 +73,33 @@ namespace MyFood.Api.Controllers.v1
             return Ok(_linkService.ExpandSingleFoodItem(item, item.Id, version));
         }
 
+        [HttpGet]
+        [Route("search", Name = nameof(SearchByName))]
+        public ActionResult SearchByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, string name)
+        {
+            var foodItems = _foodRepository.SearchFoodsByName(name);
+
+            var allItemCount = foodItems.Count();
+            var paginationMetadata = new
+            {
+                totalCount = allItemCount,
+                pageSize = queryParameters.PageCount,
+                currentPage = queryParameters.Page,
+                totalPages = queryParameters.GetTotalPages(allItemCount)
+            };
+
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+            var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
+            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+
+            return Ok(new
+            {
+                value = toReturn,
+                links = links
+            });
+        }
+
         [HttpPost(Name = nameof(AddFood))]
         public ActionResult<FoodDto> AddFood(ApiVersion version, [FromBody] FoodCreateDto foodCreateDto)
         {
@@ -99,7 +126,8 @@ namespace MyFood.Api.Controllers.v1
         }
 
         [HttpPatch("{id:int}", Name = nameof(PartiallyUpdateFood))]
-        public ActionResult<FoodDto> PartiallyUpdateFood(ApiVersion version, int id, [FromBody] JsonPatchDocument<FoodUpdateDto> patchDoc)
+        public ActionResult<FoodDto> PartiallyUpdateFood(ApiVersion version, int id,
+            [FromBody] JsonPatchDocument<FoodUpdateDto> patchDoc)
         {
             if (patchDoc == null)
             {
@@ -204,6 +232,19 @@ namespace MyFood.Api.Controllers.v1
                 value = dtos,
                 links = links
             });
+        }
+
+        [HttpPost("{foodId:int}/add/ingredients")]
+        public async Task<ActionResult<ServiceResponse<FoodEntity>>> AddIngredients([FromRoute] int foodId,
+            [FromBody] List<IngredientLinkToFoodDto> ingredientsDtos)
+        {
+            var response = await _foodRepository.AddIngredientsToFood(foodId, ingredientsDtos);
+            if (!response.Success)
+            {
+                return NotFound(response);
+            }
+
+            return Ok(response);
         }
     }
 }
