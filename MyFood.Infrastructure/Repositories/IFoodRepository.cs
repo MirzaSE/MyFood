@@ -13,5 +13,9 @@ namespace MyFood.Infrastructure.Repositories
         ICollection<FoodEntity> GetRandomMeal();
         int Count();
         bool Save();
+
+        IQueryable<FoodEntity> SearchFoodsByName(string name);
     }
+
+    
 }

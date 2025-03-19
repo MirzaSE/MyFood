@@ -1,8 +1,8 @@
-﻿
-
 using MyFood.Application;
+﻿using MyFood.Application;
 using MyFood.Application.Entities;
 using MyFood.Infrastructure.Helpers;
+
 
 namespace MyFood.Infrastructure.Repositories
 {
@@ -17,7 +17,7 @@ namespace MyFood.Infrastructure.Repositories
 
         public FoodEntity GetSingle(int id)
         {
-            return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
+            return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id)!;
         }
 
         public void Add(FoodEntity item)
@@ -58,9 +58,9 @@ namespace MyFood.Infrastructure.Repositories
             return _foodDbContext.FoodItems.Count();
         }
 
-        public bool Save()
+        public void Save()
         {
-            return (_foodDbContext.SaveChanges() >= 0);
+            _foodDbContext.SaveChanges();
         }
 
         public ICollection<FoodEntity> GetRandomMeal()
@@ -76,10 +76,29 @@ namespace MyFood.Infrastructure.Repositories
 
         private FoodEntity GetRandomItem(string type)
         {
-            return _foodDbContext.FoodItems
+            var item = _foodDbContext.FoodItems
                 .Where(x => x.Type == type)
                 .OrderBy(o => Guid.NewGuid())
                 .FirstOrDefault();
+
+            if (item == null)
+            {
+                throw new InvalidOperationException($"No food item found for type {type}");
+            }
+
+            return item;
         }
+
+        bool IFoodRepository.Save()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public IQueryable<FoodEntity> SearchFoodsByName(string name)
+    {
+        return _foodDbContext.FoodItems
+            .Where(food => food.Name.Contains(name)); // Or use another search logic
+    }
     }
 }

@@ -16,6 +16,7 @@ namespace MyFood.Api.Controllers.v1
     [Route("api/v{version:apiVersion}/[controller]")]
     public class FoodsController : ControllerBase
     {
+        
         private readonly IFoodRepository _foodRepository;
         private readonly IMapper _mapper;
         private readonly ILinkService<FoodsController> _linkService;
