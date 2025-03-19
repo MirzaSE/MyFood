@@ -1,4 +1,4 @@
-﻿  using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyFood.Application.Entities;
 
 namespace MyFood.Infrastructure.Repositories
@@ -11,5 +11,18 @@ namespace MyFood.Infrastructure.Repositories
         }
 
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
+        public DbSet<IngredientEntity> Ingredients { get; set; } = null!; // Added DbSet for Ingredients
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Define relationship: One FoodEntity can have many Ingredients
+            modelBuilder.Entity<IngredientEntity>()
+                .HasOne(i => i.Food)
+                .WithMany(f => f.Ingredients)
+                .HasForeignKey(i => i.FoodEntityId)
+                .OnDelete(DeleteBehavior.Cascade); // If food is deleted, delete its ingredients
+        }
     }
 }
