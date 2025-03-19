@@ -11,7 +11,5 @@ namespace MyFood.Infrastructure.Repositories
         void Delete(int id);
         IngredientEntity Update(int id, IngredientEntity item);
         IQueryable<IngredientEntity> GetAll(QueryParameters queryParameters);
-        int Count();
-        bool Save();
     }
 }
