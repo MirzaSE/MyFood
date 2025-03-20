@@ -17,7 +17,7 @@ namespace MyFood.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Calories = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false)

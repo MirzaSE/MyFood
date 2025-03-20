@@ -1,5 +1,4 @@
-
-namespace MyFood.Application
+namespace MyFood.Application.Models
 {
     public class QueryParameters
     {
@@ -14,7 +13,9 @@ namespace MyFood.Application
         }
 
         public string? Query { get; set; } = "";
-
         public string OrderBy { get; set; } = "Name";
+
+        public bool HasNext(int totalCount) => Page < GetTotalPages(totalCount);
+        public bool HasPrevious() => Page > 1;
+        public int GetTotalPages(int totalCount) => (int)Math.Ceiling(totalCount / (double)PageCount);
     }
-}

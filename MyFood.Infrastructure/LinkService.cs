@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using MyFood.Api.Services;
-using MyFood.Application;
+using MyFood.Application.Models; // Use the merged namespace
 using MyFood.Infrastructure.Helpers;
-using MyFood.Infrastructure.Models;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace MyFood.Infrastructure
@@ -20,60 +20,91 @@ namespace MyFood.Infrastructure
 
         public List<LinkDto> CreateLinksForCollection(QueryParameters queryParameters, int totalCount, ApiVersion version)
         {
-            Type controllerType = (typeof(T));
+            Type controllerType = typeof(T);
             MethodInfo[] methods = controllerType.GetMethods();
 
             var links = new List<LinkDto>();
             var getAllMethodName = GetMethod(methods, typeof(HttpGetAttribute), 0);
 
-            // self 
-            links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
+            // Self link
+            links.Add(new LinkDto
             {
-                pagecount = queryParameters.PageCount,
-                page = queryParameters.Page,
-                orderby = queryParameters.OrderBy
-            }), "self", "GET"));
+                Href = _urlHelper.Link(getAllMethodName, new
+                {
+                    pagecount = queryParameters.PageCount,
+                    page = queryParameters.Page,
+                    orderby = queryParameters.OrderBy
+                }),
+                Rel = "self",
+                Method = "GET"
+            });
 
-            links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
+            // First page link
+            links.Add(new LinkDto
             {
-                pagecount = queryParameters.PageCount,
-                page = 1,
-                orderby = queryParameters.OrderBy
-            }), "first", "GET"));
+                Href = _urlHelper.Link(getAllMethodName, new
+                {
+                    pagecount = queryParameters.PageCount,
+                    page = 1,
+                    orderby = queryParameters.OrderBy
+                }),
+                Rel = "first",
+                Method = "GET"
+            });
 
-            links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
+            // Last page link
+            links.Add(new LinkDto
             {
-                pagecount = queryParameters.PageCount,
-                page = queryParameters.GetTotalPages(totalCount),
-                orderby = queryParameters.OrderBy
-            }), "last", "GET"));
+                Href = _urlHelper.Link(getAllMethodName, new
+                {
+                    pagecount = queryParameters.PageCount,
+                    page = queryParameters.GetTotalPages(totalCount),
+                    orderby = queryParameters.OrderBy
+                }),
+                Rel = "last",
+                Method = "GET"
+            });
 
+            // Next page link
             if (queryParameters.HasNext(totalCount))
             {
-                links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
+                links.Add(new LinkDto
                 {
-                    pagecount = queryParameters.PageCount,
-                    page = queryParameters.Page + 1,
-                    orderby = queryParameters.OrderBy
-                }), "next", "GET"));
+                    Href = _urlHelper.Link(getAllMethodName, new
+                    {
+                        pagecount = queryParameters.PageCount,
+                        page = queryParameters.Page + 1,
+                        orderby = queryParameters.OrderBy
+                    }),
+                    Rel = "next",
+                    Method = "GET"
+                });
             }
 
+            // Previous page link
             if (queryParameters.HasPrevious())
             {
-                links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
+                links.Add(new LinkDto
                 {
-                    pagecount = queryParameters.PageCount,
-                    page = queryParameters.Page - 1,
-                    orderby = queryParameters.OrderBy
-                }), "previous", "GET"));
+                    Href = _urlHelper.Link(getAllMethodName, new
+                    {
+                        pagecount = queryParameters.PageCount,
+                        page = queryParameters.Page - 1,
+                        orderby = queryParameters.OrderBy
+                    }),
+                    Rel = "previous",
+                    Method = "GET"
+                });
             }
 
-            var posturl = _urlHelper.Link(GetMethod(methods, typeof(HttpPostAttribute)), new { version = version.ToString() });
-
-            links.Add(
-               new LinkDto(posturl,
-               "create",
-               "POST"));
+            // Create link
+            var postUrl = _urlHelper.Link(GetMethod(methods, typeof(HttpPostAttribute)), new { version = version.ToString() });
+            links.Add(new LinkDto
+            {
+                Href = postUrl,
+                Rel = "create",
+                Method = "POST"
+            });
 
             return links;
         }
@@ -83,39 +114,52 @@ namespace MyFood.Infrastructure
             var resourceToReturn = resource.ToDynamic() as IDictionary<string, object>;
 
             var links = GetLinksForSingleItem(identifier, version);
-
             resourceToReturn.Add("links", links);
 
             return resourceToReturn;
         }
 
-
         private IEnumerable<LinkDto> GetLinksForSingleItem(int id, ApiVersion version)
         {
-            Type myType = (typeof(T));
+            Type myType = typeof(T);
             MethodInfo[] methods = myType.GetMethods();
             var links = new List<LinkDto>();
 
-            var getLink = _urlHelper.Link(GetMethod(methods, typeof(Microsoft.AspNetCore.Mvc.HttpGetAttribute), 1), new { version = version.ToString(), id = id });
-            links.Add(new LinkDto(getLink, "self", "GET"));
+            // Self link
+            var getLink = _urlHelper.Link(GetMethod(methods, typeof(HttpGetAttribute), 1), new { version = version.ToString(), id = id });
+            links.Add(new LinkDto
+            {
+                Href = getLink,
+                Rel = "self",
+                Method = "GET"
+            });
 
-            var deleteLink = _urlHelper.Link(GetMethod(methods, typeof(Microsoft.AspNetCore.Mvc.HttpDeleteAttribute)), new { version = version.ToString(), id = id });
-            links.Add(
-              new LinkDto(deleteLink,
-              "delete",
-              "DELETE"));
+            // Delete link
+            var deleteLink = _urlHelper.Link(GetMethod(methods, typeof(HttpDeleteAttribute)), new { version = version.ToString(), id = id });
+            links.Add(new LinkDto
+            {
+                Href = deleteLink,
+                Rel = "delete",
+                Method = "DELETE"
+            });
 
+            // Create link
             var createLink = _urlHelper.Link(GetMethod(methods, typeof(HttpPostAttribute)), new { version = version.ToString() });
-            links.Add(
-              new LinkDto(createLink,
-              "create_food",
-              "POST"));
+            links.Add(new LinkDto
+            {
+                Href = createLink,
+                Rel = "create_food",
+                Method = "POST"
+            });
 
-            var updateLink = _urlHelper.Link(GetMethod(methods, typeof(Microsoft.AspNetCore.Mvc.HttpPutAttribute)), new { version = version.ToString(), id = id });
-            links.Add(
-               new LinkDto(updateLink,
-               "update_food",
-               "PUT"));
+            // Update link
+            var updateLink = _urlHelper.Link(GetMethod(methods, typeof(HttpPutAttribute)), new { version = version.ToString(), id = id });
+            links.Add(new LinkDto
+            {
+                Href = updateLink,
+                Rel = "update_food",
+                Method = "PUT"
+            });
 
             return links;
         }
@@ -132,14 +176,12 @@ namespace MyFood.Infrastructure
             if (routeParamsLength == 0)
             {
                 var toReturn = filteredMethods.FirstOrDefault();
-
-                return toReturn is not null ? toReturn.Name : "";
+                return toReturn?.Name ?? "";
             }
 
             foreach (var method in filteredMethods)
             {
-                var routeAttribs = method.GetCustomAttributes(typeof(Microsoft.AspNetCore.Components.RouteAttribute));
-
+                var routeAttribs = method.GetCustomAttributes(typeof(RouteAttribute));
                 if (routeAttribs.Count() == routeParamsLength)
                 {
                     return method.Name;

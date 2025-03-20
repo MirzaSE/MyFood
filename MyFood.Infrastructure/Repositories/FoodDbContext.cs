@@ -1,5 +1,5 @@
-﻿  using Microsoft.EntityFrameworkCore;
-using MyFood.Application.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MyFood.Domain.Entities;
 
 namespace MyFood.Infrastructure.Repositories
 {
@@ -11,5 +11,15 @@ namespace MyFood.Infrastructure.Repositories
         }
 
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
+        public DbSet<IngredientEntity> Ingredients { get; set; } = null!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<FoodEntity>()
+                .HasMany(f => f.Ingredients)
+                .WithOne(i => i.FoodEntity)
+                .HasForeignKey(i => i.FoodId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

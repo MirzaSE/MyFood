@@ -20,6 +20,9 @@ builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
 
+// Add this line with other service registrations
+builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

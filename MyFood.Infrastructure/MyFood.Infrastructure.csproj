@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -7,24 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.13" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.13">
-      <PrivateAssets>all</PrivateAssets>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.13">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Infrastructure depends on Application and Domain -->
     <ProjectReference Include="..\MyFood.Application\MyFood.Application.csproj" />
     <ProjectReference Include="..\MyFood.Domain\MyFood.Domain.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

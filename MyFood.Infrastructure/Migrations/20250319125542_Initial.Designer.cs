@@ -12,8 +12,8 @@ using MyFood.Infrastructure.Repositories;
 namespace MyFood.Infrastructure.Migrations
 {
     [DbContext(typeof(FoodDbContext))]
-    [Migration("20250312162119_ReduceCharacters")]
-    partial class ReduceCharacters
+    [Migration("20250319125542_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
