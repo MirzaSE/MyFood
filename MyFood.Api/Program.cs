@@ -48,6 +48,12 @@ builder.Services.AddDbContext<FoodDbContext>(opt =>
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 builder.Services.AddAutoMapper(typeof(IngredientMapping));
 
+// Disable HTTPS requirement
+builder.WebHost.UseKestrel(options => {
+    options.ListenAnyIP(5000); // HTTP port
+    // HTTPS configuration removed
+});
+
 var app = builder.Build();
 
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
@@ -76,7 +82,8 @@ else
 }
 
 app.UseCors("AllowAllOrigins");
-app.UseHttpsRedirection();
+// Comment out HTTPS redirection
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
