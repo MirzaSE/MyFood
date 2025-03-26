@@ -61,6 +61,10 @@ namespace MyFood.Api.Controllers.v1
         [Route("{id:int}", Name = nameof(GetSingleFood))]
         public ActionResult GetSingleFood(ApiVersion version, int id)
         {
+            if (id < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "The id must be greater than 1.");
+            }
             FoodEntity foodItem = _foodRepository.GetSingle(id);
 
             if (foodItem == null)
