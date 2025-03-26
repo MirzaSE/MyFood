@@ -1,0 +1,902 @@
+2025-03-26 18:51:14.473 +01:00 [INF] Executed DbCommand (84ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-26 18:51:14.679 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-26 18:51:14.681 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-26 18:51:14.858 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-26 18:51:14.859 +01:00 [INF] Hosting environment: Development
+2025-03-26 18:51:14.861 +01:00 [INF] Content root path: C:\Users\Pacov\Desktop\MyFood\MyFood.Api
+2025-03-26 18:51:15.792 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 18:51:15.964 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 173.8629ms
+2025-03-26 18:51:15.997 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-26 18:51:15.998 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 18:51:15.998 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 18:51:16.008 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 10.5745ms
+2025-03-26 18:51:16.009 +01:00 [INF] The file /swagger-ui.css was not modified
+2025-03-26 18:51:16.020 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 304 null text/css 22.1171ms
+2025-03-26 18:51:16.068 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 70.1533ms
+2025-03-26 18:51:16.109 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-26 18:51:16.117 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-26 18:51:16.121 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 499 628 image/png 12.0043ms
+2025-03-26 18:51:16.132 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 18:51:16.146 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 13.4703ms
+2025-03-26 18:52:04.345 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods - null null
+2025-03-26 18:52:04.354 +01:00 [INF] Incoming request: GET /api/v1/foods
+2025-03-26 18:52:04.362 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api)'
+2025-03-26 18:52:04.387 +01:00 [INF] Route matched with {action = "GetAllFoods", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetAllFoods(Microsoft.AspNetCore.Mvc.ApiVersion, MyFood.Application.QueryParameters) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 18:52:04.758 +01:00 [INF] Executed DbCommand (38ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+ORDER BY [f].[Name]
+OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+2025-03-26 18:52:04.809 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [FoodItems] AS [f]
+2025-03-26 18:52:04.849 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`2[[System.Collections.Generic.IEnumerable`1[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.List`1[[MyFood.Application.LinkDto, MyFood.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-26 18:52:04.948 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api) in 553.0938ms
+2025-03-26 18:52:04.951 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api)'
+2025-03-26 18:52:04.955 +01:00 [INF] HTTP GET /api/v1/foods responded 200 in 595.6039 ms
+2025-03-26 18:52:04.958 +01:00 [INF] Outgoing response: 200
+2025-03-26 18:52:04.964 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods - 200 2175 application/json; charset=utf-8; x-api-version=1 618.2157ms
+2025-03-26 18:52:06.675 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods - null null
+2025-03-26 18:52:06.678 +01:00 [INF] Incoming request: GET /api/v1/foods
+2025-03-26 18:52:06.680 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api)'
+2025-03-26 18:52:06.682 +01:00 [INF] Route matched with {action = "GetAllFoods", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetAllFoods(Microsoft.AspNetCore.Mvc.ApiVersion, MyFood.Application.QueryParameters) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 18:52:06.702 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+ORDER BY [f].[Name]
+OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+2025-03-26 18:52:06.708 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [FoodItems] AS [f]
+2025-03-26 18:52:06.714 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`2[[System.Collections.Generic.IEnumerable`1[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.List`1[[MyFood.Application.LinkDto, MyFood.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-26 18:52:06.719 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api) in 33.9991ms
+2025-03-26 18:52:06.721 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api)'
+2025-03-26 18:52:06.723 +01:00 [INF] HTTP GET /api/v1/foods responded 200 in 43.1319 ms
+2025-03-26 18:52:06.726 +01:00 [INF] Outgoing response: 200
+2025-03-26 18:52:06.728 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods - 200 2175 application/json; charset=utf-8; x-api-version=1 53.5165ms
+2025-03-26 18:53:19.070 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/1 - null null
+2025-03-26 18:53:19.074 +01:00 [INF] Incoming request: GET /api/v1/foods/1
+2025-03-26 18:53:19.076 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 18:53:19.080 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 18:53:19.113 +01:00 [INF] Executed DbCommand (12ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 18:53:19.121 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 18:53:19.124 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 41.9178ms
+2025-03-26 18:53:19.126 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 18:53:19.128 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 52.5874 ms
+2025-03-26 18:53:19.130 +01:00 [INF] Outgoing response: 200
+2025-03-26 18:53:19.131 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/1 - 200 434 application/json; charset=utf-8; x-api-version=1 61.0084ms
+2025-03-26 18:53:20.579 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/1 - null null
+2025-03-26 18:53:20.585 +01:00 [INF] Incoming request: GET /api/v1/foods/1
+2025-03-26 18:53:20.586 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 18:53:20.588 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 18:53:20.597 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 18:53:20.607 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 18:53:20.610 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 18.2002ms
+2025-03-26 18:53:20.611 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 18:53:20.613 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 26.3768 ms
+2025-03-26 18:53:20.615 +01:00 [INF] Outgoing response: 200
+2025-03-26 18:53:20.616 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/1 - 200 434 application/json; charset=utf-8; x-api-version=1 36.5685ms
+2025-03-26 18:54:42.690 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-4 - null null
+2025-03-26 18:54:42.694 +01:00 [INF] Incoming request: GET /api/v1/foods/-4
+2025-03-26 18:54:42.695 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 18:54:42.696 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 18:54:42.703 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 4.2756ms
+2025-03-26 18:54:42.706 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 18:54:42.710 +01:00 [ERR] HTTP GET /api/v1/foods/-4 responded 500 in 14.8999 ms
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 64
+   at lambda_method87(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-03-26 18:54:42.752 +01:00 [ERR] An unhandled exception occurred.
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 64
+   at lambda_method87(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 21
+2025-03-26 18:54:42.780 +01:00 [INF] Outgoing response: 500
+2025-03-26 18:54:42.782 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-4 - 500 null application/json; x-api-version=1 91.555ms
+2025-03-26 18:55:05.464 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-4 - null null
+2025-03-26 18:55:05.467 +01:00 [INF] Incoming request: GET /api/v1/foods/-4
+2025-03-26 18:55:05.468 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 18:55:05.470 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 18:55:05.473 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 0.8351ms
+2025-03-26 18:55:05.475 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 18:55:05.478 +01:00 [ERR] HTTP GET /api/v1/foods/-4 responded 500 in 9.4525 ms
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 64
+   at lambda_method87(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-03-26 18:55:05.496 +01:00 [ERR] An unhandled exception occurred.
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 64
+   at lambda_method87(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 21
+2025-03-26 18:55:05.513 +01:00 [INF] Outgoing response: 500
+2025-03-26 18:55:05.514 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-4 - 500 null application/json; x-api-version=1 50.0219ms
+2025-03-26 19:02:44.358 +01:00 [INF] Executed DbCommand (25ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-26 19:02:44.510 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-26 19:02:44.512 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-26 19:02:44.596 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-26 19:02:44.598 +01:00 [INF] Hosting environment: Development
+2025-03-26 19:02:44.600 +01:00 [INF] Content root path: C:\Users\Pacov\Desktop\MyFood\MyFood.Api
+2025-03-26 19:02:45.084 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:02:45.197 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 113.9549ms
+2025-03-26 19:02:45.221 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:02:45.221 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:02:45.230 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 8.5718ms
+2025-03-26 19:02:45.259 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 38.052ms
+2025-03-26 19:02:45.360 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:02:45.370 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 9.3986ms
+2025-03-26 19:03:00.524 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/2 - null null
+2025-03-26 19:03:00.531 +01:00 [INF] Incoming request: GET /api/v1/foods/2
+2025-03-26 19:03:00.537 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:03:00.556 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:03:00.844 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 19:03:00.878 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 19:03:00.949 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 387.917ms
+2025-03-26 19:03:00.951 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:03:00.956 +01:00 [INF] HTTP GET /api/v1/foods/2 responded 200 in 420.1746 ms
+2025-03-26 19:03:00.959 +01:00 [INF] Outgoing response: 200
+2025-03-26 19:03:00.964 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/2 - 200 433 application/json; charset=utf-8; x-api-version=1 440.4011ms
+2025-03-26 19:03:02.535 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/2 - null null
+2025-03-26 19:03:02.541 +01:00 [INF] Incoming request: GET /api/v1/foods/2
+2025-03-26 19:03:02.543 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:03:02.546 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:03:02.563 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 19:03:02.572 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 19:03:02.574 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 25.1941ms
+2025-03-26 19:03:02.576 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:03:02.577 +01:00 [INF] HTTP GET /api/v1/foods/2 responded 200 in 34.6236 ms
+2025-03-26 19:03:02.579 +01:00 [INF] Outgoing response: 200
+2025-03-26 19:03:02.581 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/2 - 200 433 application/json; charset=utf-8; x-api-version=1 45.5489ms
+2025-03-26 19:03:21.003 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:03:21.007 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:03:21.009 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:03:21.011 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:03:21.017 +01:00 [ERR] Invalid ID passed to GetSingleFood.
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 70
+2025-03-26 19:03:21.036 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-26 19:03:21.040 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 25.877ms
+2025-03-26 19:03:21.042 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:03:21.044 +01:00 [INF] HTTP GET /api/v1/foods/-2 responded 400 in 35.0875 ms
+2025-03-26 19:03:21.046 +01:00 [INF] Outgoing response: 400
+2025-03-26 19:03:21.047 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 400 52 application/json; charset=utf-8; x-api-version=1 43.9653ms
+2025-03-26 19:08:17.278 +01:00 [INF] Executed DbCommand (25ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-26 19:08:17.424 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-26 19:08:17.426 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-26 19:08:17.502 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-26 19:08:17.504 +01:00 [INF] Hosting environment: Development
+2025-03-26 19:08:17.505 +01:00 [INF] Content root path: C:\Users\Pacov\Desktop\MyFood\MyFood.Api
+2025-03-26 19:08:27.519 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:08:27.640 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 121.4394ms
+2025-03-26 19:08:27.685 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:08:27.685 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:08:27.703 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 17.2775ms
+2025-03-26 19:08:27.726 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 40.7543ms
+2025-03-26 19:08:27.818 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:08:27.833 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 15.6015ms
+2025-03-26 19:08:34.688 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/2 - null null
+2025-03-26 19:08:34.698 +01:00 [INF] Incoming request: GET /api/v1/foods/2
+2025-03-26 19:08:34.703 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:08:34.720 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:08:34.994 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 19:08:35.030 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 19:08:35.103 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 373.2666ms
+2025-03-26 19:08:35.105 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:08:35.109 +01:00 [INF] HTTP GET /api/v1/foods/2 responded 200 in 407.3709 ms
+2025-03-26 19:08:35.113 +01:00 [INF] Outgoing response: 200
+2025-03-26 19:08:35.117 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/2 - 200 433 application/json; charset=utf-8; x-api-version=1 429.5544ms
+2025-03-26 19:08:39.783 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:08:39.788 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:08:39.790 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:08:39.792 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:08:39.801 +01:00 [ERR] Invalid ID passed to GetSingleFood: ID must be greater than or equal to 1. ID received: -2
+2025-03-26 19:08:39.803 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-26 19:08:39.808 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 9.0319ms
+2025-03-26 19:08:39.811 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:08:39.813 +01:00 [INF] HTTP GET /api/v1/foods/-2 responded 400 in 24.0631 ms
+2025-03-26 19:08:39.816 +01:00 [INF] Outgoing response: 400
+2025-03-26 19:08:39.817 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 400 52 application/json; charset=utf-8; x-api-version=1 33.5554ms
+2025-03-26 19:09:51.651 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:09:51.665 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 14.0609ms
+2025-03-26 19:09:51.777 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:09:51.779 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:09:51.785 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 6.0958ms
+2025-03-26 19:09:51.792 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 14.6445ms
+2025-03-26 19:09:51.887 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-26 19:09:51.899 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-26 19:09:51.900 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 499 628 image/png 13.9225ms
+2025-03-26 19:09:51.919 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:09:51.933 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 13.3538ms
+2025-03-26 19:10:44.381 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:10:44.384 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:10:44.386 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:10:44.388 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:10:44.396 +01:00 [ERR] Invalid ID passed to GetSingleFood: ID must be greater than or equal to 1. ID received: -2
+2025-03-26 19:10:44.397 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-26 19:10:44.400 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 8.2338ms
+2025-03-26 19:10:44.401 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:10:44.402 +01:00 [INF] HTTP GET /api/v1/foods/-2 responded 400 in 17.0123 ms
+2025-03-26 19:10:44.405 +01:00 [INF] Outgoing response: 400
+2025-03-26 19:10:44.407 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 400 52 application/json; charset=utf-8; x-api-version=1 26.1228ms
+2025-03-26 19:13:01.157 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:13:01.166 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 8.7327ms
+2025-03-26 19:13:01.204 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:13:01.204 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-26 19:13:01.204 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:13:01.212 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-26 19:13:01.214 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 9.3006ms
+2025-03-26 19:13:01.216 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 11.7089ms
+2025-03-26 19:13:01.217 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 499 144929 text/css 12.9918ms
+2025-03-26 19:13:01.300 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-26 19:13:01.304 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-26 19:13:01.306 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 499 628 image/png 5.5816ms
+2025-03-26 19:13:01.326 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:13:01.339 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 13.3506ms
+2025-03-26 19:13:17.213 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/2 - null null
+2025-03-26 19:13:17.216 +01:00 [INF] Incoming request: GET /api/v1/foods/2
+2025-03-26 19:13:17.217 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:13:17.219 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:13:17.243 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 19:13:17.249 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 19:13:17.251 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 29.7204ms
+2025-03-26 19:13:17.253 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:13:17.254 +01:00 [INF] HTTP GET /api/v1/foods/2 responded 200 in 36.5086 ms
+2025-03-26 19:13:17.255 +01:00 [INF] Outgoing response: 200
+2025-03-26 19:13:17.256 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/2 - 200 433 application/json; charset=utf-8; x-api-version=1 43.7166ms
+2025-03-26 19:13:18.734 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/2 - null null
+2025-03-26 19:13:18.738 +01:00 [INF] Incoming request: GET /api/v1/foods/2
+2025-03-26 19:13:18.739 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:13:18.740 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:13:18.748 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 19:13:18.751 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 19:13:18.753 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 10.7522ms
+2025-03-26 19:13:18.754 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:13:18.755 +01:00 [INF] HTTP GET /api/v1/foods/2 responded 200 in 16.5208 ms
+2025-03-26 19:13:18.761 +01:00 [INF] Outgoing response: 200
+2025-03-26 19:13:18.762 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/2 - 200 433 application/json; charset=utf-8; x-api-version=1 27.7213ms
+2025-03-26 19:14:11.886 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:14:11.890 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:14:11.891 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:14:11.892 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:14:11.895 +01:00 [ERR] Invalid ID passed to GetSingleFood: ID must be greater than or equal to 1. ID received: -2
+2025-03-26 19:14:11.896 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-26 19:14:11.898 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 3.8079ms
+2025-03-26 19:14:11.901 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:14:11.902 +01:00 [INF] HTTP GET /api/v1/foods/-2 responded 400 in 11.3016 ms
+2025-03-26 19:14:11.904 +01:00 [INF] Outgoing response: 400
+2025-03-26 19:14:11.905 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 400 52 application/json; charset=utf-8; x-api-version=1 18.4597ms
+2025-03-26 19:16:43.154 +01:00 [INF] Executed DbCommand (39ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-26 19:16:43.343 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-26 19:16:43.345 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-26 19:16:43.428 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-26 19:16:43.430 +01:00 [INF] Hosting environment: Development
+2025-03-26 19:16:43.432 +01:00 [INF] Content root path: C:\Users\Pacov\Desktop\MyFood\MyFood.Api
+2025-03-26 19:16:43.881 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:16:44.048 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 168.0887ms
+2025-03-26 19:16:44.088 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:16:44.102 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 14.1512ms
+2025-03-26 19:16:44.115 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:16:44.157 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 42.2725ms
+2025-03-26 19:16:44.246 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:16:44.256 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 10.3822ms
+2025-03-26 19:16:50.247 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/2 - null null
+2025-03-26 19:16:50.255 +01:00 [INF] Incoming request: GET /api/v1/foods/2
+2025-03-26 19:16:50.261 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:16:50.279 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:16:50.573 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 19:16:50.609 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 19:16:50.679 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 392.6328ms
+2025-03-26 19:16:50.681 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:16:50.684 +01:00 [INF] HTTP GET /api/v1/foods/2 responded 200 in 425.2512 ms
+2025-03-26 19:16:50.688 +01:00 [INF] Outgoing response: 200
+2025-03-26 19:16:50.693 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/2 - 200 433 application/json; charset=utf-8; x-api-version=1 446.2654ms
+2025-03-26 19:17:05.540 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:17:05.545 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:17:05.547 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:17:05.549 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:17:05.563 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 11.3267ms
+2025-03-26 19:17:05.567 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:17:05.569 +01:00 [ERR] HTTP GET /api/v1/foods/-2 responded 500 in 21.9484 ms
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 64
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-03-26 19:17:05.609 +01:00 [ERR] An unhandled exception occurred.
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 64
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 21
+2025-03-26 19:17:05.622 +01:00 [INF] Outgoing response: 500
+2025-03-26 19:17:05.624 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 500 null application/json; x-api-version=1 83.3135ms
+2025-03-26 19:18:31.245 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:18:31.252 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:18:31.254 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:18:31.255 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:18:31.260 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 2.2321ms
+2025-03-26 19:18:31.262 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:18:31.263 +01:00 [ERR] HTTP GET /api/v1/foods/-2 responded 500 in 9.7115 ms
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 64
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-03-26 19:18:31.281 +01:00 [ERR] An unhandled exception occurred.
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 64
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 21
+2025-03-26 19:18:31.301 +01:00 [INF] Outgoing response: 500
+2025-03-26 19:18:31.303 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 500 null application/json; x-api-version=1 57.8963ms
+2025-03-26 19:18:41.733 +01:00 [INF] Executed DbCommand (24ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-26 19:18:41.900 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-26 19:18:41.903 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-26 19:18:42.076 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-26 19:18:42.078 +01:00 [INF] Hosting environment: Development
+2025-03-26 19:18:42.078 +01:00 [INF] Content root path: C:\Users\Pacov\Desktop\MyFood\MyFood.Api
+2025-03-26 19:18:42.394 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:18:42.509 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 116.2317ms
+2025-03-26 19:18:42.527 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:18:42.532 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:18:42.538 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 10.4266ms
+2025-03-26 19:18:42.563 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 30.7341ms
+2025-03-26 19:18:42.654 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:18:42.665 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 10.8242ms
+2025-03-26 19:18:48.341 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/2 - null null
+2025-03-26 19:18:48.350 +01:00 [INF] Incoming request: GET /api/v1/foods/2
+2025-03-26 19:18:48.358 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:18:48.375 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:18:48.647 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 19:18:48.683 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 19:18:48.753 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 370.2731ms
+2025-03-26 19:18:48.756 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:18:48.758 +01:00 [INF] HTTP GET /api/v1/foods/2 responded 200 in 402.2482 ms
+2025-03-26 19:18:48.761 +01:00 [INF] Outgoing response: 200
+2025-03-26 19:18:48.766 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/2 - 200 433 application/json; charset=utf-8; x-api-version=1 425.364ms
+2025-03-26 19:18:53.862 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:18:53.868 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:18:53.869 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:18:53.871 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:18:53.874 +01:00 [ERR] Invalid ID passed to GetSingleFood: ID must be greater than or equal to 1. ID received: -2
+2025-03-26 19:18:53.878 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-26 19:18:53.883 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 10.0958ms
+2025-03-26 19:18:53.885 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:18:53.886 +01:00 [INF] HTTP GET /api/v1/foods/-2 responded 400 in 17.1258 ms
+2025-03-26 19:18:53.888 +01:00 [INF] Outgoing response: 400
+2025-03-26 19:18:53.889 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 400 52 application/json; charset=utf-8; x-api-version=1 27.5055ms
+2025-03-26 19:18:56.658 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:18:56.661 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:18:56.662 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:18:56.664 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:18:56.670 +01:00 [ERR] Invalid ID passed to GetSingleFood: ID must be greater than or equal to 1. ID received: -2
+2025-03-26 19:18:56.672 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-26 19:18:56.674 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 7.1368ms
+2025-03-26 19:18:56.676 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:18:56.677 +01:00 [INF] HTTP GET /api/v1/foods/-2 responded 400 in 15.2216 ms
+2025-03-26 19:18:56.679 +01:00 [INF] Outgoing response: 400
+2025-03-26 19:18:56.681 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 400 52 application/json; charset=utf-8; x-api-version=1 22.7536ms
+2025-03-26 19:19:18.832 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:19:18.839 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 7.4497ms
+2025-03-26 19:19:18.866 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:19:18.866 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:19:18.872 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 5.6401ms
+2025-03-26 19:19:18.888 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 22.6113ms
+2025-03-26 19:19:18.970 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:19:18.980 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 9.6049ms
+2025-03-26 19:19:23.973 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:19:23.977 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:19:23.978 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:19:23.981 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:19:23.988 +01:00 [ERR] Invalid ID passed to GetSingleFood: ID must be greater than or equal to 1. ID received: -2
+2025-03-26 19:19:23.989 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-26 19:19:23.992 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 4.0316ms
+2025-03-26 19:19:23.997 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:19:23.999 +01:00 [INF] HTTP GET /api/v1/foods/-2 responded 400 in 20.2935 ms
+2025-03-26 19:19:24.001 +01:00 [INF] Outgoing response: 400
+2025-03-26 19:19:24.002 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 400 52 application/json; charset=utf-8; x-api-version=1 29.3948ms
+2025-03-26 19:21:58.085 +01:00 [INF] Executed DbCommand (22ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-26 19:21:58.225 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-26 19:21:58.226 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-26 19:21:58.306 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-26 19:21:58.308 +01:00 [INF] Hosting environment: Development
+2025-03-26 19:21:58.309 +01:00 [INF] Content root path: C:\Users\Pacov\Desktop\MyFood\MyFood.Api
+2025-03-26 19:21:58.625 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:21:58.731 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 106.4594ms
+2025-03-26 19:21:58.752 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:21:58.758 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:21:58.761 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 9.0432ms
+2025-03-26 19:21:58.787 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 29.2648ms
+2025-03-26 19:21:58.859 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:21:58.870 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 10.4628ms
+2025-03-26 19:22:16.503 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:22:16.512 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 8.442ms
+2025-03-26 19:22:16.537 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:22:16.537 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:22:16.552 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 14.7061ms
+2025-03-26 19:22:16.557 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 20.1154ms
+2025-03-26 19:22:16.615 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-26 19:22:16.630 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-26 19:22:16.632 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 499 628 image/png 16.5678ms
+2025-03-26 19:22:16.649 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:22:16.660 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 11.1293ms
+2025-03-26 19:22:20.763 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/2 - null null
+2025-03-26 19:22:20.770 +01:00 [INF] Incoming request: GET /api/v1/foods/2
+2025-03-26 19:22:20.775 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:22:20.794 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:22:21.085 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 19:22:21.117 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 19:22:21.186 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 382.9019ms
+2025-03-26 19:22:21.188 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:22:21.191 +01:00 [INF] HTTP GET /api/v1/foods/2 responded 200 in 416.8395 ms
+2025-03-26 19:22:21.194 +01:00 [INF] Outgoing response: 200
+2025-03-26 19:22:21.201 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/2 - 200 433 application/json; charset=utf-8; x-api-version=1 438.3009ms
+2025-03-26 19:22:27.685 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:22:27.689 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:22:27.690 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:22:27.691 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:22:27.696 +01:00 [ERR] An unexpected error occurred in GetSingleFood.
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 70
+2025-03-26 19:22:27.718 +01:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-26 19:22:27.722 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 28.3873ms
+2025-03-26 19:22:27.725 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:22:27.727 +01:00 [ERR] HTTP GET /api/v1/foods/-2 responded 500 in 36.7899 ms
+2025-03-26 19:22:27.729 +01:00 [INF] Outgoing response: 500
+2025-03-26 19:22:27.730 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 500 43 application/json; charset=utf-8; x-api-version=1 44.9278ms
+2025-03-26 19:22:56.293 +01:00 [INF] Executed DbCommand (22ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-26 19:22:56.426 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-26 19:22:56.428 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-26 19:22:56.506 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-26 19:22:56.508 +01:00 [INF] Hosting environment: Development
+2025-03-26 19:22:56.510 +01:00 [INF] Content root path: C:\Users\Pacov\Desktop\MyFood\MyFood.Api
+2025-03-26 19:22:56.796 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:22:56.908 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 112.3176ms
+2025-03-26 19:22:56.924 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:22:56.924 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:22:56.937 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 13.3652ms
+2025-03-26 19:22:56.964 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 39.9059ms
+2025-03-26 19:22:57.035 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:22:57.045 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 9.8931ms
+2025-03-26 19:23:00.069 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:23:00.079 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 9.505ms
+2025-03-26 19:23:00.097 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:23:00.097 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:23:00.109 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 11.0089ms
+2025-03-26 19:23:00.116 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 18.9814ms
+2025-03-26 19:23:00.204 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:23:00.212 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 8.2361ms
+2025-03-26 19:23:03.781 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/2 - null null
+2025-03-26 19:23:03.788 +01:00 [INF] Incoming request: GET /api/v1/foods/2
+2025-03-26 19:23:03.795 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:23:03.812 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:23:04.091 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 19:23:04.122 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 19:23:04.196 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 377.3889ms
+2025-03-26 19:23:04.198 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:23:04.200 +01:00 [INF] HTTP GET /api/v1/foods/2 responded 200 in 407.4198 ms
+2025-03-26 19:23:04.203 +01:00 [INF] Outgoing response: 200
+2025-03-26 19:23:04.208 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/2 - 200 433 application/json; charset=utf-8; x-api-version=1 426.7412ms
+2025-03-26 19:23:09.545 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:23:09.550 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:23:09.552 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:23:09.553 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:23:09.559 +01:00 [ERR] Invalid ID passed to GetSingleFood: ID must be greater than or equal to 1. ID received: -2
+2025-03-26 19:23:09.563 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 6.3531ms
+2025-03-26 19:23:09.566 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:23:09.568 +01:00 [ERR] HTTP GET /api/v1/foods/-2 responded 500 in 16.3850 ms
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 74
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-03-26 19:23:09.593 +01:00 [ERR] An unhandled exception occurred.
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 74
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 21
+2025-03-26 19:23:09.608 +01:00 [INF] Outgoing response: 500
+2025-03-26 19:23:09.610 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 500 null application/json; x-api-version=1 64.4009ms
+2025-03-26 19:23:36.092 +01:00 [INF] Executed DbCommand (22ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-26 19:23:36.229 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-26 19:23:36.231 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-26 19:23:36.307 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-26 19:23:36.309 +01:00 [INF] Hosting environment: Development
+2025-03-26 19:23:36.310 +01:00 [INF] Content root path: C:\Users\Pacov\Desktop\MyFood\MyFood.Api
+2025-03-26 19:23:36.655 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:23:36.755 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 101.2745ms
+2025-03-26 19:23:36.773 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:23:36.773 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:23:36.782 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 8.8729ms
+2025-03-26 19:23:36.803 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 29.6516ms
+2025-03-26 19:23:36.843 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-26 19:23:36.854 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-26 19:23:36.856 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 499 628 image/png 12.9199ms
+2025-03-26 19:23:36.889 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:23:36.900 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 10.6712ms
+2025-03-26 19:23:43.558 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:23:43.565 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:23:43.571 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:23:43.590 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:23:43.660 +01:00 [ERR] An unexpected error occurred in GetSingleFood.
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 70
+2025-03-26 19:23:43.684 +01:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-26 19:23:43.743 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 144.9464ms
+2025-03-26 19:23:43.745 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:23:43.748 +01:00 [ERR] HTTP GET /api/v1/foods/-2 responded 500 in 179.8929 ms
+2025-03-26 19:23:43.752 +01:00 [INF] Outgoing response: 500
+2025-03-26 19:23:43.756 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 500 43 application/json; charset=utf-8; x-api-version=1 196.9628ms
+2025-03-26 19:24:24.632 +01:00 [INF] Executed DbCommand (24ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-26 19:24:24.785 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-26 19:24:24.787 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-26 19:24:24.872 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-26 19:24:24.874 +01:00 [INF] Hosting environment: Development
+2025-03-26 19:24:24.875 +01:00 [INF] Content root path: C:\Users\Pacov\Desktop\MyFood\MyFood.Api
+2025-03-26 19:24:25.087 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:24:25.190 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 103.1804ms
+2025-03-26 19:24:25.212 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:24:25.212 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:24:25.227 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 15.1725ms
+2025-03-26 19:24:25.249 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 37.8547ms
+2025-03-26 19:24:25.324 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:24:25.334 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 10.2639ms
+2025-03-26 19:24:31.456 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-26 19:24:31.465 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 9.0578ms
+2025-03-26 19:24:31.486 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-26 19:24:31.486 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-26 19:24:31.492 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 5.6889ms
+2025-03-26 19:24:31.509 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 23.0452ms
+2025-03-26 19:24:31.556 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-26 19:24:31.565 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-26 19:24:31.568 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 499 628 image/png 11.4957ms
+2025-03-26 19:24:31.589 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-26 19:24:31.596 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 7.2669ms
+2025-03-26 19:24:38.204 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/2 - null null
+2025-03-26 19:24:38.210 +01:00 [INF] Incoming request: GET /api/v1/foods/2
+2025-03-26 19:24:38.215 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:24:38.234 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:24:38.510 +01:00 [INF] Executed DbCommand (10ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-26 19:24:38.542 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-26 19:24:38.610 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 369.9996ms
+2025-03-26 19:24:38.613 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:24:38.617 +01:00 [INF] HTTP GET /api/v1/foods/2 responded 200 in 402.9856 ms
+2025-03-26 19:24:38.620 +01:00 [INF] Outgoing response: 200
+2025-03-26 19:24:38.624 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/2 - 200 433 application/json; charset=utf-8; x-api-version=1 420.2461ms
+2025-03-26 19:25:06.567 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-26 19:25:06.571 +01:00 [INF] Incoming request: GET /api/v1/foods/-2
+2025-03-26 19:25:06.573 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:25:06.575 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-26 19:25:06.581 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 2.9764ms
+2025-03-26 19:25:06.585 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-26 19:25:06.586 +01:00 [ERR] HTTP GET /api/v1/foods/-2 responded 500 in 13.1582 ms
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 64
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-03-26 19:25:06.625 +01:00 [ERR] An unhandled exception occurred.
+System.ArgumentOutOfRangeException: ID must be greater than or equal to 1. (Parameter 'id')
+   at MyFood.Infrastructure.Repositories.FoodSqlRepository.GetSingle(Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Infrastructure\Repositories\FoodSqlRepository.cs:line 23
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 64
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Pacov\Desktop\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 21
+2025-03-26 19:25:06.648 +01:00 [INF] Outgoing response: 500
+2025-03-26 19:25:06.650 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 500 null application/json; x-api-version=1 83.4568ms
