@@ -9,7 +9,10 @@ namespace MyFood.Infrastructure.Repositories
             : base(options)
         {
         }
-        public DbSet<IngredientEntity> Ingredients { get; set; } = null!;
+        // public DbSet<IngredientEntity> Ingredients { get; set; } = null!;
+
+        public DbSet<IngredientEntity> Ingredients { get; set; }
+
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
     }
 }
