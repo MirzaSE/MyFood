@@ -11,6 +11,8 @@ using MyFood.Infrastructure.Helpers;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using MyFood.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +48,9 @@ opt.UseSqlServer(
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
+builder.Host.UseSerilog((context, configuration) =>
+configuration.ReadFrom.Configuration(context.Configuration));
+
 var app = builder.Build();
 
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
@@ -72,7 +77,10 @@ else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+app.UseSerilogRequestLogging();
 app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
 
