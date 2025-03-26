@@ -17,6 +17,11 @@ namespace MyFood.Infrastructure.Repositories
 
         public FoodEntity GetSingle(int id)
         {
+            if (id < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "ID must be greater than or equal to 1.");
+            }
+
             return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
         }
 
