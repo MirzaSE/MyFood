@@ -1,0 +1,562 @@
+2025-03-27 13:37:48.186 +01:00 [INF] Executed DbCommand (192ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 13:37:48.825 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 13:37:48.925 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 13:37:48.928 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 13:37:49.367 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 13:37:49.376 +01:00 [INF] Hosting environment: Development
+2025-03-27 13:37:49.378 +01:00 [INF] Content root path: C:\Users\Lamija\Desktop\MyFood\MyFood.Api
+2025-03-27 13:37:56.702 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger - null null
+2025-03-27 13:37:56.915 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger - 301 0 null 214.1938ms
+2025-03-27 13:37:56.924 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 13:37:57.092 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-27 13:37:57.092 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - null null
+2025-03-27 13:37:57.092 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - null null
+2025-03-27 13:37:57.101 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-27 13:37:57.102 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 177.8052ms
+2025-03-27 13:37:57.123 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-27 13:37:57.140 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 16.7604ms
+2025-03-27 13:37:57.142 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-27 13:37:57.143 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-03-27 13:37:57.159 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 66.7593ms
+2025-03-27 13:37:57.167 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 66.8604ms
+2025-03-27 13:37:57.175 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-03-27 13:37:57.184 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 91.9773ms
+2025-03-27 13:37:57.254 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 153.3825ms
+2025-03-27 13:37:57.575 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 13:37:57.599 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 23.7559ms
+2025-03-27 13:37:57.805 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 13:37:57.826 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 13:37:57.834 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 28.9784ms
+2025-03-27 13:41:44.276 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 13:41:44.300 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:41:44.342 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 13:41:44.571 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 219.538ms
+2025-03-27 13:41:44.575 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:41:44.581 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+System.ArgumentOutOfRangeException: ID is less then zero! (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Lamija\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-03-27 13:41:44.647 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null text/plain; charset=utf-8; x-api-version=1 371.3553ms
+2025-03-27 13:45:04.791 +01:00 [INF] Executed DbCommand (36ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 13:45:04.959 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 13:45:04.991 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 13:45:04.994 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 13:45:05.325 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 13:45:05.441 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 13:45:05.460 +01:00 [INF] Hosting environment: Development
+2025-03-27 13:45:05.462 +01:00 [INF] Content root path: C:\Users\Lamija\Desktop\MyFood\MyFood.Api
+2025-03-27 13:45:05.636 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-27 13:45:05.642 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-27 13:45:05.642 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-27 13:45:05.642 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 319.0239ms
+2025-03-27 13:45:05.657 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 14.9872ms
+2025-03-27 13:45:05.673 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-27 13:45:05.677 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 41.4968ms
+2025-03-27 13:45:05.694 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 52.301ms
+2025-03-27 13:45:05.807 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 13:45:05.830 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 13:45:05.856 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 13:45:05.858 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 29.3029ms
+2025-03-27 13:45:05.873 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 66.6526ms
+2025-03-27 13:45:14.376 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 13:45:14.391 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 15.5982ms
+2025-03-27 13:45:14.421 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-27 13:45:14.421 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-27 13:45:14.435 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 13.9136ms
+2025-03-27 13:45:14.448 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 27.1897ms
+2025-03-27 13:45:14.520 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 13:45:14.534 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 13:45:14.544 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 13:45:14.549 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 14.4676ms
+2025-03-27 13:45:14.565 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 44.3841ms
+2025-03-27 13:45:25.065 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 13:45:25.089 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:45:25.127 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 13:45:25.268 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 125.776ms
+2025-03-27 13:45:25.273 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:45:25.280 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+System.ArgumentOutOfRangeException: ID must be greater than 0! (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Lamija\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-03-27 13:45:25.340 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null text/plain; charset=utf-8; x-api-version=1 274.8338ms
+2025-03-27 13:45:57.227 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - null null
+2025-03-27 13:45:57.234 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:45:57.235 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 13:45:57.242 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 3.5761ms
+2025-03-27 13:45:57.247 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:45:57.250 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+System.ArgumentOutOfRangeException: ID must be greater than 0! (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Lamija\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-03-27 13:45:57.270 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-2 - 500 null text/plain; charset=utf-8; x-api-version=1 42.8238ms
+2025-03-27 13:51:34.400 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 13:51:34.460 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-27 13:51:34.414 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 13.8298ms
+2025-03-27 13:51:34.460 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-27 13:51:34.470 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 9.9836ms
+2025-03-27 13:51:34.493 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 32.9405ms
+2025-03-27 13:51:34.556 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 13:51:34.575 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 13:51:34.581 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 13:51:34.590 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 14.9878ms
+2025-03-27 13:51:34.599 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 42.7284ms
+2025-03-27 13:51:42.877 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 13:51:42.887 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:51:42.889 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 13:51:42.900 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 5.7116ms
+2025-03-27 13:51:42.906 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:51:42.909 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+System.ArgumentOutOfRangeException: ID must be greater than 0! (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Lamija\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-03-27 13:51:42.929 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null text/plain; charset=utf-8; x-api-version=1 51.4626ms
+2025-03-27 13:52:04.822 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 13:52:04.835 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 12.3876ms
+2025-03-27 13:52:04.856 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-27 13:52:04.856 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-27 13:52:04.866 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 10.2827ms
+2025-03-27 13:52:04.875 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 19.4738ms
+2025-03-27 13:52:04.989 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 13:52:04.991 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 13:52:05.010 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 13:52:05.014 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 22.7327ms
+2025-03-27 13:52:05.042 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 53.15ms
+2025-03-27 13:52:14.046 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 13:52:14.053 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:52:14.056 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 13:52:14.060 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 0.7161ms
+2025-03-27 13:52:14.063 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:52:14.067 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+System.ArgumentOutOfRangeException: ID must be greater than 0! (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Lamija\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-03-27 13:52:14.087 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null text/plain; charset=utf-8; x-api-version=1 40.9938ms
+2025-03-27 13:54:38.829 +01:00 [INF] Executed DbCommand (26ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 13:54:38.967 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 13:54:39.002 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 13:54:39.006 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 13:54:39.145 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 13:54:39.148 +01:00 [INF] Hosting environment: Development
+2025-03-27 13:54:39.149 +01:00 [INF] Content root path: C:\Users\Lamija\Desktop\MyFood\MyFood.Api
+2025-03-27 13:54:39.163 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 13:54:39.326 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 163.5132ms
+2025-03-27 13:54:39.335 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-27 13:54:39.335 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-27 13:54:39.348 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 12.421ms
+2025-03-27 13:54:39.375 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 40.4042ms
+2025-03-27 13:54:39.472 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 13:54:39.483 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 13:54:39.505 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 31.5744ms
+2025-03-27 13:54:39.507 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 13:54:39.514 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 31.3153ms
+2025-03-27 13:54:55.431 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 13:54:55.444 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:54:55.466 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 13:54:55.557 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 82.552ms
+2025-03-27 13:54:55.560 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:54:55.562 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+System.ArgumentOutOfRangeException: ID must be greater than 0! (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Lamija\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-03-27 13:54:55.584 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null text/plain; charset=utf-8; x-api-version=1 153.2009ms
+2025-03-27 13:57:43.396 +01:00 [INF] Executed DbCommand (29ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 13:57:43.564 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 13:57:43.598 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 13:57:43.601 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 13:57:43.799 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 13:57:43.801 +01:00 [INF] Hosting environment: Development
+2025-03-27 13:57:43.802 +01:00 [INF] Content root path: C:\Users\Lamija\Desktop\MyFood\MyFood.Api
+2025-03-27 13:57:44.213 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger - null null
+2025-03-27 13:57:44.302 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger - 301 0 null 90.4723ms
+2025-03-27 13:57:44.313 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 13:57:44.452 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 139.4825ms
+2025-03-27 13:57:44.483 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-27 13:57:44.483 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - null null
+2025-03-27 13:57:44.483 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - null null
+2025-03-27 13:57:44.484 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-27 13:57:44.587 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-27 13:57:44.634 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-27 13:57:44.670 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-03-27 13:57:44.730 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 247.0259ms
+2025-03-27 13:57:44.715 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-03-27 13:57:44.728 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 244.8518ms
+2025-03-27 13:57:44.713 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 228.6658ms
+2025-03-27 13:57:44.737 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 253.7815ms
+2025-03-27 13:57:44.780 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 192.9619ms
+2025-03-27 13:57:45.017 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 13:57:45.082 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 64.3548ms
+2025-03-27 13:57:53.033 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 13:57:53.051 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:57:53.071 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 13:57:53.168 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 88.5384ms
+2025-03-27 13:57:53.172 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 13:57:53.177 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+System.ArgumentOutOfRangeException: ID must be greater than 0! (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Lamija\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-03-27 13:57:53.212 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null text/plain; charset=utf-8; x-api-version=1 178.2411ms
+2025-03-27 14:10:38.252 +01:00 [INF] Executed DbCommand (45ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 14:10:38.398 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 14:10:38.436 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 14:10:38.439 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 14:10:38.541 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 14:10:38.542 +01:00 [INF] Hosting environment: Development
+2025-03-27 14:10:38.543 +01:00 [INF] Content root path: C:\Users\Lamija\Desktop\MyFood\MyFood.Api
+2025-03-27 14:10:39.208 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger - null null
+2025-03-27 14:10:39.312 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger - 301 0 null 105.5368ms
+2025-03-27 14:10:39.321 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 14:10:39.417 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 95.3122ms
+2025-03-27 14:10:39.439 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-27 14:10:39.440 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - null null
+2025-03-27 14:10:39.440 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - null null
+2025-03-27 14:10:39.440 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-27 14:10:39.461 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-27 14:10:39.540 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-27 14:10:39.546 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-03-27 14:10:39.559 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-03-27 14:10:39.576 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 135.7814ms
+2025-03-27 14:10:39.591 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 151.7538ms
+2025-03-27 14:10:39.594 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 153.7002ms
+2025-03-27 14:10:39.595 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 154.4644ms
+2025-03-27 14:10:39.639 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 177.7866ms
+2025-03-27 14:10:39.905 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 14:10:39.919 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 14.2221ms
+2025-03-27 14:10:47.630 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 14:10:47.647 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 14:10:47.675 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 14:10:47.769 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 85.9834ms
+2025-03-27 14:10:47.772 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 14:10:47.774 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+System.ArgumentOutOfRangeException: ID must be greater than 0! (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Lamija\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-03-27 14:10:47.809 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null text/plain; charset=utf-8; x-api-version=1 178.6ms
+2025-03-27 14:15:49.529 +01:00 [INF] Executed DbCommand (28ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 14:15:49.676 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 14:15:49.719 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 14:15:49.722 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 14:15:49.964 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 14:15:49.966 +01:00 [INF] Hosting environment: Development
+2025-03-27 14:15:49.968 +01:00 [INF] Content root path: C:\Users\Lamija\Desktop\MyFood\MyFood.Api
+2025-03-27 14:15:50.551 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger - null null
+2025-03-27 14:15:50.649 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger - 301 0 null 100.1759ms
+2025-03-27 14:15:50.653 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 14:15:50.749 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 96.3034ms
+2025-03-27 14:15:50.764 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-27 14:15:50.768 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - null null
+2025-03-27 14:15:50.769 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - null null
+2025-03-27 14:15:50.783 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-27 14:15:50.820 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-27 14:15:50.853 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-27 14:15:50.884 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 101.5102ms
+2025-03-27 14:15:50.892 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 129.6524ms
+2025-03-27 14:15:50.917 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-03-27 14:15:50.939 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-03-27 14:15:50.949 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 180.0825ms
+2025-03-27 14:15:50.957 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 188.1046ms
+2025-03-27 14:15:50.981 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 161.0447ms
+2025-03-27 14:15:51.287 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 14:15:51.322 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 34.1835ms
+2025-03-27 14:15:58.917 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 14:15:58.933 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 14:15:58.955 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 14:15:59.054 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 88.3465ms
+2025-03-27 14:15:59.057 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 14:15:59.068 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+System.ArgumentOutOfRangeException: ID must be greater than 0! (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Lamija\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-03-27 14:15:59.105 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null text/plain; charset=utf-8; x-api-version=1 188.6035ms
+2025-03-27 14:23:32.126 +01:00 [INF] Executed DbCommand (26ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 14:23:32.267 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 14:23:32.301 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 14:23:32.304 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 14:23:32.421 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 14:23:32.429 +01:00 [INF] Hosting environment: Development
+2025-03-27 14:23:32.433 +01:00 [INF] Content root path: C:\Users\Lamija\Desktop\MyFood\MyFood.Api
+2025-03-27 14:23:32.713 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger - null null
+2025-03-27 14:23:32.817 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger - 301 0 null 107.5075ms
+2025-03-27 14:23:32.822 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 14:23:32.890 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 67.9823ms
+2025-03-27 14:23:32.911 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - null null
+2025-03-27 14:23:32.911 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-27 14:23:32.912 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - null null
+2025-03-27 14:23:32.912 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-27 14:23:32.927 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/_vs/browserLink - null null
+2025-03-27 14:23:32.937 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_framework/aspnetcore-browser-refresh.js - 200 13756 application/javascript; charset=utf-8 24.8367ms
+2025-03-27 14:23:32.983 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-27 14:23:33.001 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-03-27 14:23:33.028 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-03-27 14:23:33.042 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 130.6241ms
+2025-03-27 14:23:33.046 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 134.5922ms
+2025-03-27 14:23:33.048 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 136.7917ms
+2025-03-27 14:23:33.073 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/_vs/browserLink - 200 null text/javascript; charset=UTF-8 145.9726ms
+2025-03-27 14:23:33.281 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 14:23:33.292 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 11.2421ms
+2025-03-27 14:23:40.009 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 14:23:40.022 +01:00 [INF] Incoming request: GET/api/v1/foods/0
+2025-03-27 14:23:40.030 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 14:23:40.050 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 14:23:40.142 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 85.1047ms
+2025-03-27 14:23:40.146 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 14:23:40.148 +01:00 [ERR] An unhandled exception occurred.
+System.ArgumentOutOfRangeException: ID must be greater than 0! (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Lamija\Desktop\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Lamija\Desktop\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 20
+2025-03-27 14:23:40.183 +01:00 [INF] Outgoing response: 500
+2025-03-27 14:23:40.186 +01:00 [ERR] HTTP GET /api/v1/foods/0 responded 500 in 163.8017 ms
+2025-03-27 14:23:40.191 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null application/json; charset=utf-8; x-api-version=1 182.56ms
