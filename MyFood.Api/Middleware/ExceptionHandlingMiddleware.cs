@@ -41,4 +41,5 @@ namespace MyFood.Api.Middleware
             return context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
     }
+
 }
