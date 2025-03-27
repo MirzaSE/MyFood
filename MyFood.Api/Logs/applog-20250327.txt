@@ -1,0 +1,87 @@
+2025-03-27 18:47:28.094 +01:00 [INF] Executed DbCommand (70ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 18:47:28.311 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 18:47:28.313 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 18:47:28.318 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 18:47:28.320 +01:00 [INF] Hosting environment: Development
+2025-03-27 18:47:28.320 +01:00 [INF] Content root path: C:\Users\aliju\Desktop\MyFood\MyFood.Api
+2025-03-27 18:47:28.592 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger - null null
+2025-03-27 18:47:28.629 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger - 301 0 null 37.4828ms
+2025-03-27 18:47:28.637 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 18:47:28.798 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 160.5746ms
+2025-03-27 18:47:28.833 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-27 18:47:28.833 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - null null
+2025-03-27 18:47:28.833 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - null null
+2025-03-27 18:47:28.939 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-27 18:47:28.945 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 111.6665ms
+2025-03-27 18:47:28.957 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-03-27 18:47:28.979 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 145.2782ms
+2025-03-27 18:47:28.981 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-03-27 18:47:29.033 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 199.1399ms
+2025-03-27 18:47:29.310 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 18:47:29.337 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 18:47:29.348 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 18:47:29.352 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 14.959ms
+2025-03-27 18:47:29.513 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 202.6229ms
+2025-03-27 18:48:18.617 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods - null null
+2025-03-27 18:48:18.627 +01:00 [INF] Incoming request: GET /api/v1/foods
+2025-03-27 18:48:18.634 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api)'
+2025-03-27 18:48:18.666 +01:00 [INF] Route matched with {action = "GetAllFoods", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetAllFoods(Microsoft.AspNetCore.Mvc.ApiVersion, MyFood.Application.QueryParameters) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 18:48:18.805 +01:00 [INF] Executing action method MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api) - Validation state: "Valid"
+2025-03-27 18:48:19.208 +01:00 [INF] Executed DbCommand (9ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+ORDER BY [f].[Name]
+OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+2025-03-27 18:48:19.290 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [FoodItems] AS [f]
+2025-03-27 18:48:19.370 +01:00 [INF] Executed action method MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 558.9353ms.
+2025-03-27 18:48:19.381 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`2[[System.Collections.Generic.IEnumerable`1[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.List`1[[MyFood.Application.LinkDto, MyFood.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-27 18:48:19.583 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api) in 909.2363ms
+2025-03-27 18:48:19.587 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api)'
+2025-03-27 18:48:19.589 +01:00 [INF] Outgoing response: 200
+2025-03-27 18:48:19.593 +01:00 [INF] HTTP GET /api/v1/foods responded 200 in 964.7548 ms
+2025-03-27 18:48:19.608 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods - 200 7454 application/json; charset=utf-8; x-api-version=1 990.9054ms
+2025-03-27 18:49:57.317 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/3 - null null
+2025-03-27 18:49:57.324 +01:00 [INF] Incoming request: GET /api/v1/foods/3
+2025-03-27 18:49:57.325 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 18:49:57.358 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 18:49:57.363 +01:00 [INF] Executing action method MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) - Validation state: "Valid"
+2025-03-27 18:49:57.417 +01:00 [INF] Executed DbCommand (15ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 18:49:57.429 +01:00 [INF] Executed action method MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 65.363ms.
+2025-03-27 18:49:57.435 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-27 18:49:57.438 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 77.4957ms
+2025-03-27 18:49:57.439 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 18:49:57.441 +01:00 [INF] Outgoing response: 200
+2025-03-27 18:49:57.442 +01:00 [INF] HTTP GET /api/v1/foods/3 responded 200 in 117.8831 ms
+2025-03-27 18:49:57.443 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/3 - 200 436 application/json; charset=utf-8; x-api-version=1 126.1301ms
+2025-03-27 18:50:34.556 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/-1 - null null
+2025-03-27 18:50:34.564 +01:00 [INF] Incoming request: GET /api/v1/foods/-1
+2025-03-27 18:50:34.569 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 18:50:34.572 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 18:50:34.576 +01:00 [INF] Executing action method MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) - Validation state: "Valid"
+2025-03-27 18:50:34.598 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 18:50:34.602 +01:00 [INF] Executed action method MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api), returned result Microsoft.AspNetCore.Mvc.NotFoundResult in 20.6129ms.
+2025-03-27 18:50:34.604 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2025-03-27 18:50:34.618 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 43.9455ms
+2025-03-27 18:50:34.620 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 18:50:34.622 +01:00 [INF] Outgoing response: 404
+2025-03-27 18:50:34.623 +01:00 [INF] HTTP GET /api/v1/foods/-1 responded 404 in 58.6248 ms
+2025-03-27 18:50:34.624 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/-1 - 404 162 application/problem+json; charset=utf-8; x-api-version=1 68.171ms
