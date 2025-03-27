@@ -1,0 +1,1024 @@
+2025-03-27 04:42:13.586 +01:00 [INF] Starting MyFood application
+2025-03-27 04:42:35.450 +01:00 [ERR] An error occurred using the connection to database 'MyFood_Database' on server 'localhost,1433'.
+2025-03-27 04:42:35.528 +01:00 [ERR] An exception occurred in the database while saving changes for context type 'MyFood.Infrastructure.Repositories.FoodDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - No connection could be made because the target machine actively refused it.)
+ ---> System.ComponentModel.Win32Exception (10061): No connection could be made because the target machine actively refused it.
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, Boolean ignoreSniOpenTimeout, Int64 timerExpire, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open(SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open()
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:10061,State:0,Class:20
+Microsoft.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - No connection could be made because the target machine actively refused it.)
+ ---> System.ComponentModel.Win32Exception (10061): No connection could be made because the target machine actively refused it.
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, Boolean ignoreSniOpenTimeout, Int64 timerExpire, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open(SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open()
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:10061,State:0,Class:20
+2025-03-27 04:42:35.696 +01:00 [FTL] Application terminated unexpectedly
+Microsoft.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - No connection could be made because the target machine actively refused it.)
+ ---> System.ComponentModel.Win32Exception (10061): No connection could be made because the target machine actively refused it.
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, Boolean ignoreSniOpenTimeout, Int64 timerExpire, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open(SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open()
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges()
+   at MyFood.Api.Services.SeedDataService.Initialize(FoodDbContext context) in C:\Users\Korisnik\MyFood\MyFood.Infrastructure\SeedDataService.cs:line 15
+   at MyFood.Infrastructure.Helpers.SeedDataExtension.SeedData(WebApplication app) in C:\Users\Korisnik\MyFood\MyFood.Infrastructure\Helpers\SeedDataExtension.cs:line 17
+   at Program.<Main>$(String[] args) in C:\Users\Korisnik\MyFood\MyFood.Api\Program.cs:line 94
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:10061,State:0,Class:20
+2025-03-27 04:43:31.059 +01:00 [INF] Starting MyFood application
+2025-03-27 04:43:51.586 +01:00 [ERR] An error occurred using the connection to database 'MyFood_Database' on server 'localhost,1433'.
+2025-03-27 04:43:51.651 +01:00 [ERR] An exception occurred in the database while saving changes for context type 'MyFood.Infrastructure.Repositories.FoodDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - No connection could be made because the target machine actively refused it.)
+ ---> System.ComponentModel.Win32Exception (10061): No connection could be made because the target machine actively refused it.
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, Boolean ignoreSniOpenTimeout, Int64 timerExpire, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open(SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open()
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:10061,State:0,Class:20
+Microsoft.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - No connection could be made because the target machine actively refused it.)
+ ---> System.ComponentModel.Win32Exception (10061): No connection could be made because the target machine actively refused it.
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, Boolean ignoreSniOpenTimeout, Int64 timerExpire, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open(SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open()
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:10061,State:0,Class:20
+2025-03-27 04:43:51.746 +01:00 [FTL] Application terminated unexpectedly
+Microsoft.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - No connection could be made because the target machine actively refused it.)
+ ---> System.ComponentModel.Win32Exception (10061): No connection could be made because the target machine actively refused it.
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, Boolean ignoreSniOpenTimeout, Int64 timerExpire, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open(SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open()
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges()
+   at MyFood.Api.Services.SeedDataService.Initialize(FoodDbContext context) in C:\Users\Korisnik\MyFood\MyFood.Infrastructure\SeedDataService.cs:line 15
+   at MyFood.Infrastructure.Helpers.SeedDataExtension.SeedData(WebApplication app) in C:\Users\Korisnik\MyFood\MyFood.Infrastructure\Helpers\SeedDataExtension.cs:line 17
+   at Program.<Main>$(String[] args) in C:\Users\Korisnik\MyFood\MyFood.Api\Program.cs:line 94
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:10061,State:0,Class:20
+2025-03-27 04:45:19.260 +01:00 [INF] Starting MyFood application
+2025-03-27 04:45:21.498 +01:00 [INF] Executed DbCommand (80ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 04:45:21.771 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 04:45:21.858 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 04:45:21.865 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 04:45:21.875 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 04:45:21.880 +01:00 [INF] Hosting environment: Development
+2025-03-27 04:45:21.885 +01:00 [INF] Content root path: C:\Users\Korisnik\MyFood\MyFood.Api
+2025-03-27 05:06:42.329 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 05:06:42.416 +01:00 [INF] Incoming request: GET /swagger/index.html
+2025-03-27 05:06:42.705 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:06:42.743 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - null null
+2025-03-27 05:06:42.743 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - null null
+2025-03-27 05:06:42.743 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-27 05:06:42.724 +01:00 [INF] HTTP GET /swagger/index.html responded 200 in 305.1594 ms
+2025-03-27 05:06:42.777 +01:00 [INF] Incoming request: GET /swagger/swagger-ui-standalone-preset.js
+2025-03-27 05:06:42.803 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 478.1962ms
+2025-03-27 05:06:42.790 +01:00 [INF] Incoming request: GET /swagger/swagger-ui.css
+2025-03-27 05:06:42.785 +01:00 [INF] Incoming request: GET /swagger/swagger-ui-bundle.js
+2025-03-27 05:06:42.880 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-27 05:06:42.895 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-03-27 05:06:42.943 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-03-27 05:06:42.958 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:06:42.979 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:06:42.975 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:06:42.992 +01:00 [INF] HTTP GET /swagger/swagger-ui.css responded 200 in 201.9206 ms
+2025-03-27 05:06:42.997 +01:00 [INF] HTTP GET /swagger/swagger-ui-bundle.js responded 200 in 211.6637 ms
+2025-03-27 05:06:43.003 +01:00 [INF] HTTP GET /swagger/swagger-ui-standalone-preset.js responded 200 in 226.3360 ms
+2025-03-27 05:06:43.027 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 283.7981ms
+2025-03-27 05:06:43.031 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 288.369ms
+2025-03-27 05:06:43.048 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 304.6537ms
+2025-03-27 05:06:43.419 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 05:06:43.439 +01:00 [INF] Incoming request: GET /swagger/v1/swagger.json
+2025-03-27 05:06:43.489 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 05:06:43.498 +01:00 [INF] Incoming request: GET /swagger/favicon-32x32.png
+2025-03-27 05:06:43.507 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 05:06:43.522 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:06:43.531 +01:00 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 32.9732 ms
+2025-03-27 05:06:43.539 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 50.2536ms
+2025-03-27 05:06:43.743 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:06:43.752 +01:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 313.4785 ms
+2025-03-27 05:06:43.763 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 343.7187ms
+2025-03-27 05:06:58.476 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/1 - null null
+2025-03-27 05:06:58.497 +01:00 [INF] Incoming request: GET /api/v1/foods/1
+2025-03-27 05:06:58.512 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:06:58.575 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 05:06:59.570 +01:00 [INF] Executed DbCommand (18ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 05:06:59.673 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-27 05:06:59.962 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 1367.9413ms
+2025-03-27 05:06:59.977 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:06:59.989 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:06:59.992 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 1495.0059 ms
+2025-03-27 05:07:00.015 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/1 - 200 434 application/json; charset=utf-8; x-api-version=1 1539.5099ms
+2025-03-27 05:09:29.022 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 05:09:29.042 +01:00 [INF] Incoming request: GET /api/v1/foods/0
+2025-03-27 05:09:29.055 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:09:29.069 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 05:09:29.093 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 9.1586ms
+2025-03-27 05:09:29.105 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:09:29.115 +01:00 [ERR] HTTP GET /api/v1/foods/0 responded 500 in 72.9477 ms
+System.ArgumentOutOfRangeException: The id must be greater than 1. (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Korisnik\MyFood\MyFood.Api\Middleware\RequestLoggingMiddleware.cs:line 24
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-03-27 05:09:29.207 +01:00 [ERR] An unhandled exception occurred
+System.ArgumentOutOfRangeException: The id must be greater than 1. (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 66
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Korisnik\MyFood\MyFood.Api\Middleware\RequestLoggingMiddleware.cs:line 24
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Korisnik\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 27
+2025-03-27 05:09:29.281 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null application/json; x-api-version=1 258.3395ms
+2025-03-27 05:20:21.062 +01:00 [INF] Application is shutting down...
+2025-03-27 05:20:57.235 +01:00 [INF] Starting MyFood application
+2025-03-27 05:20:58.987 +01:00 [INF] Executed DbCommand (41ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 05:20:59.241 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 05:20:59.319 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 05:20:59.331 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 05:20:59.347 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 05:20:59.360 +01:00 [INF] Hosting environment: Development
+2025-03-27 05:20:59.368 +01:00 [INF] Content root path: C:\Users\Korisnik\MyFood\MyFood.Api
+2025-03-27 05:20:59.664 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 05:20:59.706 +01:00 [INF] Incoming request: GET /swagger/index.html
+2025-03-27 05:20:59.889 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:20:59.902 +01:00 [INF] HTTP GET /swagger/index.html responded 200 in 194.0527 ms
+2025-03-27 05:20:59.925 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 260.2554ms
+2025-03-27 05:20:59.931 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-27 05:20:59.938 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - null null
+2025-03-27 05:20:59.948 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - null null
+2025-03-27 05:20:59.964 +01:00 [INF] Incoming request: GET /swagger/swagger-ui.css
+2025-03-27 05:20:59.977 +01:00 [INF] Incoming request: GET /swagger/swagger-ui-bundle.js
+2025-03-27 05:20:59.984 +01:00 [INF] Incoming request: GET /swagger/swagger-ui-standalone-preset.js
+2025-03-27 05:21:00.047 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-27 05:21:00.048 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-03-27 05:21:00.051 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-03-27 05:21:00.054 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:21:00.064 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:21:00.070 +01:00 [INF] HTTP GET /swagger/swagger-ui.css responded 200 in 106.5593 ms
+2025-03-27 05:21:00.068 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:21:00.077 +01:00 [INF] HTTP GET /swagger/swagger-ui-standalone-preset.js responded 200 in 93.0981 ms
+2025-03-27 05:21:00.095 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 163.7595ms
+2025-03-27 05:21:00.096 +01:00 [INF] HTTP GET /swagger/swagger-ui-bundle.js responded 200 in 118.6669 ms
+2025-03-27 05:21:00.099 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 150.762ms
+2025-03-27 05:21:00.145 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 206.6919ms
+2025-03-27 05:21:00.631 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 05:21:00.645 +01:00 [INF] Incoming request: GET /swagger/v1/swagger.json
+2025-03-27 05:21:00.676 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 05:21:00.691 +01:00 [INF] Incoming request: GET /swagger/favicon-32x32.png
+2025-03-27 05:21:00.714 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 05:21:00.731 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:21:00.767 +01:00 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 75.3418 ms
+2025-03-27 05:21:00.794 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 117.2196ms
+2025-03-27 05:21:00.976 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:21:00.979 +01:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 334.1338 ms
+2025-03-27 05:21:00.986 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 354.9271ms
+2025-03-27 05:21:25.499 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/1 - null null
+2025-03-27 05:21:25.530 +01:00 [INF] Incoming request: GET /api/v1/foods/1
+2025-03-27 05:21:25.549 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:21:25.606 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 05:21:26.468 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 05:21:26.554 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-27 05:21:26.755 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 1128.9482ms
+2025-03-27 05:21:26.763 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:21:26.773 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:21:26.778 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 1247.4800 ms
+2025-03-27 05:21:26.800 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/1 - 200 434 application/json; charset=utf-8; x-api-version=1 1301.2075ms
+2025-03-27 05:23:37.497 +01:00 [INF] Starting MyFood application
+2025-03-27 05:23:40.472 +01:00 [INF] Executed DbCommand (53ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 05:23:40.745 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 05:23:40.886 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 05:23:40.898 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 05:23:40.913 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 05:23:40.924 +01:00 [INF] Hosting environment: Development
+2025-03-27 05:23:40.933 +01:00 [INF] Content root path: C:\Users\Korisnik\MyFood\MyFood.Api
+2025-03-27 05:23:55.597 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/ - null null
+2025-03-27 05:23:55.679 +01:00 [INF] Incoming request: GET /
+2025-03-27 05:23:55.704 +01:00 [INF] Outgoing response: 404
+2025-03-27 05:23:55.711 +01:00 [INF] HTTP GET / responded 404 in 35.2061 ms
+2025-03-27 05:23:55.723 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/ - 404 0 null 127.4478ms
+2025-03-27 05:23:55.932 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7124/, Response status code: 404
+2025-03-27 05:23:57.939 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/ - null null
+2025-03-27 05:23:57.954 +01:00 [INF] Incoming request: GET /
+2025-03-27 05:23:57.964 +01:00 [INF] Outgoing response: 404
+2025-03-27 05:23:57.971 +01:00 [INF] HTTP GET / responded 404 in 17.2017 ms
+2025-03-27 05:23:57.987 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/ - 404 0 null 48.4777ms
+2025-03-27 05:23:58.012 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7124/, Response status code: 404
+2025-03-27 05:24:29.156 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger - null null
+2025-03-27 05:24:29.210 +01:00 [INF] Incoming request: GET /swagger
+2025-03-27 05:24:29.228 +01:00 [INF] Outgoing response: 301
+2025-03-27 05:24:29.252 +01:00 [INF] HTTP GET /swagger responded 301 in 41.8825 ms
+2025-03-27 05:24:29.277 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger - 301 0 null 120.5178ms
+2025-03-27 05:24:29.285 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 05:24:29.312 +01:00 [INF] Incoming request: GET /swagger/index.html
+2025-03-27 05:24:29.612 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:24:29.656 +01:00 [INF] HTTP GET /swagger/index.html responded 200 in 344.8100 ms
+2025-03-27 05:24:29.670 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-27 05:24:29.688 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 402.8892ms
+2025-03-27 05:24:29.695 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - null null
+2025-03-27 05:24:29.698 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - null null
+2025-03-27 05:24:29.703 +01:00 [INF] Incoming request: GET /swagger/swagger-ui.css
+2025-03-27 05:24:29.744 +01:00 [INF] Incoming request: GET /swagger/swagger-ui-bundle.js
+2025-03-27 05:24:29.754 +01:00 [INF] Incoming request: GET /swagger/swagger-ui-standalone-preset.js
+2025-03-27 05:24:29.866 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-03-27 05:24:29.866 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-27 05:24:29.884 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-03-27 05:24:29.894 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:24:29.905 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:24:29.910 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:24:29.919 +01:00 [INF] HTTP GET /swagger/swagger-ui-standalone-preset.js responded 200 in 165.2056 ms
+2025-03-27 05:24:29.924 +01:00 [INF] HTTP GET /swagger/swagger-ui.css responded 200 in 220.9915 ms
+2025-03-27 05:24:29.930 +01:00 [INF] HTTP GET /swagger/swagger-ui-bundle.js responded 200 in 185.5884 ms
+2025-03-27 05:24:29.945 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 247.3217ms
+2025-03-27 05:24:29.957 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 287.1921ms
+2025-03-27 05:24:29.974 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 278.8597ms
+2025-03-27 05:24:30.282 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 05:24:30.292 +01:00 [INF] Incoming request: GET /swagger/v1/swagger.json
+2025-03-27 05:24:30.580 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:24:30.586 +01:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 293.8336 ms
+2025-03-27 05:24:30.603 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 320.2813ms
+2025-03-27 05:24:48.082 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/1 - null null
+2025-03-27 05:24:48.108 +01:00 [INF] Incoming request: GET /api/v1/foods/1
+2025-03-27 05:24:48.119 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:24:48.179 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 05:24:49.014 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 05:24:49.149 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-27 05:24:49.405 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 1204.7984ms
+2025-03-27 05:24:49.415 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:24:49.423 +01:00 [INF] Outgoing response: 200
+2025-03-27 05:24:49.432 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 1323.9400 ms
+2025-03-27 05:24:49.455 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/1 - 200 434 application/json; charset=utf-8; x-api-version=1 1373.2158ms
+2025-03-27 05:36:35.285 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 05:36:35.302 +01:00 [INF] Incoming request: GET /api/v1/foods/0
+2025-03-27 05:36:35.313 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:36:35.326 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 05:36:35.348 +01:00 [WRN] Invalid ID requested: 0
+2025-03-27 05:36:35.358 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-27 05:36:35.376 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 32.4851ms
+2025-03-27 05:36:35.384 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:36:35.392 +01:00 [INF] Outgoing response: 400
+2025-03-27 05:36:35.398 +01:00 [INF] HTTP GET /api/v1/foods/0 responded 400 in 95.9759 ms
+2025-03-27 05:36:35.418 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 400 39 application/json; charset=utf-8; x-api-version=1 132.5788ms
+2025-03-27 05:44:18.608 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 05:44:18.625 +01:00 [INF] Incoming request: GET /api/v1/foods/0
+2025-03-27 05:44:18.639 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:44:18.652 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 05:44:18.683 +01:00 [WRN] Invalid ID requested: 0
+2025-03-27 05:44:18.690 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-27 05:44:18.702 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 32.2771ms
+2025-03-27 05:44:18.710 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:44:18.718 +01:00 [INF] Outgoing response: 400
+2025-03-27 05:44:18.724 +01:00 [INF] HTTP GET /api/v1/foods/0 responded 400 in 98.6793 ms
+2025-03-27 05:44:18.737 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 400 39 application/json; charset=utf-8; x-api-version=1 129.3857ms
+2025-03-27 05:45:10.118 +01:00 [INF] Application is shutting down...
+2025-03-27 05:45:52.708 +01:00 [INF] Starting MyFood application
+2025-03-27 05:45:54.426 +01:00 [INF] Executed DbCommand (38ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 05:45:54.618 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 05:45:54.702 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 05:45:54.711 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 05:45:54.721 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 05:45:54.728 +01:00 [INF] Hosting environment: Development
+2025-03-27 05:45:54.736 +01:00 [INF] Content root path: C:\Users\Korisnik\MyFood\MyFood.Api
+2025-03-27 05:46:01.750 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 05:46:01.956 +01:00 [INF] HTTP GET /swagger/index.html responded 200 in 158.1325 ms
+2025-03-27 05:46:01.977 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 229.7979ms
+2025-03-27 05:46:01.980 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2025-03-27 05:46:02.027 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-27 05:46:02.036 +01:00 [INF] HTTP GET /swagger/swagger-ui.css responded 200 in 32.8061 ms
+2025-03-27 05:46:02.044 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 63.6105ms
+2025-03-27 05:46:02.176 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 05:46:02.177 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 05:46:02.210 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 05:46:02.222 +01:00 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 13.4613 ms
+2025-03-27 05:46:02.244 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 67.0132ms
+2025-03-27 05:46:02.505 +01:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 300.1172 ms
+2025-03-27 05:46:02.517 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 340.0361ms
+2025-03-27 05:46:25.958 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/1 - null null
+2025-03-27 05:46:25.988 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:46:26.024 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 05:46:26.568 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 05:46:26.638 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-27 05:46:26.771 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 731.8339ms
+2025-03-27 05:46:26.786 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:46:26.797 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 812.7197 ms
+2025-03-27 05:46:26.822 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/1 - 200 434 application/json; charset=utf-8; x-api-version=1 864.0139ms
+2025-03-27 05:48:01.748 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 05:48:01.778 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:48:01.793 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 05:48:01.822 +01:00 [WRN] Invalid ID requested: 0
+2025-03-27 05:48:01.830 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-27 05:48:01.855 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 41.4836ms
+2025-03-27 05:48:01.870 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 05:48:01.878 +01:00 [INF] HTTP GET /api/v1/foods/0 responded 400 in 100.3782 ms
+2025-03-27 05:48:01.894 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 400 39 application/json; charset=utf-8; x-api-version=1 146.4169ms
+2025-03-27 05:52:09.235 +01:00 [INF] Application is shutting down...
+2025-03-27 05:55:38.265 +01:00 [INF] Starting MyFood application
+2025-03-27 05:55:38.537 +01:00 [FTL] Application terminated unexpectedly
+System.IO.InvalidDataException: Failed to load configuration from file 'C:\Users\Korisnik\MyFood\MyFood.Api\appsettings.json'.
+ ---> System.FormatException: Could not parse the JSON file.
+ ---> System.Text.Json.JsonReaderException: Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. LineNumber: 33 | BytePositionInLine: 3.
+   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+   at System.Text.Json.Utf8JsonReader.Read()
+   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)
+   at System.Text.Json.JsonDocument.Parse(String json, JsonDocumentOptions options)
+   at Microsoft.Extensions.Configuration.Json.JsonConfigurationFileParser.ParseStream(Stream input)
+   at Microsoft.Extensions.Configuration.Json.JsonConfigurationProvider.Load(Stream stream)
+   --- End of inner exception stack trace ---
+   at Microsoft.Extensions.Configuration.Json.JsonConfigurationProvider.Load(Stream stream)
+   at Microsoft.Extensions.Configuration.FileConfigurationProvider.Load(Boolean reload)
+   --- End of inner exception stack trace ---
+   at Microsoft.Extensions.Configuration.FileConfigurationProvider.Load(Boolean reload)
+   at Microsoft.Extensions.Configuration.ConfigurationManager.AddSource(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.ConfigurationManager.Microsoft.Extensions.Configuration.IConfigurationBuilder.Add(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.ConfigurationExtensions.Add[TSource](IConfigurationBuilder builder, Action`1 configureSource)
+   at Microsoft.Extensions.Configuration.JsonConfigurationExtensions.AddJsonFile(IConfigurationBuilder builder, String path, Boolean optional, Boolean reloadOnChange)
+   at Microsoft.Extensions.Hosting.HostingHostBuilderExtensions.ApplyDefaultAppConfiguration(HostBuilderContext hostingContext, IConfigurationBuilder appConfigBuilder, String[] args)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder..ctor(HostApplicationBuilderSettings settings)
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder..ctor(WebApplicationOptions options, Action`1 configureDefaults)
+   at Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(String[] args)
+   at Program.<Main>$(String[] args) in C:\Users\Korisnik\MyFood\MyFood.Api\Program.cs:line 27
+2025-03-27 05:57:39.201 +01:00 [INF] Starting MyFood application
+2025-03-27 05:57:41.394 +01:00 [INF] Executed DbCommand (51ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 05:57:41.728 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 05:57:41.872 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 05:57:41.882 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 05:57:41.901 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 05:57:41.912 +01:00 [INF] Hosting environment: Development
+2025-03-27 05:57:41.920 +01:00 [INF] Content root path: C:\Users\Korisnik\MyFood\MyFood.Api
+2025-03-27 05:57:56.361 +01:00 [INF] HTTP GET /swagger/index.html responded 200 in 310.6948 ms
+2025-03-27 05:57:56.495 +01:00 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 13.9054 ms
+2025-03-27 05:57:56.769 +01:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 282.8905 ms
+2025-03-27 05:58:05.790 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 05:58:06.169 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 1348.8768 ms
+2025-03-27 05:59:27.588 +01:00 [WRN] Invalid ID requested: 0
+2025-03-27 05:59:27.603 +01:00 [INF] HTTP GET /api/v1/foods/0 responded 400 in 22.5393 ms
+2025-03-27 06:05:14.780 +01:00 [INF] Starting MyFood application
+2025-03-27 06:05:17.111 +01:00 [INF] Executed DbCommand (56ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 06:05:17.289 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 06:05:17.366 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 06:05:17.375 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 06:05:17.387 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 06:05:17.395 +01:00 [INF] Hosting environment: Development
+2025-03-27 06:05:17.402 +01:00 [INF] Content root path: C:\Users\Korisnik\MyFood\MyFood.Api
+2025-03-27 06:05:55.242 +01:00 [INF] HTTP GET /swagger/index.html responded 200 in 268.8945 ms
+2025-03-27 06:05:55.383 +01:00 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 13.9231 ms
+2025-03-27 06:05:55.790 +01:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 421.5437 ms
+2025-03-27 06:06:03.717 +01:00 [INF] Executed DbCommand (10ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 06:06:04.007 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 1466.5439 ms
+2025-03-27 06:06:44.357 +01:00 [ERR] HTTP GET /api/v1/foods/0 responded 500 in 6.3729 ms
+System.ArgumentOutOfRangeException: ID must be greater than 0 (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 69
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-03-27 06:06:44.422 +01:00 [ERR] Unhandled exception: ID must be greater than 0 (Parameter 'id')
+Stack Trace:    at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 69
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Korisnik\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 26
+System.ArgumentOutOfRangeException: ID must be greater than 0 (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 69
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Korisnik\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 26
+2025-03-27 06:09:32.101 +01:00 [INF] Application is shutting down...
+2025-03-27 06:09:40.864 +01:00 [INF] Starting MyFood application
+2025-03-27 06:09:42.966 +01:00 [INF] Executed DbCommand (49ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 06:09:43.195 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 06:09:43.267 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 06:09:43.272 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 06:09:43.281 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 06:09:43.288 +01:00 [INF] Hosting environment: Development
+2025-03-27 06:09:43.292 +01:00 [INF] Content root path: C:\Users\Korisnik\MyFood\MyFood.Api
+2025-03-27 06:09:47.097 +01:00 [INF] HTTP GET /swagger/index.html responded 200 in 195.5531 ms
+2025-03-27 06:09:47.137 +01:00 [INF] HTTP GET /swagger/swagger-ui.css responded 200 in 13.6181 ms
+2025-03-27 06:09:47.237 +01:00 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 1.2084 ms
+2025-03-27 06:09:47.445 +01:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 216.7135 ms
+2025-03-27 06:09:56.310 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 06:09:56.579 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 1469.9954 ms
+2025-03-27 06:12:24.477 +01:00 [INF] Application is shutting down...
+2025-03-27 06:12:32.511 +01:00 [INF] Starting MyFood application
+2025-03-27 06:12:34.974 +01:00 [INF] Executed DbCommand (49ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 06:12:35.201 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 06:13:22.187 +01:00 [INF] HTTP GET /swagger/index.html responded 200 in 259.2449 ms
+2025-03-27 06:13:22.310 +01:00 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 13.3833 ms
+2025-03-27 06:13:22.568 +01:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 275.3247 ms
+2025-03-27 06:13:29.948 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 06:13:30.222 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 1176.9115 ms
+2025-03-27 06:14:44.918 +01:00 [INF] Starting MyFood application
+2025-03-27 06:14:46.952 +01:00 [INF] Executed DbCommand (35ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 06:14:47.222 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 06:14:47.306 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 06:14:47.311 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 06:14:47.321 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 06:14:47.329 +01:00 [INF] Hosting environment: Development
+2025-03-27 06:14:47.335 +01:00 [INF] Content root path: C:\Users\Korisnik\MyFood\MyFood.Api
+2025-03-27 06:15:07.849 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 06:15:08.073 +01:00 [INF] HTTP GET /swagger/index.html responded 200 in 164.3724 ms
+2025-03-27 06:15:08.102 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 254.3364ms
+2025-03-27 06:15:08.282 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 06:15:08.283 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 06:15:08.337 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 06:15:08.345 +01:00 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 32.3875 ms
+2025-03-27 06:15:08.364 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 80.9431ms
+2025-03-27 06:15:08.553 +01:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 249.5041 ms
+2025-03-27 06:15:08.563 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 281.024ms
+2025-03-27 06:15:14.643 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/1 - null null
+2025-03-27 06:15:14.684 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 06:15:14.745 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 06:15:15.587 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 06:15:15.693 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-27 06:15:16.003 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 1236.43ms
+2025-03-27 06:15:16.010 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 06:15:16.016 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 1343.7392 ms
+2025-03-27 06:15:16.045 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/1 - 200 434 application/json; charset=utf-8; x-api-version=1 1402.106ms
+2025-03-27 06:18:22.132 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 06:18:22.150 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 06:18:22.156 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 06:18:22.166 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 3.9037ms
+2025-03-27 06:18:22.172 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 06:18:22.175 +01:00 [ERR] HTTP GET /api/v1/foods/0 responded 500 in 26.3222 ms
+System.ArgumentOutOfRangeException: ID must be greater than 0 (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 69
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-03-27 06:18:22.219 +01:00 [ERR] Unhandled exception: ID must be greater than 0 (Parameter 'id')
+Stack Trace:    at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 69
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Korisnik\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 26
+System.ArgumentOutOfRangeException: ID must be greater than 0 (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 69
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Korisnik\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 26
+2025-03-27 06:18:22.303 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null application/json; x-api-version=1 170.9721ms
+2025-03-27 06:19:37.341 +01:00 [INF] Application is shutting down...
+2025-03-27 06:19:48.755 +01:00 [INF] Starting MyFood application
+2025-03-27 06:19:51.460 +01:00 [INF] Executed DbCommand (51ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 06:19:51.753 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 06:19:51.849 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 06:19:51.854 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 06:19:51.868 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 06:19:51.877 +01:00 [INF] Hosting environment: Development
+2025-03-27 06:19:51.883 +01:00 [INF] Content root path: C:\Users\Korisnik\MyFood\MyFood.Api
+2025-03-27 06:21:02.818 +01:00 [INF] Application is shutting down...
+2025-03-27 06:21:37.681 +01:00 [INF] Starting MyFood application
+2025-03-27 06:21:39.450 +01:00 [INF] Executed DbCommand (57ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-03-27 06:21:39.631 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert.
+2025-03-27 06:21:39.703 +01:00 [INF] Now listening on: https://localhost:7124
+2025-03-27 06:21:39.710 +01:00 [INF] Now listening on: http://localhost:5124
+2025-03-27 06:21:39.721 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-27 06:21:39.728 +01:00 [INF] Hosting environment: Development
+2025-03-27 06:21:39.733 +01:00 [INF] Content root path: C:\Users\Korisnik\MyFood\MyFood.Api
+2025-03-27 06:22:15.926 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-03-27 06:22:16.292 +01:00 [INF] HTTP GET /swagger/index.html responded 200 in 283.3656 ms
+2025-03-27 06:22:16.321 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 395.5717ms
+2025-03-27 06:22:16.397 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-03-27 06:22:16.397 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2025-03-27 06:22:16.458 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-27 06:22:16.465 +01:00 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 32.1265 ms
+2025-03-27 06:22:16.481 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 83.9209ms
+2025-03-27 06:22:16.763 +01:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 337.8784 ms
+2025-03-27 06:22:16.776 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 379.478ms
+2025-03-27 06:22:23.408 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/1 - null null
+2025-03-27 06:22:23.444 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 06:22:23.501 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 06:22:24.666 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+WHERE [f].[Id] = @__id_0
+2025-03-27 06:22:24.768 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Dynamic.ExpandoObject'.
+2025-03-27 06:22:25.057 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 1533.6881ms
+2025-03-27 06:22:25.065 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 06:22:25.076 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 1642.5928 ms
+2025-03-27 06:22:25.092 +01:00 [INF] HTTP GET /api/v1/foods/1 responded 200 in 1658.8103 ms
+2025-03-27 06:22:25.116 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/1 - 200 434 application/json; charset=utf-8; x-api-version=1 1708.4831ms
+2025-03-27 06:22:41.107 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods/0 - null null
+2025-03-27 06:22:41.129 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 06:22:41.143 +01:00 [INF] Route matched with {action = "GetSingleFood", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetSingleFood(Microsoft.AspNetCore.Mvc.ApiVersion, Int32) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2025-03-27 06:22:41.165 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api) in 5.7102ms
+2025-03-27 06:22:41.176 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetSingleFood (MyFood.Api)'
+2025-03-27 06:22:41.189 +01:00 [ERR] HTTP GET /api/v1/foods/0 responded 500 in 61.2525 ms
+System.ArgumentOutOfRangeException: ID must be greater than 0 (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 69
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-03-27 06:22:41.258 +01:00 [ERR] HTTP GET /api/v1/foods/0 responded 500 in 130.2582 ms
+System.ArgumentOutOfRangeException: ID must be greater than 0 (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 69
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-03-27 06:22:41.315 +01:00 [ERR] Unhandled exception: ID must be greater than 0 (Parameter 'id')
+Stack Trace:    at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 69
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Korisnik\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 26
+System.ArgumentOutOfRangeException: ID must be greater than 0 (Parameter 'id')
+   at MyFood.Api.Controllers.v1.FoodsController.GetSingleFood(ApiVersion version, Int32 id) in C:\Users\Korisnik\MyFood\MyFood.Api\Controllers\v1\FoodsController.cs:line 69
+   at lambda_method65(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\Korisnik\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 26
+2025-03-27 06:22:41.420 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods/0 - 500 null application/json; x-api-version=1 312.2238ms
+2025-03-27 06:23:45.464 +01:00 [INF] Application is shutting down...

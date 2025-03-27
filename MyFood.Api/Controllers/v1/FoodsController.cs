@@ -8,6 +8,7 @@ using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace MyFood.Api.Controllers.v1
 {
@@ -19,15 +20,18 @@ namespace MyFood.Api.Controllers.v1
         private readonly IFoodRepository _foodRepository;
         private readonly IMapper _mapper;
         private readonly ILinkService<FoodsController> _linkService;
+        private readonly ILogger<FoodsController> _logger;
 
         public FoodsController(
             IFoodRepository foodRepository,
             IMapper mapper,
-            ILinkService<FoodsController> linkService)
+            ILinkService<FoodsController> linkService,
+            ILogger<FoodsController> logger)
         {
             _foodRepository = foodRepository;
             _mapper = mapper;
             _linkService = linkService;
+            _logger = logger;
         }
 
         [HttpGet(Name = nameof(GetAllFoods))]
@@ -57,12 +61,15 @@ namespace MyFood.Api.Controllers.v1
             });
         }
 
-        [HttpGet]
-        [Route("{id:int}", Name = nameof(GetSingleFood))]
+        [HttpGet("{id:int}", Name = nameof(GetSingleFood))]
         public ActionResult GetSingleFood(ApiVersion version, int id)
         {
-            FoodEntity foodItem = _foodRepository.GetSingle(id);
+            if (id < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "ID must be greater than 0");
+            }
 
+            FoodEntity foodItem = _foodRepository.GetSingle(id);
             if (foodItem == null)
             {
                 return NotFound();
@@ -75,7 +82,7 @@ namespace MyFood.Api.Controllers.v1
 
         [HttpGet]
         [Route("search", Name = nameof(SearchByName))]
-        public ActionResult SearchByName(ApiVersion version,[FromQuery] QueryParameters queryParameters, string name)
+        public ActionResult SearchByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, string name)
         {
             var foodItems = _foodRepository.SearchFoodsByName(name);
 
@@ -223,7 +230,6 @@ namespace MyFood.Api.Controllers.v1
 
             var links = new List<LinkDto>();
 
-            // self 
             links.Add(new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET"));
 
             return Ok(new
