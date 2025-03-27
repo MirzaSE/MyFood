@@ -60,18 +60,23 @@ namespace MyFood.Api.Controllers.v1
         [HttpGet]
         [Route("{id:int}", Name = nameof(GetSingleFood))]
         public ActionResult GetSingleFood(ApiVersion version, int id)
-        {
-            FoodEntity foodItem = _foodRepository.GetSingle(id);
-
-            if (foodItem == null)
             {
-                return NotFound();
+                if (id < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "ID must be greater than or equal to 1.");
             }
 
-            FoodDto item = _mapper.Map<FoodDto>(foodItem);
+        FoodEntity foodItem = _foodRepository.GetSingle(id);
 
-            return Ok(_linkService.ExpandSingleFoodItem(item, item.Id, version));
-        }
+        if (foodItem == null)
+            {
+        return NotFound();
+            }
+
+        FoodDto item = _mapper.Map<FoodDto>(foodItem);
+
+         return Ok(_linkService.ExpandSingleFoodItem(item, item.Id, version));
+}
 
         [HttpGet]
         [Route("search", Name = nameof(SearchByName))]
