@@ -11,11 +11,22 @@ using MyFood.Infrastructure.Helpers;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration) // Reads configuration from appsettings.json
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/app-log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
+
+builder.Host.UseSerilog(); // Add Serilog to the application
+
+// Add services to the container.
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
@@ -38,11 +49,9 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-//opt.UseInMemoryDatabase("FoodDatabase"));
 opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
-
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
@@ -50,6 +59,11 @@ var app = builder.Build();
 
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+
+app.UseMiddleware<MyFood.Api.Middleware.ExceptionHandlingMiddleware>(); //using
+
+
+app.UseSerilogRequestLogging(); // Enable Serilog request logging
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -75,6 +89,8 @@ else
 
 app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
+
+app.UseMiddleware<MyFood.Api.Middleware.RequestLoggingMiddleware>();
 
 app.UseAuthorization();
 
