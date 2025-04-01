@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Api;
 using MyFood.Api.MappingProfiles;
+using MyFood.Api.Middleware;
 using MyFood.Api.Services;
 using MyFood.Domain.Entities;
 using MyFood.Infrastructure;
@@ -15,6 +16,12 @@ using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
+<<<<<<< HEAD
+=======
+using Serilog;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+>>>>>>> 5f86e13 (Add middleware and authentication)
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,6 +82,33 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
+//Add support to logging with SERILOG
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
+// Configure JWT authentication
+var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO secret should be in appSettings
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,      
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "myfood.domain.com",
+        ValidAudience = "myfood.domain.com",
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+
+    options.IncludeErrorDetails = true;
+});
+
 var app = builder.Build();
 
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
@@ -102,11 +136,23 @@ else
     app.AddProductionExceptionHandling(loggerFactory);
 }
 
+<<<<<<< HEAD
 
 app.UseCors("AllowAllOrigins");
 //app.UseHttpsRedirection(); // can cause docker issue
 
 
+=======
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
+
+//Add support to logging request with SERILOG
+app.UseSerilogRequestLogging();
+
+app.UseCors("AllowAllOrigins");
+app.UseHttpsRedirection();
+
+>>>>>>> 5f86e13 (Add middleware and authentication)
 app.UseAuthentication();
 app.UseAuthorization();
 
