@@ -11,6 +11,7 @@ using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
 {
+    //[Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -30,6 +31,7 @@ namespace MyFood.Api.Controllers.v1
             _linkService = linkService;
         }
 
+       
         [HttpGet(Name = nameof(GetAllFoods))]
         public ActionResult GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
         {
@@ -61,6 +63,12 @@ namespace MyFood.Api.Controllers.v1
         [Route("{id:int}", Name = nameof(GetSingleFood))]
         public ActionResult GetSingleFood(ApiVersion version, int id)
         {
+
+            if (id < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
+            }
+
             FoodEntity foodItem = _foodRepository.GetSingle(id);
 
             if (foodItem == null)
