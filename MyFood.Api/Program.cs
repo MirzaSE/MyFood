@@ -20,6 +20,12 @@ using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var jwtSettings = new JwtSettings();
+
+builder.Configuration.GetSection("JWT").Bind(jwtSettings);
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
+builder.Services.AddSingleton(jwtSettings);
+
 // Add services to the container.
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -49,6 +55,7 @@ builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
+
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
 //opt.UseInMemoryDatabase("FoodDatabase"));
