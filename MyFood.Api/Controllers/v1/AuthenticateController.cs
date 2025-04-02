@@ -16,23 +16,23 @@ namespace MyFood.Api.Controllers.v1
         public IActionResult Login([FromBody] UserLoginDto userLogin)
         {
             // Validate user credentials (this is just an example, use a proper validation method)
-            if (userLogin.Username == "test" && userLogin.Password == "password")
-            {
-                var token = GenerateJwtToken(userLogin.Username);
-                return Ok(new { Token = token });
-            }
-            return Unauthorized();
+            // if (userLogin.Username == "test" && userLogin.Password == "password")
+            // {
+            //     var token = GenerateJwtToken(userLogin.Username);
+            //     return Ok(new { Token = token });
+            // }
+            // return Unauthorized();
         }
 
         [HttpPost("register")]
         public IActionResult Register([FromBody] UserLoginDto userLogin)
         {
             //validate user credentials
-            if (userLogin.Username == "test" && userLogin.Password == "password")
-            {
-                var token = GenerateJwtToken(userLogin.Username);
-                return Ok(new { Token = token });
-            }
+            // if (userLogin.Username == "test" && userLogin.Password == "password")
+            // {
+            //     var token = GenerateJwtToken(userLogin.Username);
+            //     return Ok(new { Token = token });
+            // }
             return Unauthorized();
         }
 
