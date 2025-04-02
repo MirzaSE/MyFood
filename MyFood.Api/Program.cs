@@ -20,18 +20,13 @@ using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var jwtSettings = new JwtSettings();
+// Read JWT settings directly
+var jwtSettings = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
 
-builder.Configuration.GetSection("JWT").Bind(jwtSettings);
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
-builder.Services.AddSingleton(jwtSettings);
+
 
 // Add services to the container.
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<FoodDbContext>()
-    .AddDefaultTokenProviders();
-
     
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
@@ -42,6 +37,7 @@ builder.Services.AddControllers()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddCustomCors("AllowAllOrigins");
 
@@ -63,6 +59,7 @@ opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<FoodDbContext>().AddDefaultTokenProviders();
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
