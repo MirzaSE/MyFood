@@ -1,0 +1,65 @@
+2025-04-02 16:21:35.636 +02:00 [INF] Executed DbCommand (55ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-04-02 16:21:35.864 +02:00 [INF] Now listening on: https://localhost:7124
+2025-04-02 16:21:35.869 +02:00 [INF] Now listening on: http://localhost:5124
+2025-04-02 16:21:35.877 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-04-02 16:21:35.881 +02:00 [INF] Hosting environment: Development
+2025-04-02 16:21:35.885 +02:00 [INF] Content root path: C:\Users\User\Desktop\web\MyFood\MyFood.Api
+2025-04-02 16:21:39.029 +02:00 [INF] Request starting HTTP/2 GET https://localhost:7124/ - null null
+2025-04-02 16:21:39.105 +02:00 [INF] ➡️ Incoming request: GET /
+2025-04-02 16:21:39.115 +02:00 [INF] ⬅️ Outgoing response: 404
+2025-04-02 16:21:39.120 +02:00 [INF] HTTP GET / responded 404 in 42.3850 ms
+2025-04-02 16:21:39.135 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7124/ - 404 0 null 107.0994ms
+2025-04-02 16:21:39.171 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7124/, Response status code: 404
+2025-04-02 16:21:50.034 +02:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger - null null
+2025-04-02 16:21:50.048 +02:00 [INF] HTTP GET /swagger responded 301 in 1.5851 ms
+2025-04-02 16:21:50.055 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger - 301 0 null 21.4202ms
+2025-04-02 16:21:50.065 +02:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-04-02 16:21:50.205 +02:00 [INF] HTTP GET /swagger/index.html responded 200 in 120.6885 ms
+2025-04-02 16:21:50.218 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 153.2367ms
+2025-04-02 16:21:50.391 +02:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-04-02 16:21:50.540 +02:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 139.9599 ms
+2025-04-02 16:21:50.550 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 159.5689ms
+2025-04-02 16:21:59.509 +02:00 [INF] Application is shutting down...
+2025-04-02 18:20:52.469 +02:00 [INF] Executed DbCommand (23ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-04-02 18:20:52.550 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-04-02 18:20:52.597 +02:00 [INF] Executed DbCommand (37ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+SELECT @result
+2025-04-02 18:20:52.700 +02:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+2025-04-02 18:20:52.725 +02:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-04-02 18:20:52.739 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-04-02 18:20:52.793 +02:00 [INF] Executed DbCommand (43ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-04-02 18:20:52.816 +02:00 [INF] Applying migration '20250402162033_assignment3_migration'.
+2025-04-02 18:20:52.835 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250402162033_assignment3_migration', N'9.0.3');
+2025-04-02 18:20:52.861 +02:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+SELECT @result

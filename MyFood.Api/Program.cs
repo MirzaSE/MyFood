@@ -17,26 +17,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration) // Reads configuration from appsettings.json
+    .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .WriteTo.File("Logs/app-log-.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
+builder.Host.UseSerilog();
 
-builder.Host.UseSerilog(); // Add Serilog to the application
-
-// Add services to the container.
+// Add services to the container
 builder.Services.AddControllers()
-                .AddNewtonsoftJson(options =>
-                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
+    .AddNewtonsoftJson(options =>
+        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Configure Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// CORS Policy
 builder.Services.AddCustomCors("AllowAllOrigins");
 
+// Dependency Injection
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
@@ -45,55 +46,65 @@ builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwa
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
+// Enable Lowercase URLs
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
-builder.Services.AddDbContext<FoodDbContext>(opt =>
-opt.UseSqlServer(
-           builder.Configuration.GetConnectionString("DefaultConnection"),
-           b => b.MigrationsAssembly("MyFood.Infrastructure")));
+// Database Connection
+builder.Services.AddDbContext<FoodDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.MigrationsAssembly("MyFood.Infrastructure")));
 
+// AutoMapper
 builder.Services.AddAutoMapper(typeof(FoodMappings));
+
+// Authentication & Authorization (Assuming JWT Authentication is needed)
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://your-auth-provider.com"; // Replace with actual authority
+        options.Audience = "myfood-api";
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
-app.UseMiddleware<MyFood.Api.Middleware.ExceptionHandlingMiddleware>(); //using
+// Middleware
+app.UseMiddleware<MyFood.Api.Middleware.ExceptionHandlingMiddleware>();
+app.UseSerilogRequestLogging();
+app.UseCors("AllowAllOrigins");
+app.UseHttpsRedirection();
+app.UseMiddleware<MyFood.Api.Middleware.RequestLoggingMiddleware>();
 
+app.UseAuthentication(); // Ensure authentication middleware is added
+app.UseAuthorization();
 
-app.UseSerilogRequestLogging(); // Enable Serilog request logging
-
-// Configure the HTTP request pipeline.
+// Swagger Configuration
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(
-        options =>
+    app.UseSwaggerUI(options =>
+    {
+        foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
         {
-            foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
-            {
-                options.SwaggerEndpoint(
-                    $"/swagger/{description.GroupName}/swagger.json",
-                    description.GroupName.ToUpperInvariant());
-            }
-        });
-
+            options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+        }
+    });
+    
     app.SeedData();
-} 
+}
 else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
 
-app.UseCors("AllowAllOrigins");
-app.UseHttpsRedirection();
-
-app.UseMiddleware<MyFood.Api.Middleware.RequestLoggingMiddleware>();
-
-app.UseAuthorization();
-
+// Map Controllers
 app.MapControllers();
 
+// Run the application
 app.Run();

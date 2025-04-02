@@ -1,15 +1,12 @@
-﻿  using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyFood.Application.Entities;
+using MyFood.Infrastructure.Models; // Ensure this is the correct namespace for FoodItem
 
-namespace MyFood.Infrastructure.Repositories
+public class FoodDbContext : DbContext
 {
-    public class FoodDbContext : DbContext
+    public FoodDbContext(DbContextOptions<FoodDbContext> options) : base(options)
     {
-        public FoodDbContext(DbContextOptions<FoodDbContext> options)
-            : base(options)
-        {
-        }
-
-        public DbSet<FoodEntity> FoodItems { get; set; } = null!;
     }
+
+    public DbSet<FoodEntity> FoodItems { get; set; } // Make sure this exists
 }
