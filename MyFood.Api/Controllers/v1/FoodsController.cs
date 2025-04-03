@@ -8,10 +8,11 @@ using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyFood.Api.Controllers.v1
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -64,10 +65,9 @@ namespace MyFood.Api.Controllers.v1
         public ActionResult GetSingleFood(ApiVersion version, int id)
         {
 
-            if (id < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
-            }
+            if (id < 1)
+                throw new ArgumentOutOfRangeException(nameof(id), "ID must be 1 or greater.");
+
 
             FoodEntity foodItem = _foodRepository.GetSingle(id);
 
