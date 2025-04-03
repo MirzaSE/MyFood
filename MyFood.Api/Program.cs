@@ -11,18 +11,79 @@ using MyFood.Infrastructure.Helpers;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using MyFood.Domain.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 
-// Add services to the container.
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            var jwtSettings = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidIssuer = jwtSettings.ValidIssuer,
+                ValidAudience = jwtSettings.ValidAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+            };
+            options.Events = new JwtBearerEvents
+            {
+                OnChallenge = context =>
+                {
+                    context.HandleResponse(); // Prevents default 401 response
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    context.Response.ContentType = "application/json";
+
+                    var result = JsonSerializer.Serialize(new { message = "Unauthorized access. Please log in." });
+                    return context.Response.WriteAsync(result);
+                }
+            };
+        });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter JWT Bearer token"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] {}
+            }
+        });
+});
 
 builder.Services.AddCustomCors("AllowAllOrigins");
 
@@ -42,6 +103,11 @@ builder.Services.AddDbContext<FoodDbContext>(opt =>
 opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<FoodDbContext>()
+    .AddDefaultTokenProviders();
+
 
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
@@ -72,12 +138,28 @@ else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
-
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    await addUserRoles(roleManager);
+}
 app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+static async Task addUserRoles(RoleManager<IdentityRole> roleManager)
+{
+    if (!await roleManager.RoleExistsAsync("User"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("User"));
+    }
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    }
+}
