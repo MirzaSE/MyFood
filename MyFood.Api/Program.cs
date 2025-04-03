@@ -31,9 +31,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,
-                ValidIssuer = "http://localhost:7124", 
-                ValidAudience = "http://localhost:3000",
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)) 
+                ValidIssuer = jwtSettings.ValidIssuer,
+                ValidAudience = jwtSettings.ValidAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
             };
             options.Events = new JwtBearerEvents
             {
@@ -108,7 +108,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<FoodDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddRazorPages();
+
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
@@ -138,7 +138,11 @@ else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
-
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    await addUserRoles(roleManager);
+}
 app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
 app.UseAuthentication();
@@ -147,3 +151,15 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static async Task addUserRoles(RoleManager<IdentityRole> roleManager)
+{
+    if (!await roleManager.RoleExistsAsync("User"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("User"));
+    }
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    }
+}
