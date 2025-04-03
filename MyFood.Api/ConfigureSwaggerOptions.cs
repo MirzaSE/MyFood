@@ -15,9 +15,15 @@ namespace MyFood.Api
         public void Configure(SwaggerGenOptions options)
         {
             foreach (var description in provider.ApiVersionDescriptions)
+    {
+        options.SwaggerDoc(
+            description.GroupName,
+            new OpenApiInfo()
             {
-                options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
-            }
+                Title = $"MyFood API {description.ApiVersion}",
+                Version = description.ApiVersion.ToString()
+            });
+    }
 
             // Include 'SecurityScheme' to use JWT Authentication
             var jwtSecurityScheme = new OpenApiSecurityScheme
