@@ -13,7 +13,8 @@ namespace MyFood.Api.Controllers.v1
     {
         [HttpPost("login")]
         public IActionResult Login([FromBody] UserLoginDto userLogin)
-        {
+        {   
+            // var user = await _userManager.FindByNameAsync(model.Username);
             // Validate user credentials (this is just an example, use a proper validation method)
             if (userLogin.Username == "test" && userLogin.Password == "password")
             {

@@ -16,6 +16,8 @@ using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using MyFood.Application.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +52,11 @@ opt.UseSqlServer(
 
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<FoodDbContext>()
+    .AddDefaultTokenProviders();
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<Configuration.JwtSettings>();
+builder.Services.Configure<Configuration.JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
 //Add support to logging with SERILOG
 builder.Host.UseSerilog((context, configuration) =>
@@ -77,6 +84,7 @@ builder.Services.AddAuthentication(options =>
 
     options.IncludeErrorDetails = true;
 });
+
 
 var app = builder.Build();
 
