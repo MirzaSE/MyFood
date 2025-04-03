@@ -1,15 +1,14 @@
-﻿  using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyFood.Application.Entities;
+using YourProjectNamespace.Models;
 
 namespace MyFood.Infrastructure.Repositories
 {
-    public class FoodDbContext : DbContext
+    public class FoodDbContext(DbContextOptions<FoodDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
-        public FoodDbContext(DbContextOptions<FoodDbContext> options)
-            : base(options)
-        {
-        }
-
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
     }
+
+
 }
