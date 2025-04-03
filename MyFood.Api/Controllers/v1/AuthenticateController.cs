@@ -1,50 +1,73 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using MyFood.Application.Dtos;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace MyFood.Api.Controllers.v1
+[ApiVersion("1.0")]  
+[Route("api/v{version:apiVersion}/[controller]")] 
+[ApiController]
+public class AuthenticationController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthenticateController : ControllerBase
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IConfiguration _configuration;
+
+    public AuthenticationController(
+        UserManager<IdentityUser> userManager,
+        IConfiguration configuration)
     {
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLoginDto userLogin)
+        _userManager = userManager;
+        _configuration = configuration;
+    }
+
+    [HttpPost("token")]
+    public async Task<IActionResult> CreateToken([FromBody] LoginInputModel model)
+    {
+        var user = await _userManager.FindByNameAsync(model.UserName);
+        if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
         {
-            // Validate user credentials (this is just an example, use a proper validation method)
-            if (userLogin.Username == "test" && userLogin.Password == "password")
-            {
-                var token = GenerateJwtToken(userLogin.Username);
-                return Ok(new { Token = token });
-            }
             return Unauthorized();
         }
 
-        private string GenerateJwtToken(string username)
+        var roles = await _userManager.GetRolesAsync(user);
+        var claims = new List<Claim>
         {
-            var claims = new[]
-            { 
-                new Claim(JwtRegisteredClaimNames.UniqueName, username),
-                // Add more claims if needed
-            };
+            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id)
+        };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"));  // TODO Get from appsettings
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            // TODO Get from appsettings
-            var token = new JwtSecurityToken(
-                issuer: "myfood.domain.com",
-                audience: "myfood.domain.com",
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(2),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
         }
-    }
 
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            _configuration["Jwt:Key"]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var expires = DateTime.Now.AddMinutes(Convert.ToDouble(
+            _configuration["Jwt:ExpireMinutes"] ?? "30"));
+
+        var token = new JwtSecurityToken(
+            _configuration["Jwt:Issuer"],
+            _configuration["Jwt:Audience"],
+            claims,
+            expires: expires,
+            signingCredentials: creds
+        );
+
+        return Ok(new
+        {
+            token = new JwtSecurityTokenHandler().WriteToken(token),
+            expiration = token.ValidTo,
+            version = "v1.0"  
+        });
+    }
+}
+
+public class LoginInputModel
+{
+    public required string UserName { get; set; }
+    public required string Password { get; set; }
 }
