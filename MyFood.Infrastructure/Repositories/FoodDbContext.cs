@@ -1,12 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyFood.Application.Entities;
-using MyFood.Infrastructure.Models; // Ensure this is the correct namespace for FoodItem
+using MyFood.Domain.Entities;
 
-public class FoodDbContext : DbContext
+public class FoodDbContext : IdentityDbContext<ApplicationUser>
 {
-    public FoodDbContext(DbContextOptions<FoodDbContext> options) : base(options)
-    {
-    }
+    public FoodDbContext(DbContextOptions<FoodDbContext> options) : base(options) { }
 
-    public DbSet<FoodEntity> FoodItems { get; set; } // Make sure this exists
+    public DbSet<FoodEntity> FoodItems { get; set; }
 }

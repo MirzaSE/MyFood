@@ -1,0 +1,309 @@
+2025-04-02 23:38:26.702 +02:00 [INF] Executed DbCommand (60ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-04-02 23:38:26.857 +02:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-04-02 23:38:27.032 +02:00 [INF] Now listening on: https://localhost:7124
+2025-04-02 23:38:27.037 +02:00 [INF] Now listening on: http://localhost:5124
+2025-04-02 23:38:27.049 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-04-02 23:38:27.053 +02:00 [INF] Hosting environment: Development
+2025-04-02 23:38:27.058 +02:00 [INF] Content root path: C:\Users\User\Desktop\web\MyFood\MyFood.Api
+2025-04-02 23:38:29.525 +02:00 [INF] Request starting HTTP/2 GET https://localhost:7124/ - null null
+2025-04-02 23:38:29.568 +02:00 [INF] ➡️ Incoming request: GET /
+2025-04-02 23:38:29.630 +02:00 [INF] ⬅️ Outgoing response: 404
+2025-04-02 23:38:29.637 +02:00 [INF] HTTP GET / responded 404 in 70.5182 ms
+2025-04-02 23:38:29.647 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7124/ - 404 0 null 125.7877ms
+2025-04-02 23:38:29.674 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7124/, Response status code: 404
+2025-04-02 23:38:41.072 +02:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-04-02 23:38:41.090 +02:00 [INF] ➡️ Incoming request: GET /swagger/index.html
+2025-04-02 23:38:41.274 +02:00 [INF] ⬅️ Outgoing response: 200
+2025-04-02 23:38:41.279 +02:00 [INF] HTTP GET /swagger/index.html responded 200 in 189.9296 ms
+2025-04-02 23:38:41.294 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 222.2063ms
+2025-04-02 23:38:41.486 +02:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-04-02 23:38:41.497 +02:00 [INF] ➡️ Incoming request: GET /swagger/v1/swagger.json
+2025-04-02 23:38:41.677 +02:00 [INF] ⬅️ Outgoing response: 200
+2025-04-02 23:38:41.683 +02:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 186.9822 ms
+2025-04-02 23:38:41.692 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 206.2867ms
+2025-04-02 23:43:07.443 +02:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/auth/register - application/json-patch+json; x-api-version=1.0 71
+2025-04-02 23:43:07.480 +02:00 [INF] The following API versions were requested: invalid data, 1.0. At most, only a single API version may be specified. Please update the intended API version and retry the request.
+2025-04-02 23:43:07.494 +02:00 [INF] CORS policy execution successful.
+2025-04-02 23:43:07.501 +02:00 [INF] ➡️ Incoming request: POST /api/auth/register
+2025-04-02 23:43:07.511 +02:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:43:07.533 +02:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType0`1[[<>f__AnonymousType1`3[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]'.
+2025-04-02 23:43:07.676 +02:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:43:07.681 +02:00 [INF] ⬅️ Outgoing response: 400
+2025-04-02 23:43:07.686 +02:00 [INF] HTTP POST /api/auth/register responded 400 in 198.0589 ms
+2025-04-02 23:43:07.695 +02:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/auth/register - 400 247 application/json; charset=utf-8 251.6089ms
+2025-04-02 23:44:11.300 +02:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/auth/register - application/json-patch+json; x-api-version=1.0 71
+2025-04-02 23:44:11.313 +02:00 [INF] The following API versions were requested: gmail.hasan, 1.0. At most, only a single API version may be specified. Please update the intended API version and retry the request.
+2025-04-02 23:44:11.320 +02:00 [INF] CORS policy execution successful.
+2025-04-02 23:44:11.324 +02:00 [INF] ➡️ Incoming request: POST /api/auth/register
+2025-04-02 23:44:11.330 +02:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:44:11.342 +02:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType0`1[[<>f__AnonymousType1`3[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]'.
+2025-04-02 23:44:11.357 +02:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:44:11.367 +02:00 [INF] ⬅️ Outgoing response: 400
+2025-04-02 23:44:11.370 +02:00 [INF] HTTP POST /api/auth/register responded 400 in 50.2705 ms
+2025-04-02 23:44:11.384 +02:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/auth/register - 400 246 application/json; charset=utf-8 83.5842ms
+2025-04-02 23:45:30.848 +02:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/auth/register - application/json-patch+json; x-api-version=1.0 71
+2025-04-02 23:45:30.861 +02:00 [INF] The following API versions were requested: smajlovic.hasan02@gmail.com, 1.0. At most, only a single API version may be specified. Please update the intended API version and retry the request.
+2025-04-02 23:45:30.867 +02:00 [INF] CORS policy execution successful.
+2025-04-02 23:45:30.872 +02:00 [INF] ➡️ Incoming request: POST /api/auth/register
+2025-04-02 23:45:30.877 +02:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:45:30.884 +02:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType0`1[[<>f__AnonymousType1`3[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]'.
+2025-04-02 23:45:30.900 +02:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:45:30.907 +02:00 [INF] ⬅️ Outgoing response: 400
+2025-04-02 23:45:30.913 +02:00 [INF] HTTP POST /api/auth/register responded 400 in 45.8824 ms
+2025-04-02 23:45:30.923 +02:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/auth/register - 400 262 application/json; charset=utf-8 75.1615ms
+2025-04-02 23:46:18.020 +02:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/auth/register - application/json-patch+json; x-api-version=1.0 71
+2025-04-02 23:46:18.033 +02:00 [INF] The following API versions were requested: smajlovic.belengija02@gmail.com, 1.0. At most, only a single API version may be specified. Please update the intended API version and retry the request.
+2025-04-02 23:46:18.039 +02:00 [INF] CORS policy execution successful.
+2025-04-02 23:46:18.044 +02:00 [INF] ➡️ Incoming request: POST /api/auth/register
+2025-04-02 23:46:18.049 +02:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:46:18.055 +02:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType0`1[[<>f__AnonymousType1`3[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]'.
+2025-04-02 23:46:18.069 +02:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:46:18.080 +02:00 [INF] ⬅️ Outgoing response: 400
+2025-04-02 23:46:18.085 +02:00 [INF] HTTP POST /api/auth/register responded 400 in 46.3162 ms
+2025-04-02 23:46:18.097 +02:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/auth/register - 400 266 application/json; charset=utf-8 76.7764ms
+2025-04-02 23:47:23.368 +02:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/auth/register - application/json-patch+json; x-api-version=1.0 71
+2025-04-02 23:47:23.380 +02:00 [INF] The following API versions were requested: x-api-version": "1.0, 1.0. At most, only a single API version may be specified. Please update the intended API version and retry the request.
+2025-04-02 23:47:23.386 +02:00 [INF] CORS policy execution successful.
+2025-04-02 23:47:23.390 +02:00 [INF] ➡️ Incoming request: POST /api/auth/register
+2025-04-02 23:47:23.394 +02:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:47:23.400 +02:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType0`1[[<>f__AnonymousType1`3[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]'.
+2025-04-02 23:47:23.417 +02:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:47:23.424 +02:00 [INF] ⬅️ Outgoing response: 400
+2025-04-02 23:47:23.430 +02:00 [INF] HTTP POST /api/auth/register responded 400 in 44.5354 ms
+2025-04-02 23:47:23.441 +02:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/auth/register - 400 257 application/json; charset=utf-8 73.3596ms
+2025-04-02 23:47:34.332 +02:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/auth/register - application/json-patch+json; x-api-version=1.0 71
+2025-04-02 23:47:34.347 +02:00 [INF] CORS policy execution successful.
+2025-04-02 23:47:34.352 +02:00 [INF] ➡️ Incoming request: POST /api/auth/register
+2025-04-02 23:47:34.357 +02:00 [INF] Executing endpoint 'MyFood.Api.Controllers.AuthController.Register (MyFood.Api)'
+2025-04-02 23:47:34.424 +02:00 [INF] Route matched with {action = "Register", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Register(MyFood.Application.Dtos.RegisterDto) on controller MyFood.Api.Controllers.AuthController (MyFood.Api).
+2025-04-02 23:47:34.446 +02:00 [INF] Executed action MyFood.Api.Controllers.AuthController.Register (MyFood.Api) in 4.3731ms
+2025-04-02 23:47:34.456 +02:00 [INF] Executed endpoint 'MyFood.Api.Controllers.AuthController.Register (MyFood.Api)'
+2025-04-02 23:47:34.463 +02:00 [ERR] HTTP POST /api/auth/register responded 500 in 115.5608 ms
+System.InvalidOperationException: Unable to resolve service for type 'Microsoft.AspNetCore.Identity.UserManager`1[MyFood.Domain.Entities.ApplicationUser]' while attempting to activate 'MyFood.Api.Controllers.AuthController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method79(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\RequestLoggingMiddleware.cs:line 22
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-04-02 23:47:34.510 +02:00 [ERR] An unhandled exception occurred.
+System.InvalidOperationException: Unable to resolve service for type 'Microsoft.AspNetCore.Identity.UserManager`1[MyFood.Domain.Entities.ApplicationUser]' while attempting to activate 'MyFood.Api.Controllers.AuthController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method79(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\RequestLoggingMiddleware.cs:line 22
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 23
+2025-04-02 23:47:34.541 +02:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/auth/register - 500 null null 209.5849ms
+2025-04-02 23:47:37.743 +02:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/auth/register - application/json-patch+json; x-api-version=1.0 71
+2025-04-02 23:47:37.758 +02:00 [INF] The following API versions were requested: 1, 1.0. At most, only a single API version may be specified. Please update the intended API version and retry the request.
+2025-04-02 23:47:37.765 +02:00 [INF] CORS policy execution successful.
+2025-04-02 23:47:37.770 +02:00 [INF] ➡️ Incoming request: POST /api/auth/register
+2025-04-02 23:47:37.775 +02:00 [INF] Executing endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:47:37.783 +02:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType0`1[[<>f__AnonymousType1`3[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]], Microsoft.AspNetCore.Mvc.Versioning, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]'.
+2025-04-02 23:47:37.795 +02:00 [INF] Executed endpoint 'Microsoft.AspNetCore.Http.Endpoint'
+2025-04-02 23:47:37.802 +02:00 [INF] ⬅️ Outgoing response: 400
+2025-04-02 23:47:37.807 +02:00 [INF] HTTP POST /api/auth/register responded 400 in 42.6672 ms
+2025-04-02 23:47:37.819 +02:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/auth/register - 400 236 application/json; charset=utf-8 75.6307ms
+2025-04-02 23:47:41.215 +02:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/auth/register - application/json-patch+json; x-api-version=1.0 71
+2025-04-02 23:47:41.230 +02:00 [INF] CORS policy execution successful.
+2025-04-02 23:47:41.234 +02:00 [INF] ➡️ Incoming request: POST /api/auth/register
+2025-04-02 23:47:41.240 +02:00 [INF] Executing endpoint 'MyFood.Api.Controllers.AuthController.Register (MyFood.Api)'
+2025-04-02 23:47:41.250 +02:00 [INF] Route matched with {action = "Register", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Register(MyFood.Application.Dtos.RegisterDto) on controller MyFood.Api.Controllers.AuthController (MyFood.Api).
+2025-04-02 23:47:41.263 +02:00 [INF] Executed action MyFood.Api.Controllers.AuthController.Register (MyFood.Api) in 0.3912ms
+2025-04-02 23:47:41.269 +02:00 [INF] Executed endpoint 'MyFood.Api.Controllers.AuthController.Register (MyFood.Api)'
+2025-04-02 23:47:41.275 +02:00 [ERR] HTTP POST /api/auth/register responded 500 in 45.6261 ms
+System.InvalidOperationException: Unable to resolve service for type 'Microsoft.AspNetCore.Identity.UserManager`1[MyFood.Domain.Entities.ApplicationUser]' while attempting to activate 'MyFood.Api.Controllers.AuthController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method79(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\RequestLoggingMiddleware.cs:line 22
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-04-02 23:47:41.382 +02:00 [ERR] An unhandled exception occurred.
+System.InvalidOperationException: Unable to resolve service for type 'Microsoft.AspNetCore.Identity.UserManager`1[MyFood.Domain.Entities.ApplicationUser]' while attempting to activate 'MyFood.Api.Controllers.AuthController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method79(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\RequestLoggingMiddleware.cs:line 22
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 23
+2025-04-02 23:47:41.453 +02:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/auth/register - 500 null null 237.428ms
+2025-04-02 23:50:47.560 +02:00 [INF] Application is shutting down...
+2025-04-02 23:50:55.994 +02:00 [INF] Executed DbCommand (41ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2025-04-02 23:50:56.162 +02:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-04-02 23:50:56.341 +02:00 [INF] Now listening on: https://localhost:7124
+2025-04-02 23:50:56.346 +02:00 [INF] Now listening on: http://localhost:5124
+2025-04-02 23:50:56.356 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-04-02 23:50:56.359 +02:00 [INF] Hosting environment: Development
+2025-04-02 23:50:56.363 +02:00 [INF] Content root path: C:\Users\User\Desktop\web\MyFood\MyFood.Api
+2025-04-02 23:51:17.577 +02:00 [INF] Request starting HTTP/2 GET https://localhost:7124/ - null null
+2025-04-02 23:51:17.609 +02:00 [INF] ➡️ Incoming request: GET /
+2025-04-02 23:51:17.651 +02:00 [INF] ⬅️ Outgoing response: 404
+2025-04-02 23:51:17.658 +02:00 [INF] HTTP GET / responded 404 in 49.8762 ms
+2025-04-02 23:51:17.668 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7124/ - 404 0 null 92.4923ms
+2025-04-02 23:51:17.687 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7124/, Response status code: 404
+2025-04-02 23:51:20.837 +02:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2025-04-02 23:51:20.851 +02:00 [INF] ➡️ Incoming request: GET /swagger/index.html
+2025-04-02 23:51:21.013 +02:00 [INF] ⬅️ Outgoing response: 200
+2025-04-02 23:51:21.018 +02:00 [INF] HTTP GET /swagger/index.html responded 200 in 168.2162 ms
+2025-04-02 23:51:21.032 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 195.202ms
+2025-04-02 23:51:21.206 +02:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2025-04-02 23:51:21.216 +02:00 [INF] ➡️ Incoming request: GET /swagger/v1/swagger.json
+2025-04-02 23:51:21.392 +02:00 [INF] ⬅️ Outgoing response: 200
+2025-04-02 23:51:21.398 +02:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 182.8212 ms
+2025-04-02 23:51:21.406 +02:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 199.889ms
+2025-04-02 23:52:58.748 +02:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/auth/register - application/json-patch+json; x-api-version=1.0 93
+2025-04-02 23:52:58.787 +02:00 [INF] CORS policy execution successful.
+2025-04-02 23:52:58.797 +02:00 [INF] ➡️ Incoming request: POST /api/auth/register
+2025-04-02 23:52:58.806 +02:00 [INF] Executing endpoint 'MyFood.Api.Controllers.AuthController.Register (MyFood.Api)'
+2025-04-02 23:52:58.850 +02:00 [INF] Route matched with {action = "Register", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Register(MyFood.Application.Dtos.RegisterDto) on controller MyFood.Api.Controllers.AuthController (MyFood.Api).
+2025-04-02 23:52:58.872 +02:00 [INF] Executed action MyFood.Api.Controllers.AuthController.Register (MyFood.Api) in 3.8752ms
+2025-04-02 23:52:58.880 +02:00 [INF] Executed endpoint 'MyFood.Api.Controllers.AuthController.Register (MyFood.Api)'
+2025-04-02 23:52:58.889 +02:00 [ERR] HTTP POST /api/auth/register responded 500 in 110.3278 ms
+System.InvalidOperationException: Unable to resolve service for type 'Microsoft.AspNetCore.Identity.UserManager`1[MyFood.Domain.Entities.ApplicationUser]' while attempting to activate 'MyFood.Api.Controllers.AuthController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method72(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\RequestLoggingMiddleware.cs:line 22
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-04-02 23:52:58.949 +02:00 [ERR] An unhandled exception occurred.
+System.InvalidOperationException: Unable to resolve service for type 'Microsoft.AspNetCore.Identity.UserManager`1[MyFood.Domain.Entities.ApplicationUser]' while attempting to activate 'MyFood.Api.Controllers.AuthController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method72(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\RequestLoggingMiddleware.cs:line 22
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 23
+2025-04-02 23:52:58.991 +02:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/auth/register - 500 null null 243.6168ms
+2025-04-02 23:58:38.881 +02:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/auth/register - application/json-patch+json; x-api-version=1.0 71
+2025-04-02 23:58:38.901 +02:00 [INF] CORS policy execution successful.
+2025-04-02 23:58:38.907 +02:00 [INF] ➡️ Incoming request: POST /api/auth/register
+2025-04-02 23:58:38.913 +02:00 [INF] Executing endpoint 'MyFood.Api.Controllers.AuthController.Register (MyFood.Api)'
+2025-04-02 23:58:38.925 +02:00 [INF] Route matched with {action = "Register", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Register(MyFood.Application.Dtos.RegisterDto) on controller MyFood.Api.Controllers.AuthController (MyFood.Api).
+2025-04-02 23:58:38.937 +02:00 [INF] Executed action MyFood.Api.Controllers.AuthController.Register (MyFood.Api) in 0.5304ms
+2025-04-02 23:58:38.945 +02:00 [INF] Executed endpoint 'MyFood.Api.Controllers.AuthController.Register (MyFood.Api)'
+2025-04-02 23:58:38.950 +02:00 [ERR] HTTP POST /api/auth/register responded 500 in 49.7408 ms
+System.InvalidOperationException: Unable to resolve service for type 'Microsoft.AspNetCore.Identity.UserManager`1[MyFood.Domain.Entities.ApplicationUser]' while attempting to activate 'MyFood.Api.Controllers.AuthController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method72(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\RequestLoggingMiddleware.cs:line 22
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-04-02 23:58:38.985 +02:00 [ERR] An unhandled exception occurred.
+System.InvalidOperationException: Unable to resolve service for type 'Microsoft.AspNetCore.Identity.UserManager`1[MyFood.Domain.Entities.ApplicationUser]' while attempting to activate 'MyFood.Api.Controllers.AuthController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method72(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at MyFood.Api.Middleware.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\RequestLoggingMiddleware.cs:line 22
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at MyFood.Api.Middleware.ExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\Users\User\Desktop\web\MyFood\MyFood.Api\Middleware\ExceptionHandlingMiddleware.cs:line 23
+2025-04-02 23:58:39.020 +02:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/auth/register - 500 null null 139.4773ms
