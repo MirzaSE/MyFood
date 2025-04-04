@@ -12,7 +12,7 @@ namespace MyFood.Api
 
         public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => this.provider = provider;
 
-        public void Configure(SwaggerGenOptions options)
+        public void Configure(SwaggerGenOptions options) 
         {
             foreach (var description in provider.ApiVersionDescriptions)
             {
