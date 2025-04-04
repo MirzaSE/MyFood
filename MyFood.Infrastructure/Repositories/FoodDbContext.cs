@@ -12,6 +12,8 @@ namespace MyFood.Infrastructure.Repositories
         }
 
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
+
+
     }
 
 
