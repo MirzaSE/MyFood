@@ -3,5 +3,5 @@ namespace MyFood.Application.Entities;
 
 public class ApplicationUser : IdentityUser
 {
-    public string CustomProperty { get; set;  }
+    public string Role { get; set; } = "User";
 }

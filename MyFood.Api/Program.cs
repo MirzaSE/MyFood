@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Middleware;
-using MyFood.Api.Services;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
@@ -33,7 +32,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCustomCors("AllowAllOrigins");
 
-builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
@@ -52,38 +50,47 @@ opt.UseSqlServer(
 
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<FoodDbContext>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+    {
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 6;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = true;
+        options.User.RequireUniqueEmail = true;
+    }).AddEntityFrameworkStores<FoodDbContext>()
     .AddDefaultTokenProviders();
+builder.Services.AddScoped<RoleManager<IdentityRole>>();
+builder.Services.AddScoped<UserManager<ApplicationUser>>();
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<Configuration.JwtSettings>();
-builder.Services.Configure<Configuration.JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+var jwtSettings = builder.Configuration.GetSection("JWT").Get<Configuration.JwtSettings>();
+builder.Services.Configure<Configuration.JwtSettings>(builder.Configuration.GetSection("JWT"));
+var key = Encoding.ASCII.GetBytes(jwtSettings.Secret); 
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    
+    })
+    .AddJwtBearer(options =>
+    {
+    
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,      
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings.ValidIssuer,
+            ValidAudience = jwtSettings.ValidAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(key)
+        };
+        options.IncludeErrorDetails = true;
 
+    });
 //Add support to logging with SERILOG
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
-
-// Configure JWT authentication
-var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO secret should be in appSettings
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,      
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = "myfood.domain.com",
-        ValidAudience = "myfood.domain.com",
-        IssuerSigningKey = new SymmetricSecurityKey(key)
-    };
-
-    options.IncludeErrorDetails = true;
-});
+builder.Services.AddRazorPages();
 
 
 var app = builder.Build();
@@ -105,8 +112,6 @@ if (app.Environment.IsDevelopment())
                     description.GroupName.ToUpperInvariant());
             }
         });
-
-    app.SeedData();
 } 
 else
 {
@@ -126,5 +131,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapRazorPages();
 
 app.Run();
