@@ -16,6 +16,10 @@ using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using MyFood.Domain.Entities;
+using Microsoft.Extensions.Configuration;
+using MyFood.Application.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +52,16 @@ opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+               .AddEntityFrameworkStores<FoodDbContext>()
+               .AddDefaultTokenProviders();
+
+// Register the JwtSettings configuration section
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
+
+// Read JWT settings directly
+var jwtSettings = builder.Configuration.GetSection("JWT").Get<JwtSettings>();
+
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
@@ -56,7 +70,7 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 // Configure JWT authentication
-var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO secret should be in appSettings
+var key = Encoding.ASCII.GetBytes(jwtSettings.Secret); // Read settings with object
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -70,8 +84,8 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,      
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "myfood.domain.com",
-        ValidAudience = "myfood.domain.com",
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"], // Read settings directly from configuration
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 
