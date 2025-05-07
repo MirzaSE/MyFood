@@ -1,0 +1,44 @@
+version: '3.8'
+
+networks:
+  myFood-network:
+
+services:
+  SqlServerDb:
+    container_name: SqlServerContainer
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    ports:
+      - "14333:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password1
+    volumes:
+      - sql_data:/var/opt/mssql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -U sa -P Password1 -Q 'SELECT 1'"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - myFood-network
+
+  WebApi:
+    container_name: WebApiContainer
+    image: ${DOCKER_REGISTRY-}my-food-api-image
+    build:
+      context: .
+      dockerfile: MyFood.Api/Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - "ConnectionStrings__DefaultConnection=Server=SqlServerDb,1433;Database=MyFood_Database;User Id=sa;Password=Password1;TrustServerCertificate=True;Encrypt=False"
+    depends_on:
+      SqlServerDb:
+        condition: service_healthy
+    networks:
+      - myFood-network
+
+volumes:
+  sql_data:
