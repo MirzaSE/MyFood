@@ -14,7 +14,7 @@ services:
         container_name: WebApiContainer
         image: ${DOCKER_REGISTRY-}my-food-api-image
         ports:
-            - 8001:8080 
+            - 8080:8080 
         #command: ["dotnet ef database update"]  # Specify your entrypoint script
           
         environment:
