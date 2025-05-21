@@ -3,7 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
 using MyFood.Application.Entities;
-using MyFood.Infrastructure.Helpers;
+using MyFood.Infrastructure.Helpers2;
 
 namespace MyFood.Infrastructure.Repositories
 {

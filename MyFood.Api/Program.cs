@@ -8,7 +8,8 @@ using MyFood.Api.MappingProfiles;
 using MyFood.Api.Middleware;
 using MyFood.Api.Services;
 using MyFood.Infrastructure;
-using MyFood.Infrastructure.Helpers;
+using MyFood.Infrastructure.Helpers2;
+using MyFood.Application.Helpers;
 using MyFood.Infrastructure.Repositories;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -33,7 +34,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCustomCors("AllowAllOrigins");
+builder.Services.AddApiVersioning(options => { options.AssumeDefaultVersionWhenUnspecified = true; options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0); options.ReportApiVersions = true; });
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
@@ -44,7 +45,13 @@ builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
-builder.Services.AddVersioning();
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+});
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
 //opt.UseInMemoryDatabase("FoodDatabase"));

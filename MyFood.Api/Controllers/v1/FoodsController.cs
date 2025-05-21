@@ -34,7 +34,7 @@ namespace MyFood.Api.Controllers.v1
 
        
         [HttpGet(Name = nameof(GetAllFoods))]
-        public ActionResult GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
+        public ActionResult GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters, int page, int pageCount)
         {
             List<FoodEntity> foodItems = _foodRepository.GetAll(queryParameters).ToList();
 
