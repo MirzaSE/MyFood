@@ -1,6 +1,6 @@
 using MyFood.Application;
 
-namespace MyFood.Infrastructure.Helpers
+namespace MyFood.Application.Helpers
 {
     public static class QueryParametersExtensions
     {

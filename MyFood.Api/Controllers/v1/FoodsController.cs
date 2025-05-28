@@ -1,245 +1,90 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using MyFood.Application;
 using MyFood.Application.Dtos;
-using MyFood.Application.Entities;
-using MyFood.Infrastructure;
-using MyFood.Infrastructure.Helpers;
-using MyFood.Infrastructure.Repositories;
+using MyFood.Application;
+using System;
+using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
 
-namespace MyFood.Api.Controllers.v1
+//[Authorize]
+[ApiController]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
+public class FoodsController : ControllerBase
 {
-    [Authorize]
-    [ApiController]
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
-    public class FoodsController : ControllerBase
+    private readonly IFoodService _foodService;
+
+    public FoodsController(IFoodService foodService)
     {
-        private readonly IFoodRepository _foodRepository;
-        private readonly IMapper _mapper;
-        private readonly ILinkService<FoodsController> _linkService;
+        _foodService = foodService;
+    }
 
-        public FoodsController(
-            IFoodRepository foodRepository,
-            IMapper mapper,
-            ILinkService<FoodsController> linkService)
-        {
-            _foodRepository = foodRepository;
-            _mapper = mapper;
-            _linkService = linkService;
-        }
+    [HttpGet(Name = nameof(GetAllFoods))]
+    public ActionResult GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
+    {
+        var (foods, pagination, links) = _foodService.GetAllFoods(queryParameters, version);
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+        return Ok(new { value = foods, links });
+    }
 
-       
-        [HttpGet(Name = nameof(GetAllFoods))]
-        public ActionResult GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
-        {
-            List<FoodEntity> foodItems = _foodRepository.GetAll(queryParameters).ToList();
+    [HttpGet("{id:int}", Name = nameof(GetSingleFood))]
+    public ActionResult GetSingleFood(ApiVersion version, int id)
+    {
+        var (food, notFound) = _foodService.GetSingleFood(id, version);
+        if (notFound) return NotFound();
+        return Ok(food);
+    }
 
-            var allItemCount = _foodRepository.Count();
+    [HttpGet("search", Name = nameof(SearchByName))]
+    public ActionResult SearchByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, string name)
+    {
+        var (foods, pagination, links) = _foodService.SearchFoodsByName(name, queryParameters, version);
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+        return Ok(new { value = foods, links });
+    }
 
-            var paginationMetadata = new
-            {
-                totalCount = allItemCount,
-                pageSize = queryParameters.PageCount,
-                currentPage = queryParameters.Page,
-                totalPages = queryParameters.GetTotalPages(allItemCount)
-            };
+    [HttpPost(Name = nameof(AddFood))]
+    public ActionResult<FoodDto> AddFood(ApiVersion version, [FromBody] FoodCreateDto foodCreateDto)
+    {
+        var (food, created, error) = _foodService.AddFood(foodCreateDto, version);
+        if (!created) return BadRequest(error);
+        string json = JsonSerializer.Serialize(food);
+        FoodDto foodDto = JsonSerializer.Deserialize<FoodDto>(json);
+        return CreatedAtRoute(nameof(GetSingleFood), new { version = version.ToString(), id = foodDto?.Id }, food);
+    }
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+    [HttpPatch("{id:int}", Name = nameof(PartiallyUpdateFood))]
+    public ActionResult<FoodDto> PartiallyUpdateFood(ApiVersion version, int id, [FromBody] JsonPatchDocument<FoodUpdateDto> patchDoc)
+    {
+        var (food, notFound, error) = _foodService.PartiallyUpdateFood(id, patchDoc, version, ModelState);
+        if (notFound) return NotFound();
+        if (error != null) return BadRequest(error);
+        return Ok(food);
+    }
 
-            var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
-            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+    [HttpDelete("{id:int}", Name = nameof(RemoveFood))]
+    public ActionResult RemoveFood(int id)
+    {
+        var (notFound, error) = _foodService.RemoveFood(id);
+        if (notFound) return NotFound();
+        if (error != null) return BadRequest(error);
+        return NoContent();
+    }
 
-            return Ok(new
-            {
-                value = toReturn,
-                links = links
-            });
-        }
+    [HttpPut("{id:int}", Name = nameof(UpdateFood))]
+    public ActionResult<FoodDto> UpdateFood(ApiVersion version, int id, [FromBody] FoodUpdateDto foodUpdateDto)
+    {
+        var (food, notFound, error) = _foodService.UpdateFood(id, foodUpdateDto, version);
+        if (notFound) return NotFound();
+        if (error != null) return BadRequest(error);
+        return Ok(food);
+    }
 
-        [HttpGet]
-        [Route("{id:int}", Name = nameof(GetSingleFood))]
-        public ActionResult GetSingleFood(ApiVersion version, int id)
-        {
-
-            if (id < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
-            }
-
-            FoodEntity foodItem = _foodRepository.GetSingle(id);
-
-            if (foodItem == null)
-            {
-                return NotFound();
-            }
-
-            FoodDto item = _mapper.Map<FoodDto>(foodItem);
-
-            return Ok(_linkService.ExpandSingleFoodItem(item, item.Id, version));
-        }
-
-        [HttpGet]
-        [Route("search", Name = nameof(SearchByName))]
-        public ActionResult SearchByName(ApiVersion version,[FromQuery] QueryParameters queryParameters, string name)
-        {
-            var foodItems = _foodRepository.SearchFoodsByName(name);
-
-            var allItemCount = foodItems.Count();
-            var paginationMetadata = new
-            {
-                totalCount = allItemCount,
-                pageSize = queryParameters.PageCount,
-                currentPage = queryParameters.Page,
-                totalPages = queryParameters.GetTotalPages(allItemCount)
-            };
-
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
-
-            var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
-            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
-
-            return Ok(new
-            {
-                value = toReturn,
-                links = links
-            });
-        }
-
-        [HttpPost(Name = nameof(AddFood))]
-        public ActionResult<FoodDto> AddFood(ApiVersion version, [FromBody] FoodCreateDto foodCreateDto)
-        {
-            if (foodCreateDto == null)
-            {
-                return BadRequest();
-            }
-
-            FoodEntity toAdd = _mapper.Map<FoodEntity>(foodCreateDto);
-
-            _foodRepository.Add(toAdd);
-
-            if (!_foodRepository.Save())
-            {
-                throw new Exception("Creating a fooditem failed on save.");
-            }
-
-            FoodEntity newFoodItem = _foodRepository.GetSingle(toAdd.Id);
-            FoodDto foodDto = _mapper.Map<FoodDto>(newFoodItem);
-
-            return CreatedAtRoute(nameof(GetSingleFood),
-                new { version = version.ToString(), id = newFoodItem.Id },
-                _linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
-        }
-
-        [HttpPatch("{id:int}", Name = nameof(PartiallyUpdateFood))]
-        public ActionResult<FoodDto> PartiallyUpdateFood(ApiVersion version, int id, [FromBody] JsonPatchDocument<FoodUpdateDto> patchDoc)
-        {
-            if (patchDoc == null)
-            {
-                return BadRequest();
-            }
-
-            FoodEntity existingEntity = _foodRepository.GetSingle(id);
-
-            if (existingEntity == null)
-            {
-                return NotFound();
-            }
-
-            FoodUpdateDto foodUpdateDto = _mapper.Map<FoodUpdateDto>(existingEntity);
-            patchDoc.ApplyTo(foodUpdateDto);
-
-            TryValidateModel(foodUpdateDto);
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _mapper.Map(foodUpdateDto, existingEntity);
-            FoodEntity updated = _foodRepository.Update(id, existingEntity);
-
-            if (!_foodRepository.Save())
-            {
-                throw new Exception("Updating a fooditem failed on save.");
-            }
-
-            FoodDto foodDto = _mapper.Map<FoodDto>(updated);
-
-            return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
-        }
-
-        [HttpDelete]
-        [Route("{id:int}", Name = nameof(RemoveFood))]
-        public ActionResult RemoveFood(int id)
-        {
-            FoodEntity foodItem = _foodRepository.GetSingle(id);
-
-            if (foodItem == null)
-            {
-                return NotFound();
-            }
-
-            _foodRepository.Delete(id);
-
-            if (!_foodRepository.Save())
-            {
-                throw new Exception("Deleting a fooditem failed on save.");
-            }
-
-            return NoContent();
-        }
-
-        [HttpPut]
-        [Route("{id:int}", Name = nameof(UpdateFood))]
-        public ActionResult<FoodDto> UpdateFood(ApiVersion version, int id, [FromBody] FoodUpdateDto foodUpdateDto)
-        {
-            if (foodUpdateDto == null)
-            {
-                return BadRequest();
-            }
-
-            var existingFoodItem = _foodRepository.GetSingle(id);
-
-            if (existingFoodItem == null)
-            {
-                return NotFound();
-            }
-
-            _mapper.Map(foodUpdateDto, existingFoodItem);
-
-            _foodRepository.Update(id, existingFoodItem);
-
-            if (!_foodRepository.Save())
-            {
-                throw new Exception("Updating a fooditem failed on save.");
-            }
-
-            FoodDto foodDto = _mapper.Map<FoodDto>(existingFoodItem);
-
-            return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
-        }
-
-        [HttpGet("GetRandomMeal", Name = nameof(GetRandomMeal))]
-        public ActionResult GetRandomMeal()
-        {
-            ICollection<FoodEntity> foodItems = _foodRepository.GetRandomMeal();
-
-            IEnumerable<FoodDto> dtos = foodItems.Select(x => _mapper.Map<FoodDto>(x));
-
-            var links = new List<LinkDto>();
-
-            // self 
-            links.Add(new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET"));
-
-            return Ok(new
-            {
-                value = dtos,
-                links = links
-            });
-        }
+    [HttpGet("GetRandomMeal", Name = nameof(GetRandomMeal))]
+    public ActionResult GetRandomMeal(ApiVersion version)
+    {
+        var (foods, links) = _foodService.GetRandomMeal(version, Url.Link);
+        return Ok(new { value = foods, links });
     }
 }

@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using MyFood.Api.Services;
 using MyFood.Application;
-using MyFood.Infrastructure.Helpers;
-using MyFood.Infrastructure.Models;
+using MyFood.Application.Helpers;
 using System.Reflection;
 
 namespace MyFood.Infrastructure

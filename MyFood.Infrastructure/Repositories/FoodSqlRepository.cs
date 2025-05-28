@@ -1,9 +1,6 @@
-﻿
-
-using Microsoft.EntityFrameworkCore;
-using MyFood.Application;
-using MyFood.Application.Entities;
-using MyFood.Infrastructure.Helpers;
+﻿using Microsoft.EntityFrameworkCore;
+using MyFood.Domain.Entities;
+using MyFood.Domain.Interfaces;
 
 namespace MyFood.Infrastructure.Repositories
 {
@@ -38,20 +35,20 @@ namespace MyFood.Infrastructure.Repositories
             return item;
         }
 
-        public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
+        public IQueryable<FoodEntity> GetAll(string query, int pageCount, int page)
         {
             IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
 
-            if (queryParameters.HasQuery())
+            if (!string.IsNullOrWhiteSpace(query))
             {
                 _allItems = _allItems
-                    .Where(x => x.Calories.ToString().Contains(queryParameters.Query.ToLowerInvariant())
-                    || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+                    .Where(x => x.Calories.ToString().Contains(query.ToLowerInvariant())
+                    || x.Name.ToLowerInvariant().Contains(query.ToLowerInvariant()));
             }
 
             return _allItems
-                .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
-                .Take(queryParameters.PageCount);
+                .Skip(pageCount * (page - 1))
+                .Take(pageCount);
         }
 
         public int Count()

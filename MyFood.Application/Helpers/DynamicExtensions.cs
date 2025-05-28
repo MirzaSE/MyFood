@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Dynamic;
 
-namespace MyFood.Infrastructure.Models
+namespace MyFood.Application.Helpers
 {
     public static class DynamicExtensions
     {

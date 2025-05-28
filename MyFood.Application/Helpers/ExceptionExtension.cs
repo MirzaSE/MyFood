@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace MyFood.Infrastructure.Helpers
+namespace MyFood.Application.Helpers
 {
     public static class ExceptionExtension
     {

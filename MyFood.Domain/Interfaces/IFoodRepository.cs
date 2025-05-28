@@ -1,7 +1,6 @@
-﻿using MyFood.Application;
-using MyFood.Application.Entities;
+﻿using MyFood.Domain.Entities;
 
-namespace MyFood.Infrastructure.Repositories
+namespace MyFood.Domain.Interfaces
 {
     public interface IFoodRepository
     {
@@ -9,7 +8,7 @@ namespace MyFood.Infrastructure.Repositories
         void Add(FoodEntity item);
         void Delete(int id);
         FoodEntity Update(int id, FoodEntity item);
-        IQueryable<FoodEntity> GetAll(QueryParameters queryParameters);
+        IQueryable<FoodEntity> GetAll(string query, int pageCount, int page);
         ICollection<FoodEntity> GetRandomMeal();
 
         IEnumerable<FoodEntity> SearchFoodsByName(string name);

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace MyFood.Infrastructure.Helpers
+namespace MyFood.Application.Helpers
 {
     public static class CorsExtension
     {

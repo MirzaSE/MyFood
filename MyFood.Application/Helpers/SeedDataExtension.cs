@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using MyFood.Api.Services;
-using MyFood.Infrastructure.Repositories;
+using MyFood.Domain.Interfaces;
 
-namespace MyFood.Infrastructure.Helpers
+namespace MyFood.Application.Helpers
 {
     public static class SeedDataExtension
     {
@@ -11,10 +10,10 @@ namespace MyFood.Infrastructure.Helpers
         {
             using (var scope = app.Services.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<FoodDbContext>();
+                var foodRepository = scope.ServiceProvider.GetRequiredService<IFoodRepository>();
                 var seedDataService = scope.ServiceProvider.GetRequiredService<ISeedDataService>();
 
-                seedDataService.Initialize(dbContext);
+                seedDataService.Initialize(foodRepository);
             }
         }
     }
