@@ -2,10 +2,14 @@
 
   <PropertyGroup>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <TargetFramework>net10.0</TargetFramework>
 =======
     <TargetFramework>net8.0</TargetFramework>
 >>>>>>> b105ad4 (Week Three App)
+=======
+    <TargetFramework>net10.0</TargetFramework>
+>>>>>>> 7db21e6 (Updates for .NET 10)
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>28f053ed-bd8f-44fe-8f04-b8d458bed6b3</UserSecretsId>
