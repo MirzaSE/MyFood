@@ -1,3 +1,5 @@
+using MyFood.Application.Entities;
+
 public interface IIngredientRepository
 {
     void AddIngredient(IngredientEntity ingredient);

@@ -1,3 +1,6 @@
+using MyFood.Application.Entities;
+using MyFood.Infrastructure.Repositories;
+
 public class IngredientSqlRepository : IIngredientRepository
 {
     private readonly FoodDbContext _context;
