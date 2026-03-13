@@ -12,7 +12,6 @@ namespace MyFood.Application.Entities
         public int Calories { get; set; }
         public DateTime Created { get; set; }
 
-        public List<IngredientEntity> IngredientEntityList {get; set;} = [];
-
+        public List<IngredientEntity> Ingredients {get; set;} = new();
     }
 }
