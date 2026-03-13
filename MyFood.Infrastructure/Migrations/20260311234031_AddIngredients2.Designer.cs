@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFood.Infrastructure.Repositories;
 
@@ -11,9 +12,11 @@ using MyFood.Infrastructure.Repositories;
 namespace MyFood.Infrastructure.Migrations
 {
     [DbContext(typeof(FoodDbContext))]
-    partial class FoodDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260311234031_AddIngredients2")]
+    partial class AddIngredients2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +60,7 @@ namespace MyFood.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("FoodEntityId")
+                    b.Property<int?>("FoodEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -76,13 +79,9 @@ namespace MyFood.Infrastructure.Migrations
 
             modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
                 {
-                    b.HasOne("MyFood.Application.Entities.FoodEntity", "Food")
+                    b.HasOne("MyFood.Application.Entities.FoodEntity", null)
                         .WithMany("Ingredients")
-                        .HasForeignKey("FoodEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Food");
+                        .HasForeignKey("FoodEntityId");
                 });
 
             modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
