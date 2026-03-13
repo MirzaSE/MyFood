@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Data.Common;
 
 namespace MyFood.Application.Entities
 {
@@ -7,7 +6,7 @@ namespace MyFood.Application.Entities
     {
         public int Id {get; set;}
 
-        public int Name {get; set;}
+        public string? Name {get; set; }
         [MaxLength(260)]
 
         public int Quantity {get; set;}
