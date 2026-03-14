@@ -1,4 +1,4 @@
-﻿
+
 
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
@@ -7,49 +7,45 @@ using MyFood.Infrastructure.Helpers;
 
 namespace MyFood.Infrastructure.Repositories
 {
-    public class FoodSqlRepository : IFoodRepository
+    public class IngredientSqlRepository : IIngredientRepository
     {
         private readonly FoodDbContext _foodDbContext;
 
-        public FoodSqlRepository(FoodDbContext foodDbContext)
+        public IngredientSqlRepository(FoodDbContext foodDbContext)
         {
             _foodDbContext = foodDbContext;
         }
 
-        public FoodEntity GetSingle(int id)
+        public IngredientEntity GetSingle(int id)
         {
-            return _foodDbContext.FoodItems
-                .Include(f => f.Ingredients)
-                .FirstOrDefault(x => x.Id == id);
+            return _foodDbContext.Ingredients.FirstOrDefault(x => x.Id == id);
         }
 
-        public void Add(FoodEntity item)
+        public void Add(IngredientEntity item)
         {
-            _foodDbContext.FoodItems.Add(item);
+            _foodDbContext.Ingredients.Add(item);
         }
 
         public void Delete(int id)
         {
-            FoodEntity foodItem = GetSingle(id);
-            _foodDbContext.FoodItems.Remove(foodItem);
+            IngredientEntity Ingredients = GetSingle(id);
+            _foodDbContext.Ingredients.Remove(Ingredients);
         }
 
-        public FoodEntity Update(int id, FoodEntity item)
+        public IngredientEntity Update(int id, IngredientEntity item)
         {
-            _foodDbContext.FoodItems.Update(item);
+            _foodDbContext.Ingredients.Update(item);
             return item;
         }
 
-        public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
+        public IQueryable<IngredientEntity> GetAll(QueryParameters queryParameters)
         {
-            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems
-                .Include(f => f.Ingredients)
-                .OrderBy(x => x.Name);
+            IQueryable<IngredientEntity> _allItems = _foodDbContext.Ingredients.OrderBy(x=>x.Name);
 
             if (queryParameters.HasQuery())
             {
                 _allItems = _allItems
-                    .Where(x => x.Calories.ToString().Contains(queryParameters.Query.ToLowerInvariant())
+                    .Where(x => x.Quantity.ToString().Contains(queryParameters.Query.ToLowerInvariant())
                     || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
             }
 
@@ -60,7 +56,7 @@ namespace MyFood.Infrastructure.Repositories
 
         public int Count()
         {
-            return _foodDbContext.FoodItems.Count();
+            return _foodDbContext.Ingredients.Count();
         }
 
         public bool Save()
@@ -68,9 +64,9 @@ namespace MyFood.Infrastructure.Repositories
             return (_foodDbContext.SaveChanges() >= 0);
         }
 
-        public ICollection<FoodEntity> GetRandomMeal()
+        public ICollection<IngredientEntity> GetRandomMeal()
         {
-            List<FoodEntity> toReturn = new List<FoodEntity>();
+            List<IngredientEntity> toReturn = new List<IngredientEntity>();
 
             toReturn.Add(GetRandomItem("Starter"));
             toReturn.Add(GetRandomItem("Main"));
@@ -80,19 +76,19 @@ namespace MyFood.Infrastructure.Repositories
         }
 
 
-        public IEnumerable<FoodEntity> SearchFoodsByName(string name)
+        public IEnumerable<IngredientEntity> SearchFoodsByName(string name)
         {
-            return _foodDbContext.FoodItems
+            return _foodDbContext.Ingredients
                 .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
                 .ToList();
 
             // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
         }
 
-        private FoodEntity GetRandomItem(string type)
+        private IngredientEntity GetRandomItem(string type)
         {
-            return _foodDbContext.FoodItems
-                .Where(x => x.Type == type)
+            return _foodDbContext.Ingredients
+                .Where(x => x.Name == type)
                 .OrderBy(o => Guid.NewGuid())
                 .FirstOrDefault();
         }
