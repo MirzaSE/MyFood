@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyFood.Application.Dtos;
 using MyFood.Application.Entities;
 using MyFood.Infrastructure.Repositories;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace MyFood.Api.Controllers.v1
 {
@@ -58,6 +59,42 @@ namespace MyFood.Api.Controllers.v1
                 new { version = HttpContext.GetRequestedApiVersion()?.ToString() ?? "1.0", id = ingredientToReturn.Id }, 
                 ingredientToReturn);
         }
+
+        [HttpPatch("{id}")]
+public ActionResult PartiallyUpdateIngredient(int id, [FromBody] JsonPatchDocument<IngredientUpdateDto> patchDoc)
+{
+    if (patchDoc == null)
+    {
+        return BadRequest();
+    }
+
+    var ingredientEntity = _ingredientRepository.GetSingle(id);
+
+    if (ingredientEntity == null)
+    {
+        return NotFound();
+    }
+
+    var ingredientToPatch = _mapper.Map<IngredientUpdateDto>(ingredientEntity);
+
+    patchDoc.ApplyTo(ingredientToPatch, ModelState);
+
+    if (!TryValidateModel(ingredientToPatch))
+    {
+        return ValidationProblem(ModelState);
+    }
+
+    _mapper.Map(ingredientToPatch, ingredientEntity);
+
+    _ingredientRepository.Update(ingredientEntity);
+
+    if (!_ingredientRepository.Save())
+    {
+        throw new Exception($"Patching ingredient {id} failed on save.");
+    }
+
+    return NoContent();
+}
 
         [HttpPut("{id}")]
         public ActionResult UpdateIngredient(int id, [FromBody] IngredientUpdateDto ingredientUpdateDto)
