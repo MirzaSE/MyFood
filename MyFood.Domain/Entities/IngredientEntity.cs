@@ -10,9 +10,11 @@ namespace MyFood.Domain.Entities
         [MaxLength(100)]
         public string Name { get; set; }
 
-        public int FoodEntityId { get; set; }
-        
+        public int? FoodEntityId { get; set; }
+
+        public DateTime Created { get; set; }
+
         [ForeignKey("FoodEntityId")]
-        public FoodEntity FoodEntity { get; set; }
+        public FoodEntity? FoodEntity { get; set; }
     }
 }
