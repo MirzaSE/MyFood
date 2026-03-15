@@ -178,12 +178,17 @@ namespace MyFood.Infrastructure.Migrations
 
                     b.Property<string>("Name")
 <<<<<<< HEAD
+<<<<<<< HEAD
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 =======
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 >>>>>>> 63d6555 (Migrations and Data Seed)
+=======
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+>>>>>>> d243566 (Assignment 1 - Ingredients API)
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
@@ -193,6 +198,7 @@ namespace MyFood.Infrastructure.Migrations
 
                     b.ToTable("FoodItems");
                 });
+<<<<<<< HEAD
 <<<<<<< HEAD
 
             modelBuilder.Entity("MyFood.Domain.Entities.ApplicationUser", b =>
@@ -312,6 +318,49 @@ namespace MyFood.Infrastructure.Migrations
                 });
 =======
 >>>>>>> 63d6555 (Migrations and Data Seed)
+=======
+
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FoodId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.Property<string>("Quantity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodId");
+
+                    b.ToTable("Ingredients");
+                });
+
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
+                {
+                    b.HasOne("MyFood.Application.Entities.FoodEntity", "Food")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("FoodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Food");
+                });
+
+            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
+                {
+                    b.Navigation("Ingredients");
+                });
+>>>>>>> d243566 (Assignment 1 - Ingredients API)
 #pragma warning restore 612, 618
         }
     }

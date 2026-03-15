@@ -1,5 +1,6 @@
-﻿using MyFood.Application;
+﻿
 using MyFood.Application.Entities;
+using MyFood.Application;
 
 namespace MyFood.Infrastructure.Repositories
 {
@@ -10,9 +11,8 @@ namespace MyFood.Infrastructure.Repositories
         void Delete(int id);
         FoodEntity Update(int id, FoodEntity item);
         IQueryable<FoodEntity> GetAll(QueryParameters queryParameters);
+        IQueryable<FoodEntity> SearchFoodsByName(string name);
         ICollection<FoodEntity> GetRandomMeal();
-
-        IEnumerable<FoodEntity> SearchFoodsByName(string name);
         int Count();
         bool Save();
     }

@@ -27,7 +27,13 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+<<<<<<< HEAD
 builder.WebHost.UseUrls("http://*:8080");
+=======
+
+builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>(); 
+
+>>>>>>> d243566 (Assignment 1 - Ingredients API)
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
@@ -80,7 +86,7 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-builder.Services.AddAutoMapper(typeof(FoodMappings));
+builder.Services.AddAutoMapper(typeof(FoodMappings), typeof(IngredientMappings));
 
 //Add support to logging with SERILOG
 builder.Host.UseSerilog((context, configuration) =>
