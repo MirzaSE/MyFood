@@ -10,6 +10,7 @@ namespace MyFood.Application.Entities
         [MaxLength(50)]
         public string? Type { get; set; }
         public int Calories { get; set; }
+        public ICollection<IngredientEntity> Ingredients { get; set; } = new List<IngredientEntity>();
         public DateTime Created { get; set; }
     }
 }
