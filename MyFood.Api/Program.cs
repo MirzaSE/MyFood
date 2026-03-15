@@ -19,11 +19,10 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
-                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
+                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -33,6 +32,8 @@ builder.Services.AddCustomCors("AllowAllOrigins");
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
+
+builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
@@ -43,7 +44,7 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-//opt.UseInMemoryDatabase("FoodDatabase"));
+
 opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
@@ -51,11 +52,9 @@ opt.UseSqlServer(
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
-//Add support to logging with SERILOG
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
-// Configure JWT authentication
 var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO secret should be in appSettings
 builder.Services.AddAuthentication(options =>
 {
@@ -68,7 +67,7 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true,      
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = "myfood.domain.com",
         ValidAudience = "myfood.domain.com",
@@ -83,7 +82,6 @@ var app = builder.Build();
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -97,9 +95,14 @@ if (app.Environment.IsDevelopment())
                     description.GroupName.ToUpperInvariant());
             }
         });
-
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<FoodDbContext>();
+        dbContext.Database.Migrate();
+    }
     app.SeedData();
-} 
+
+}
 else
 {
     app.AddProductionExceptionHandling(loggerFactory);
@@ -108,7 +111,6 @@ else
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
-//Add support to logging request with SERILOG
 app.UseSerilogRequestLogging();
 
 app.UseCors("AllowAllOrigins");
