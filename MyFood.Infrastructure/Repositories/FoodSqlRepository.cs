@@ -1,8 +1,6 @@
 ﻿
-
-using Microsoft.EntityFrameworkCore;
-using MyFood.Application;
 using MyFood.Application.Entities;
+using MyFood.Application;
 using MyFood.Infrastructure.Helpers;
 
 namespace MyFood.Infrastructure.Repositories
@@ -54,6 +52,20 @@ namespace MyFood.Infrastructure.Repositories
                 .Take(queryParameters.PageCount);
         }
 
+        public IQueryable<FoodEntity> SearchFoodsByName(string name)
+        {
+            IQueryable<FoodEntity> foodItems = _foodDbContext.FoodItems.OrderBy(x => x.Name);
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return foodItems;
+            }
+
+            var loweredName = name.ToLowerInvariant();
+
+            return foodItems.Where(x => x.Name != null && x.Name.ToLowerInvariant().Contains(loweredName));
+        }
+
         public int Count()
         {
             return _foodDbContext.FoodItems.Count();
@@ -73,16 +85,6 @@ namespace MyFood.Infrastructure.Repositories
             toReturn.Add(GetRandomItem("Dessert"));
 
             return toReturn;
-        }
-
-
-        public IEnumerable<FoodEntity> SearchFoodsByName(string name)
-        {
-            return _foodDbContext.FoodItems
-                .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
-                .ToList();
-
-            // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
         }
 
         private FoodEntity GetRandomItem(string type)

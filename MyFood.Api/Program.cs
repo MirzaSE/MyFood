@@ -21,6 +21,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>(); 
+
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
@@ -49,7 +51,7 @@ opt.UseSqlServer(
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
 
-builder.Services.AddAutoMapper(typeof(FoodMappings));
+builder.Services.AddAutoMapper(typeof(FoodMappings), typeof(IngredientMappings));
 
 //Add support to logging with SERILOG
 builder.Host.UseSerilog((context, configuration) =>
