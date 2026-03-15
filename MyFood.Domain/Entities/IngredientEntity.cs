@@ -1,14 +1,20 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyFood.Application.Entities
 {
     public class IngredientEntity
     {
-        public int Id {get; set;}
+        public int Id { get; set; }
 
-        public string? Name {get; set; }
+        public string? Name { get; set; }
+
         [MaxLength(260)]
+        public int Quantity { get; set; }
 
-        public int Quantity {get; set;}
+        public int? FoodEntityId { get; set; }
+
+        [ForeignKey("FoodEntityId")]
+        public FoodEntity? FoodEntity { get; set; }
     }
 }

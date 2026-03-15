@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
+using MyFood.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -11,40 +13,85 @@ namespace MyFood.Api.Controllers.v1
     [Route("api/[controller]")]
     public class AuthenticateController : ControllerBase
     {
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLoginDto userLogin)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
+
+        public AuthenticateController(
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration configuration)
         {
-            // Validate user credentials (this is just an example, use a proper validation method)
-            if (userLogin.Username == "test" && userLogin.Password == "password")
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _configuration = configuration;
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto model)
+        {
+            var user = await _userManager.FindByNameAsync(model.Username);
+            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                var token = GenerateJwtToken(userLogin.Username);
-                return Ok(new { Token = token });
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+
+                var userRoles = await _userManager.GetRolesAsync(user);
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+
+                var token = GenerateJwtToken(authClaims);
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                });
             }
+
             return Unauthorized();
         }
 
-        private string GenerateJwtToken(string username)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
         {
-            var claims = new[]
-            { 
-                new Claim(JwtRegisteredClaimNames.UniqueName, username),
-                // Add more claims if needed
+            var userExists = await _userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "User exists");
+            }
+
+            var user = new ApplicationUser
+            {
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"));  // TODO Get from appsettings
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "User creation failed! Please check user details and try again.");
+            }
 
-            // TODO Get from appsettings
-            var token = new JwtSecurityToken(
-                issuer: "myfood.domain.com",
-                audience: "myfood.domain.com",
+            return Ok("User created successfully!");
+        }
+
+        private JwtSecurityToken GenerateJwtToken(IEnumerable<Claim> claims)
+        {
+            var secret = _configuration["JWT:Secret"] ?? throw new InvalidOperationException("JWT secret is not configured.");
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+
+            return new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddHours(3),
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(2),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256));
         }
     }
-
 }

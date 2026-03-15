@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFood.Infrastructure.Repositories;
 
@@ -11,13 +12,15 @@ using MyFood.Infrastructure.Repositories;
 namespace MyFood.Infrastructure.Migrations
 {
     [DbContext(typeof(FoodDbContext))]
-    partial class FoodDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240331202126_User")]
+    partial class User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -180,43 +183,6 @@ namespace MyFood.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FoodItems");
-                });
-
-            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("FoodEntityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Quantity")
-                        .HasMaxLength(260)
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FoodEntityId");
-
-                    b.ToTable("IngredientEntities");
-                });
-
-            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
-                {
-                    b.HasOne("MyFood.Application.Entities.FoodEntity", null)
-                        .WithMany("Ingredients")
-                        .HasForeignKey("FoodEntityId");
-                });
-
-            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
-                {
-                    b.Navigation("Ingredients");
                 });
 
             modelBuilder.Entity("MyFood.Domain.Entities.ApplicationUser", b =>

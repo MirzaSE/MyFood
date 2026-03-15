@@ -1,5 +1,3 @@
-
-
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
 using MyFood.Application.Entities;
@@ -9,9 +7,9 @@ namespace MyFood.Infrastructure.Repositories
 {
     public class IngredientSqlRepository : IIngredientRepository
     {
-         private readonly FoodDbContext _foodDbContext;
+        private readonly FoodDbContext _foodDbContext;
 
-        public IngredientSqlRepository(FoodDbContext foodDbContext) 
+        public IngredientSqlRepository(FoodDbContext foodDbContext)
         {
             _foodDbContext = foodDbContext;
         }
@@ -20,7 +18,7 @@ namespace MyFood.Infrastructure.Repositories
         {
             _foodDbContext.IngredientEntities.Add(item);
         }
-        
+
         public IngredientEntity GetSingle(int id)
         {
             return _foodDbContext.IngredientEntities.FirstOrDefault(i => i.Id == id);
@@ -29,10 +27,11 @@ namespace MyFood.Infrastructure.Repositories
         public void Delete(int id)
         {
             IngredientEntity? ingredientItem = GetSingle(id);
-            if(ingredientItem == null)
+            if (ingredientItem == null)
             {
                 return;
             }
+
             _foodDbContext.IngredientEntities.Remove(ingredientItem);
         }
 
@@ -62,18 +61,16 @@ namespace MyFood.Infrastructure.Repositories
         {
             return _foodDbContext.IngredientEntities.Count();
         }
-        
+
         public bool Save()
         {
-            return _foodDbContext.SaveChanges() >=0;
+            return _foodDbContext.SaveChanges() >= 0;
         }
 
         public IEnumerable<IngredientEntity> SearchIngredientsByName(string name)
         {
-            return _foodDbContext.IngredientEntities    
-            .Where(f => EF.Functions.Like(f.Name ?? string.Empty, $"%{name}%"));
-;
-        } 
-    
+            return _foodDbContext.IngredientEntities
+                .Where(f => EF.Functions.Like(f.Name ?? string.Empty, $"%{name}%"));
+        }
     }
 }
