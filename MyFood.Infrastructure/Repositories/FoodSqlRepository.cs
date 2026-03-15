@@ -1,96 +1,93 @@
-﻿
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
-using MyFood.Application.Entities;
+using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Helpers;
 
-namespace MyFood.Infrastructure.Repositories
+namespace MyFood.Infrastructure.Repositories;
+
+public class FoodSqlRepository : IFoodRepository
 {
-    public class FoodSqlRepository : IFoodRepository
+    private readonly FoodDbContext _foodDbContext;
+
+    public FoodSqlRepository(FoodDbContext foodDbContext)
     {
-        private readonly FoodDbContext _foodDbContext;
+        _foodDbContext = foodDbContext;
+    }
 
-        public FoodSqlRepository(FoodDbContext foodDbContext)
+    public FoodEntity GetSingle(int id)
+    {
+        return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
+    }
+
+    public void Add(FoodEntity item)
+    {
+        _foodDbContext.FoodItems.Add(item);
+    }
+
+    public void Delete(int id)
+    {
+        FoodEntity foodItem = GetSingle(id);
+        _foodDbContext.FoodItems.Remove(foodItem);
+    }
+
+    public FoodEntity Update(int id, FoodEntity item)
+    {
+        _foodDbContext.FoodItems.Update(item);
+        return item;
+    }
+
+    public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
+    {
+        IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
+
+        if (queryParameters.HasQuery())
         {
-            _foodDbContext = foodDbContext;
+            _allItems = _allItems
+                .Where(x => x.Calories.ToString().Contains(queryParameters.Query.ToLowerInvariant())
+                            || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
         }
 
-        public FoodEntity GetSingle(int id)
-        {
-            return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
-        }
+        return _allItems
+            .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
+            .Take(queryParameters.PageCount);
+    }
 
-        public void Add(FoodEntity item)
-        {
-            _foodDbContext.FoodItems.Add(item);
-        }
+    public int Count()
+    {
+        return _foodDbContext.FoodItems.Count();
+    }
 
-        public void Delete(int id)
-        {
-            FoodEntity foodItem = GetSingle(id);
-            _foodDbContext.FoodItems.Remove(foodItem);
-        }
+    public bool Save()
+    {
+        return (_foodDbContext.SaveChanges() >= 0);
+    }
 
-        public FoodEntity Update(int id, FoodEntity item)
-        {
-            _foodDbContext.FoodItems.Update(item);
-            return item;
-        }
+    public ICollection<FoodEntity> GetRandomMeal()
+    {
+        List<FoodEntity> toReturn = new List<FoodEntity>();
 
-        public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
-        {
-            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
+        toReturn.Add(GetRandomItem("Starter"));
+        toReturn.Add(GetRandomItem("Main"));
+        toReturn.Add(GetRandomItem("Dessert"));
 
-            if (queryParameters.HasQuery())
-            {
-                _allItems = _allItems
-                    .Where(x => x.Calories.ToString().Contains(queryParameters.Query.ToLowerInvariant())
-                    || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
-            }
-
-            return _allItems
-                .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
-                .Take(queryParameters.PageCount);
-        }
-
-        public int Count()
-        {
-            return _foodDbContext.FoodItems.Count();
-        }
-
-        public bool Save()
-        {
-            return (_foodDbContext.SaveChanges() >= 0);
-        }
-
-        public ICollection<FoodEntity> GetRandomMeal()
-        {
-            List<FoodEntity> toReturn = new List<FoodEntity>();
-
-            toReturn.Add(GetRandomItem("Starter"));
-            toReturn.Add(GetRandomItem("Main"));
-            toReturn.Add(GetRandomItem("Dessert"));
-
-            return toReturn;
-        }
+        return toReturn;
+    }
 
 
-        public IEnumerable<FoodEntity> SearchFoodsByName(string name)
-        {
-            return _foodDbContext.FoodItems
-                .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
-                .ToList();
+    public IEnumerable<FoodEntity> SearchFoodsByName(string name)
+    {
+        return _foodDbContext.FoodItems
+            .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
+            .ToList();
 
-            // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
-        }
+        // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
+    }
 
-        private FoodEntity GetRandomItem(string type)
-        {
-            return _foodDbContext.FoodItems
-                .Where(x => x.Type == type)
-                .OrderBy(o => Guid.NewGuid())
-                .FirstOrDefault();
-        }
+    private FoodEntity GetRandomItem(string type)
+    {
+        return _foodDbContext.FoodItems
+            .Where(x => x.Type == type)
+            .OrderBy(o => Guid.NewGuid())
+            .FirstOrDefault();
     }
 }
