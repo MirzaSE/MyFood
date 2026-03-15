@@ -12,6 +12,8 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '10.0.x'
+    - name: Restore dependencies
+      run: dotnet restore MyFood.sln
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: dotnet build MyFood.sln --configuration Release --no-restore
