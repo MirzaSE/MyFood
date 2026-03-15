@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MyFood.Infrastructure;
+using MyFood.Infrastructure.Repositories;
 
 #nullable disable
 
 namespace MyFood.Infrastructure.Migrations
 {
     [DbContext(typeof(FoodDbContext))]
-    partial class FoodDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260311162230_NewMigration")]
+    partial class NewMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,22 +77,6 @@ namespace MyFood.Infrastructure.Migrations
                     b.HasIndex("FoodId");
 
                     b.ToTable("Ingredients");
-                });
-
-            modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
-                {
-                    b.HasOne("MyFood.Domain.Entities.FoodEntity", "Food")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("FoodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Food");
-                });
-
-            modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>
-                {
-                    b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618
         }

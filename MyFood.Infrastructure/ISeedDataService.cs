@@ -1,4 +1,5 @@
-﻿using MyFood.Infrastructure.Repositories;
+﻿using MyFood.Infrastructure;
+using MyFood.Infrastructure.Repositories;
 
 namespace MyFood.Api.Services
 {

@@ -1,7 +1,7 @@
-﻿  using Microsoft.EntityFrameworkCore;
-using MyFood.Application.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MyFood.Domain.Entities;
 
-namespace MyFood.Infrastructure.Repositories
+namespace MyFood.Infrastructure
 {
     public class FoodDbContext : DbContext
     {
@@ -11,5 +11,9 @@ namespace MyFood.Infrastructure.Repositories
         }
 
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
+        public DbSet<IngredientEntity> Ingredients { get; set; } = null!;
+
+        // Add more DbSets here if you have more entities
+        // public DbSet<RecipeEntity> Recipes { get; set; } = null!;
     }
 }
