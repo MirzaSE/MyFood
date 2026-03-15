@@ -7,9 +7,11 @@ namespace MyFood.Application.Entities
     {
         public int Id { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(260)]
         public string Name { get; set; }
-
+        
+        public int Quantity{get;set;}
+        
         public int FoodEntityId { get; set; }
         
         [ForeignKey("FoodEntityId")]
