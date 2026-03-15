@@ -1,10 +1,14 @@
+using MyFood.Application.Interfaces;
 using MyFood.Application.Entities;
 
-public interface IIngredientRepository
+namespace MyFood.Application.Interfaces
 {
-    void AddIngredient(IngredientEntity ingredient);
-    IEnumerable<IngredientEntity> GetAllIngredients();
-    IngredientEntity GetIngredientById(int id);
-    void UpdateIngredient(IngredientEntity ingredient);
-    void DeleteIngredient(int id);
+    public interface IIngredientRepository
+    {
+        void AddIngredient(IngredientEntity ingredient);
+        IEnumerable<IngredientEntity> GetAllIngredients();
+        IngredientEntity? GetIngredientById(int id);
+        void UpdateIngredient(IngredientEntity ingredient);
+        void DeleteIngredient(int id);
+    }
 }
