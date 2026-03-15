@@ -48,6 +48,43 @@ namespace MyFood.Infrastructure.Migrations
 
                     b.ToTable("FoodItems");
                 });
+
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("FoodEntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasMaxLength(260)
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodEntityId");
+
+                    b.ToTable("IngredientEntities");
+                });
+
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
+                {
+                    b.HasOne("MyFood.Application.Entities.FoodEntity", null)
+                        .WithMany("Ingredients")
+                        .HasForeignKey("FoodEntityId");
+                });
+
+            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
+                {
+                    b.Navigation("Ingredients");
+                });
 #pragma warning restore 612, 618
         }
     }
