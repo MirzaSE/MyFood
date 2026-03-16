@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFood.Infrastructure.Repositories;
 
@@ -11,9 +12,11 @@ using MyFood.Infrastructure.Repositories;
 namespace MyFood.Infrastructure.Migrations
 {
     [DbContext(typeof(FoodDbContext))]
-    partial class FoodDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260315214027_IngredientsTable")]
+    partial class IngredientsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,9 +70,12 @@ namespace MyFood.Infrastructure.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("foodItemId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Food_Id");
+                    b.HasIndex("foodItemId");
 
                     b.ToTable("Ingredients");
                 });
@@ -77,17 +83,12 @@ namespace MyFood.Infrastructure.Migrations
             modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
                 {
                     b.HasOne("MyFood.Application.Entities.FoodEntity", "foodItem")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("Food_Id")
+                        .WithMany()
+                        .HasForeignKey("foodItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("foodItem");
-                });
-
-            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
-                {
-                    b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618
         }
