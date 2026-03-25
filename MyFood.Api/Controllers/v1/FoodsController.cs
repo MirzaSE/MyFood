@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
@@ -11,7 +12,7 @@ using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -31,7 +32,6 @@ namespace MyFood.Api.Controllers.v1
             _linkService = linkService;
         }
 
-       
         [HttpGet(Name = nameof(GetAllFoods))]
         public ActionResult GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
         {
@@ -50,7 +50,11 @@ namespace MyFood.Api.Controllers.v1
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
-            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+
+            // ✅ FIXED HERE
+            var toReturn = foodItems
+                .Select(x => _mapper.Map<FoodDto>(x))
+                .Select(dto => _linkService.ExpandSingleFoodItem(dto, dto.Id, version));
 
             return Ok(new
             {
@@ -63,7 +67,6 @@ namespace MyFood.Api.Controllers.v1
         [Route("{id:int}", Name = nameof(GetSingleFood))]
         public ActionResult GetSingleFood(ApiVersion version, int id)
         {
-
             if (id < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
@@ -83,7 +86,7 @@ namespace MyFood.Api.Controllers.v1
 
         [HttpGet]
         [Route("search", Name = nameof(SearchByName))]
-        public ActionResult SearchByName(ApiVersion version,[FromQuery] QueryParameters queryParameters, string name)
+        public ActionResult SearchByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, string name)
         {
             var foodItems = _foodRepository.SearchFoodsByName(name);
 
@@ -99,7 +102,11 @@ namespace MyFood.Api.Controllers.v1
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
-            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+
+            // ✅ FIXED HERE
+            var toReturn = foodItems
+                .Select(x => _mapper.Map<FoodDto>(x))
+                .Select(dto => _linkService.ExpandSingleFoodItem(dto, dto.Id, version));
 
             return Ok(new
             {
@@ -231,7 +238,6 @@ namespace MyFood.Api.Controllers.v1
 
             var links = new List<LinkDto>();
 
-            // self 
             links.Add(new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET"));
 
             return Ok(new
