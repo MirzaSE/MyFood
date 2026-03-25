@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MyFood.Application.Entities;
+using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Repositories;
 using MyFood.Infrastructure.Helpers;
 using System.Linq;

@@ -212,3 +212,6 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 /MyFood.Api/Logs
+MyFood.Domain/bin*
+MyFood.Infrastructure/bin*
+MyFood.Application/bin*
