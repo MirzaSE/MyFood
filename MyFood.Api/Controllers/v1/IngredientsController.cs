@@ -1,4 +1,6 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
@@ -11,6 +13,7 @@ using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
 {
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
   [ApiController]
   [ApiVersion("1.0")]
   [Route("api/v{version:apiVersion}/[controller]")]
@@ -35,6 +38,9 @@ namespace MyFood.Api.Controllers.v1
 
     public ActionResult GetAllIngredients(ApiVersion version, [FromQuery] QueryParameters queryParameters)
     {
+      if (!User.Identity?.IsAuthenticated ?? true)
+        return Unauthorized();
+
       List<IngredientEntity> ingredientItems = _ingredientRepository.GetAll(queryParameters).ToList();
 
       var allItemCount = _ingredientRepository.Count();

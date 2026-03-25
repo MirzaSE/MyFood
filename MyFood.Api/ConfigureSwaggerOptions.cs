@@ -23,11 +23,11 @@ namespace MyFood.Api
             var jwtSecurityScheme = new OpenApiSecurityScheme
             {
                 BearerFormat = "JWT",
-                Name = "JWT Authentication",
+                Name = "Authorization",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+                Scheme = "bearer",
+                Description = "Enter 'Bearer {token}'",
 
                 Reference = new OpenApiReference
                 {

@@ -1,9 +1,8 @@
-﻿namespace MyFood.Application.Dtos
+namespace MyFood.Application.Dtos
 {
-    public class UserLoginDto
+    public class LoginDto
     {
         public string? Username { get; set; }
-
         public string? Password { get; set; }
     }
 }
