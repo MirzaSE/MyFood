@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
+using MyFood.Application.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using myfood.domain.entities;
 
 namespace MyFood.Api.Controllers.v1
 {
@@ -11,40 +14,78 @@ namespace MyFood.Api.Controllers.v1
     [Route("api/[controller]")]
     public class AuthenticateController : ControllerBase
     {
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLoginDto userLogin)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
+
+        public AuthenticateController(
+            UserManager<ApplicationUser> userManager,
+            IConfiguration configuration)
         {
-            // Validate user credentials (this is just an example, use a proper validation method)
-            if (userLogin.Username == "test" && userLogin.Password == "password")
-            {
-                var token = GenerateJwtToken(userLogin.Username);
-                return Ok(new { Token = token });
-            }
-            return Unauthorized();
+            _userManager = userManager;
+            _configuration = configuration;
         }
 
-        private string GenerateJwtToken(string username)
+        // ✅ REGISTER
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] UserLoginDto model)
         {
-            var claims = new[]
-            { 
-                new Claim(JwtRegisteredClaimNames.UniqueName, username),
-                // Add more claims if needed
+            var user = new ApplicationUser
+            {
+                UserName = model.Username
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"));  // TODO Get from appsettings
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok("User created successfully");
+        }
+
+        // ✅ LOGIN
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] UserLoginDto userLogin)
+        {
+            var user = await _userManager.FindByNameAsync(userLogin.Username);
+
+            if (user == null)
+                return Unauthorized("Invalid username or password");
+
+            var validPassword = await _userManager.CheckPasswordAsync(user, userLogin.Password);
+
+            if (!validPassword)
+                return Unauthorized("Invalid username or password");
+
+            var token = GenerateJwtToken(user);
+
+            return Ok(new { Token = token });
+        }
+
+        // ✅ JWT
+        private string GenerateJwtToken(ApplicationUser user)
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
+            );
+
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // TODO Get from appsettings
             var token = new JwtSecurityToken(
-                issuer: "myfood.domain.com",
-                audience: "myfood.domain.com",
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(2),
+                expires: DateTime.UtcNow.AddHours(2),
                 signingCredentials: creds
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
-
 }
