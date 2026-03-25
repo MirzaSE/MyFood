@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch; // Required for PATCH
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Infrastructure.Repositories; // Where your interface lives
@@ -5,6 +6,7 @@ using MyFood.Application.Entities;
 
 namespace MyFood.Api.Controllers.v1
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
     public class IngredientsController : ControllerBase

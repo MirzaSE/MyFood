@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
@@ -11,7 +12,7 @@ using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -31,7 +32,7 @@ namespace MyFood.Api.Controllers.v1
             _linkService = linkService;
         }
 
-       
+
         [HttpGet(Name = nameof(GetAllFoods))]
         public ActionResult GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
         {
@@ -83,7 +84,7 @@ namespace MyFood.Api.Controllers.v1
 
         [HttpGet]
         [Route("search", Name = nameof(SearchByName))]
-        public ActionResult SearchByName(ApiVersion version,[FromQuery] QueryParameters queryParameters, string name)
+        public ActionResult SearchByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, string name)
         {
             var foodItems = _foodRepository.SearchFoodsByName(name);
 

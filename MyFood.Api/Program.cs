@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MyFood.Api;
@@ -16,7 +17,7 @@ using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using MyFood.Infrastructure.Repositories;
+using MyFood.Application.Entities;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
-                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
+                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -51,6 +52,11 @@ opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
+builder.Services
+    .AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<FoodDbContext>()
+    .AddDefaultTokenProviders();
+
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
@@ -59,7 +65,11 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 // Configure JWT authentication
-var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO secret should be in appSettings
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT key is not configured."));
+var issuer = jwtSettings["Issuer"] ?? throw new InvalidOperationException("JWT issuer is not configured.");
+var audience = jwtSettings["Audience"] ?? throw new InvalidOperationException("JWT audience is not configured.");
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -71,10 +81,10 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true,      
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "myfood.domain.com",
-        ValidAudience = "myfood.domain.com",
+        ValidIssuer = issuer,
+        ValidAudience = audience,
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 
@@ -102,7 +112,7 @@ if (app.Environment.IsDevelopment())
         });
 
     app.SeedData();
-} 
+}
 else
 {
     app.AddProductionExceptionHandling(loggerFactory);
