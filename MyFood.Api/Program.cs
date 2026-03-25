@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Middleware;
+using MyFood.Api.Options;
 using MyFood.Api.Services;
 using MyFood.Domain.Entities;
 using MyFood.Infrastructure;
@@ -55,6 +56,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                .AddEntityFrameworkStores<FoodDbContext>()
                .AddDefaultTokenProviders();
 
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 //Add support to logging with SERILOG
@@ -69,6 +72,9 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()
+        ?? throw new InvalidOperationException("JWT configuration section is missing.");
+
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters
@@ -77,13 +83,16 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
+        ClockSkew = TimeSpan.Zero
     };
 
     options.IncludeErrorDetails = true;
 });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
