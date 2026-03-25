@@ -8,10 +8,12 @@ using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MyFood.Api.Controllers.v1
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
