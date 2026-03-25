@@ -1,6 +1,10 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+=======
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+>>>>>>> a138ff7 (Add JWT authentication setup)
 using Microsoft.EntityFrameworkCore;
 =======
 ﻿  using Microsoft.EntityFrameworkCore;

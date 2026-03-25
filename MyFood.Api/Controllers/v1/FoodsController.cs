@@ -13,10 +13,14 @@ using System.Text.Json;
 namespace MyFood.Api.Controllers.v1
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     [Authorize]
 =======
     //[Authorize]
 >>>>>>> 5f86e13 (Add middleware and authentication)
+=======
+    [Authorize]
+>>>>>>> a138ff7 (Add JWT authentication setup)
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
