@@ -8,6 +8,7 @@ using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyFood.Api.Controllers.v1
 {
@@ -171,6 +172,7 @@ namespace MyFood.Api.Controllers.v1
             return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("{id:int}", Name = nameof(RemoveFood))]
         public ActionResult RemoveFood(int id)

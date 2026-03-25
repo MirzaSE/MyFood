@@ -1,50 +1,88 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
+using MyFood.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace MyFood.Api.Controllers.v1
+[ApiController]
+[Route("api/auth")]
+public class AuthController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthenticateController : ControllerBase
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IConfiguration _configuration;
+
+    public AuthController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
     {
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLoginDto userLogin)
-        {
-            // Validate user credentials (this is just an example, use a proper validation method)
-            if (userLogin.Username == "test" && userLogin.Password == "password")
-            {
-                var token = GenerateJwtToken(userLogin.Username);
-                return Ok(new { Token = token });
-            }
-            return Unauthorized();
-        }
-
-        private string GenerateJwtToken(string username)
-        {
-            var claims = new[]
-            { 
-                new Claim(JwtRegisteredClaimNames.UniqueName, username),
-                // Add more claims if needed
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"));  // TODO Get from appsettings
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            // TODO Get from appsettings
-            var token = new JwtSecurityToken(
-                issuer: "myfood.domain.com",
-                audience: "myfood.domain.com",
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(2),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        _userManager = userManager;
+        _configuration = configuration;
     }
 
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(RegisterUserDto dto)
+    {
+        var user = new ApplicationUser
+        {
+            UserName = dto.Username,
+            FullName = dto.Username
+        };
+
+        var result = await _userManager.CreateAsync(user, dto.Password);
+
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
+
+        return Ok("User created successfully");
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginDto dto)
+    {
+        var user = await _userManager.FindByNameAsync(dto.Username);
+
+        if (user == null)
+            return Unauthorized();
+
+        var validPassword = await _userManager.CheckPasswordAsync(user, dto.Password);
+
+        if (!validPassword)
+            return Unauthorized();
+
+        var token = GenerateJwtToken(user);
+
+        return Ok(new { Token = token });
+    }
+
+    private string GenerateJwtToken(ApplicationUser user)
+    {
+        var jwtSettings = _configuration.GetSection("Jwt");
+
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id),   
+            new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+        };
+
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings["Key"])
+        );
+
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var expires = DateTime.Now.AddMinutes(
+            Convert.ToDouble(jwtSettings["DurationInMinutes"])
+        );
+
+        var token = new JwtSecurityToken(
+            issuer: jwtSettings["Issuer"],
+            audience: jwtSettings["Audience"],
+            claims: claims,
+            expires: expires,
+            signingCredentials: creds
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
 }
