@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyFood.Domain.Entities;
-
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using MyFood.Domain.Entities;
 namespace MyFood.Infrastructure.Repositories
 {
-    public class FoodDbContext : DbContext
+    public class FoodDbContext : IdentityDbContext<ApplicationUser>
     {
         public FoodDbContext(DbContextOptions<FoodDbContext> options)
             : base(options)
