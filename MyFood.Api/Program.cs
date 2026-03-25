@@ -14,13 +14,14 @@ using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using MyFood.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
@@ -49,34 +50,36 @@ opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
-
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 //Add support to logging with SERILOG
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
-// Configure JWT authentication
-var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO secret should be in appSettings
+// 1. Add Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<FoodDbContext>()
+    .AddDefaultTokenProviders();
+
+// 2. Add JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new TokenValidationParameters
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true,      
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = "myfood.domain.com",
-        ValidAudience = "myfood.domain.com",
-        IssuerSigningKey = new SymmetricSecurityKey(key)
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
-
-    options.IncludeErrorDetails = true;
 });
 
 var app = builder.Build();

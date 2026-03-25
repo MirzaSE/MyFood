@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using MyFood.Application.Dtos;
 using MyFood.Domain.Entities; // Change to MyFood.Domain.Entities if you did Option 2
 using MyFood.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyFood.Api.Controllers.v1
 {
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
