@@ -47,7 +47,7 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
             var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
@@ -199,7 +199,11 @@ namespace MyFood.Api.Controllers.v1
             var links = new List<LinkDto>();
 
             // self 
-            links.Add(new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET"));
+            var selfLink = Url.Link(nameof(GetRandomMeal), null);
+            if (selfLink != null)
+            {
+                links.Add(new LinkDto(selfLink, "self", "GET"));
+            }
 
             return Ok(new
             {
