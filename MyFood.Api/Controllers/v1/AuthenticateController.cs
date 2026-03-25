@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
+using MyFood.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -11,40 +13,82 @@ namespace MyFood.Api.Controllers.v1
     [Route("api/[controller]")]
     public class AuthenticateController : ControllerBase
     {
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLoginDto userLogin)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _config;
+
+        public AuthenticateController(
+            UserManager<ApplicationUser> userManager,
+            IConfiguration config)
         {
-            // Validate user credentials (this is just an example, use a proper validation method)
-            if (userLogin.Username == "test" && userLogin.Password == "password")
-            {
-                var token = GenerateJwtToken(userLogin.Username);
-                return Ok(new { Token = token });
-            }
-            return Unauthorized();
+            _userManager = userManager;
+            _config = config;
         }
 
-        private string GenerateJwtToken(string username)
+        // POST /api/authenticate/register
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto dto)
         {
-            var claims = new[]
-            { 
-                new Claim(JwtRegisteredClaimNames.UniqueName, username),
-                // Add more claims if needed
+            if (dto.Username is null || dto.Password is null)
+                return BadRequest("Username and password are required.");
+
+            var user = new ApplicationUser
+            {
+                UserName = dto.Username,
+                Email = dto.Email
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"));  // TODO Get from appsettings
+            var result = await _userManager.CreateAsync(user, dto.Password);
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok(new { message = "User registered successfully." });
+        }
+
+        // POST /api/authenticate/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] UserLoginDto userLogin)
+        {
+            if (userLogin.Username is null || userLogin.Password is null)
+                return BadRequest("Username and password are required.");
+
+            // Find user in DB
+            var user = await _userManager.FindByNameAsync(userLogin.Username);
+            if (user is null)
+                return Unauthorized("Invalid credentials.");
+
+            // Validate password
+            var isValid = await _userManager.CheckPasswordAsync(user, userLogin.Password);
+            if (!isValid)
+                return Unauthorized("Invalid credentials.");
+
+            var token = GenerateJwtToken(user);
+            return Ok(new { Token = token });
+        }
+
+        private string GenerateJwtToken(ApplicationUser user)
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),          // UserId ✅
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName!), // Username ✅
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)); // from appsettings ✅
+
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // TODO Get from appsettings
             var token = new JwtSecurityToken(
-                issuer: "myfood.domain.com",
-                audience: "myfood.domain.com",
+                issuer: _config["Jwt:Issuer"],       // from appsettings ✅
+                audience: _config["Jwt:Audience"],   // from appsettings ✅
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(2),
+                expires: DateTime.UtcNow.AddDays(7), // reasonable expiry ✅
                 signingCredentials: creds
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
-
 }
