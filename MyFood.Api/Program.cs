@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -7,6 +8,7 @@ using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Middleware;
 using MyFood.Api.Services;
+using MyFood.Application.Entities;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
@@ -49,6 +51,10 @@ opt.UseSqlServer(
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<FoodDbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 //Add support to logging with SERILOG
@@ -56,7 +62,6 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 // Configure JWT authentication
-var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO secret should be in appSettings
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -70,9 +75,9 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,      
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "myfood.domain.com",
-        ValidAudience = "myfood.domain.com",
-        IssuerSigningKey = new SymmetricSecurityKey(key)
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 
     options.IncludeErrorDetails = true;
