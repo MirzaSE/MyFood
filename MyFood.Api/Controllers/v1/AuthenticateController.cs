@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
+using MyFood.Application.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -8,38 +11,91 @@ using System.Text;
 namespace MyFood.Api.Controllers.v1
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
+    [AllowAnonymous]
     public class AuthenticateController : ControllerBase
     {
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLoginDto userLogin)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
+
+        public AuthenticateController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
-            // Validate user credentials (this is just an example, use a proper validation method)
-            if (userLogin.Username == "test" && userLogin.Password == "password")
-            {
-                var token = GenerateJwtToken(userLogin.Username);
-                return Ok(new { Token = token });
-            }
-            return Unauthorized();
+            _userManager = userManager;
+            _configuration = configuration;
         }
 
-        private string GenerateJwtToken(string username)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUser)
         {
-            var claims = new[]
-            { 
-                new Claim(JwtRegisteredClaimNames.UniqueName, username),
-                // Add more claims if needed
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existingUser = await _userManager.FindByNameAsync(registerUser.Username!);
+            if (existingUser != null)
+            {
+                return BadRequest(new { Message = "Username already exists." });
+            }
+
+            var user = new ApplicationUser
+            {
+                UserName = registerUser.Username,
+                FullName = registerUser.Username
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"));  // TODO Get from appsettings
+            var result = await _userManager.CreateAsync(user, registerUser.Password!);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(new { Message = "User registered successfully." });
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto userLogin)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userManager.FindByNameAsync(userLogin.Username!);
+            if (user == null || !await _userManager.CheckPasswordAsync(user, userLogin.Password!))
+            {
+                return Unauthorized();
+            }
+
+            var token = GenerateJwtToken(user);
+            return Ok(new { Token = token });
+        }
+
+        private string GenerateJwtToken(ApplicationUser user)
+        {
+            var keyValue = _configuration["Jwt:Key"] ?? "C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8";
+            var issuer = _configuration["Jwt:Issuer"] ?? "myfood.domain.com";
+            var audience = _configuration["Jwt:Audience"] ?? "myfood.domain.com";
+            var durationInMinutes = int.TryParse(_configuration["Jwt:DurationInMinutes"], out var parsedDuration)
+                ? parsedDuration
+                : 60;
+
+            var claims = new[]
+            {
+                new Claim("UserId", user.Id),
+                new Claim("Username", user.UserName ?? string.Empty),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName ?? string.Empty)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyValue));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // TODO Get from appsettings
             var token = new JwtSecurityToken(
-                issuer: "myfood.domain.com",
-                audience: "myfood.domain.com",
+                issuer: issuer,
+                audience: audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(2),
+                expires: DateTime.UtcNow.AddMinutes(durationInMinutes),
                 signingCredentials: creds
             );
 

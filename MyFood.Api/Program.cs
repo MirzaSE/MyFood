@@ -14,7 +14,9 @@ using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using MyFood.Application.Entities;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +51,10 @@ opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+               .AddEntityFrameworkStores<FoodDbContext>()
+               .AddDefaultTokenProviders();
+
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
@@ -57,7 +63,11 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 // Configure JWT authentication
-var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO secret should be in appSettings
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8";
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "myfood.domain.com";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "myfood.domain.com";
+var key = Encoding.ASCII.GetBytes(jwtKey);
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -71,8 +81,8 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,      
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "myfood.domain.com",
-        ValidAudience = "myfood.domain.com",
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 
