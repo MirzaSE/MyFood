@@ -17,7 +17,7 @@ namespace MyFood.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -207,18 +207,6 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("IngredientEntities");
                 });
 
-            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
-                {
-                    b.HasOne("MyFood.Application.Entities.FoodEntity", null)
-                        .WithMany("Ingredients")
-                        .HasForeignKey("FoodEntityId");
-                });
-
-            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
-                {
-                    b.Navigation("Ingredients");
-                });
-
             modelBuilder.Entity("MyFood.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -237,6 +225,10 @@ namespace MyFood.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -333,6 +325,21 @@ namespace MyFood.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
+                {
+                    b.HasOne("MyFood.Application.Entities.FoodEntity", "FoodEntity")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("FoodEntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("FoodEntity");
+                });
+
+            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
+                {
+                    b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618
         }
