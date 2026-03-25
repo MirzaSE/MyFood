@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
+using MyFood.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -8,43 +11,90 @@ using System.Text;
 namespace MyFood.Api.Controllers.v1
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthenticateController : ControllerBase
     {
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLoginDto userLogin)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
+
+        public AuthenticateController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
-            // Validate user credentials (this is just an example, use a proper validation method)
-            if (userLogin.Username == "test" && userLogin.Password == "password")
-            {
-                var token = GenerateJwtToken(userLogin.Username);
-                return Ok(new { Token = token });
-            }
-            return Unauthorized();
+            _userManager = userManager;
+            _configuration = configuration;
         }
 
-        private string GenerateJwtToken(string username)
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUser)
         {
-            var claims = new[]
-            { 
-                new Claim(JwtRegisteredClaimNames.UniqueName, username),
-                // Add more claims if needed
+            var existingUser = await _userManager.FindByNameAsync(registerUser.Username);
+            if (existingUser != null)
+            {
+                return BadRequest(new { Message = "Username already exists." });
+            }
+
+            var user = new ApplicationUser
+            {
+                UserName = registerUser.Username,
+                FullName = registerUser.Username
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"));  // TODO Get from appsettings
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var result = await _userManager.CreateAsync(user, registerUser.Password);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
 
-            // TODO Get from appsettings
+            return Ok(new { Message = "User created successfully." });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto login)
+        {
+            var user = await _userManager.FindByNameAsync(login.Username);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var isValidPassword = await _userManager.CheckPasswordAsync(user, login.Password);
+            if (!isValidPassword)
+            {
+                return Unauthorized();
+            }
+
+            var token = GenerateJwtToken(user);
+
+            return Ok(new
+            {
+                Token = token
+            });
+        }
+
+        private string GenerateJwtToken(ApplicationUser user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName ?? string.Empty)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]
+                ?? throw new InvalidOperationException("Jwt:Key is missing.")));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var durationInMinutes = int.TryParse(_configuration["Jwt:DurationInMinutes"], out var minutes) ? minutes : 60;
+
             var token = new JwtSecurityToken(
-                issuer: "myfood.domain.com",
-                audience: "myfood.domain.com",
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(2),
+                expires: DateTime.UtcNow.AddMinutes(durationInMinutes),
                 signingCredentials: creds
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
-
 }
