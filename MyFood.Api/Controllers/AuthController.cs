@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
+using MyFood.Api.Options;
 using MyFood.Application.Dtos;
 using MyFood.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,16 +17,16 @@ namespace MyFood.Api.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IConfiguration _configuration;
+        private readonly IOptions<JwtSettings> _jwtSettings;
 
         public AuthController(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration)
+            IOptions<JwtSettings> jwtSettings)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            _configuration = configuration;
+            _jwtSettings = jwtSettings;
         }
 
         [HttpPost("login")]
@@ -60,10 +62,15 @@ namespace MyFood.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "User exists");
+                return BadRequest("User already exists.");
             }
 
             var user = new ApplicationUser
@@ -75,7 +82,7 @@ namespace MyFood.Api.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "User creation failed! Please check user details and try again.");
+                return BadRequest(result.Errors);
             }
 
             return Ok("User created successfully!");
@@ -83,13 +90,19 @@ namespace MyFood.Api.Controllers
 
         private JwtSecurityToken GenerateJwtToken(IEnumerable<Claim> claims)
         {
-            var secret = _configuration["JWT:Secret"] ?? throw new InvalidOperationException("JWT secret is not configured.");
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+            var settings = _jwtSettings.Value;
+            if (string.IsNullOrWhiteSpace(settings.Key))
+            {
+                throw new InvalidOperationException("JWT key is not configured.");
+            }
+
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.Key));
+            var expires = DateTime.UtcNow.AddMinutes(settings.DurationInMinutes);
 
             return new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
+                issuer: settings.Issuer,
+                audience: settings.Audience,
+                expires: expires,
                 claims: claims,
                 signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256));
         }
