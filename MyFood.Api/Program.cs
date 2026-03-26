@@ -1,20 +1,22 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Middleware;
 using MyFood.Api.Services;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
+using MyFood.Infrastructure.Identity;
 using MyFood.Infrastructure.Repositories;
 using Newtonsoft.Json.Serialization;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using Serilog;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,7 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
-                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
+                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -44,11 +46,9 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-//opt.UseInMemoryDatabase("FoodDatabase"));
 opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
-
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
@@ -56,12 +56,21 @@ builder.Services.AddAutoMapper(typeof(FoodMappings));
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
+// Configure ASP.NET Identity
+builder.Services.AddIdentityCore<ApplicationUser>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<FoodDbContext>()
+    .AddDefaultTokenProviders();
+
 // Configure JWT authentication
-var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO secret should be in appSettings
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
@@ -69,10 +78,10 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true,      
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "myfood.domain.com",
-        ValidAudience = "myfood.domain.com",
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 
@@ -100,7 +109,7 @@ if (app.Environment.IsDevelopment())
         });
 
     app.SeedData();
-} 
+}
 else
 {
     app.AddProductionExceptionHandling(loggerFactory);
