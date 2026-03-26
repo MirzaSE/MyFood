@@ -16,9 +16,12 @@ using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using MyFood.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
 
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
@@ -32,10 +35,12 @@ builder.Services.AddCustomCors("AllowAllOrigins");
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
-
 builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<FoodDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
@@ -44,18 +49,22 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-
+//opt.UseInMemoryDatabase("FoodDatabase"));
 opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
+builder.Services.AddAutoMapper(typeof(IngredientsMappings));
 
+//Add support to logging with SERILOG
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
-var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO secret should be in appSettings
+// Configure JWT authentication
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -69,12 +78,10 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "myfood.domain.com",
-        ValidAudience = "myfood.domain.com",
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
-
-    options.IncludeErrorDetails = true;
 });
 
 var app = builder.Build();
@@ -82,6 +89,7 @@ var app = builder.Build();
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -95,13 +103,8 @@ if (app.Environment.IsDevelopment())
                     description.GroupName.ToUpperInvariant());
             }
         });
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<FoodDbContext>();
-        dbContext.Database.Migrate();
-    }
-    app.SeedData();
 
+    app.SeedData();
 }
 else
 {
@@ -111,6 +114,7 @@ else
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
+//Add support to logging request with SERILOG
 app.UseSerilogRequestLogging();
 
 app.UseCors("AllowAllOrigins");
@@ -122,3 +126,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+internal class IngredientsMappings
+{
+}

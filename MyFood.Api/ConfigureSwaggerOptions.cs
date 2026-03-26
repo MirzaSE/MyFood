@@ -33,10 +33,9 @@ namespace MyFood.Api
             options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, jwtSecurityScheme);
 
             options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-                {
-                        {new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme), new List<string>()}
-                }
-            );
+            {
+                [new OpenApiSecuritySchemeReference("bearer", document)] = []
+            });
 
         }
 

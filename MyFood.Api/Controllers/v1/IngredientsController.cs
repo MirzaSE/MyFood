@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Repositories;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 
 namespace MyFood.Api.Controllers.v1
 {
+    [Authorize]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
