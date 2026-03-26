@@ -19,25 +19,20 @@ namespace MyFood.Api
                 options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
             }
 
-            // Include 'SecurityScheme' to use JWT Authentication
             var jwtSecurityScheme = new OpenApiSecurityScheme
             {
                 BearerFormat = "JWT",
-                Name = "JWT Authentication",
+                Name = "Authorization",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                Scheme = "bearer",
                 Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
-
             };
-            options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, jwtSecurityScheme);
-
-            options.AddSecurityRequirement(document => new OpenApiSecurityRequirement 
+            options.AddSecurityDefinition("bearer", jwtSecurityScheme);
+            options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
             {
-                { new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme), new List<string>() {} }
-            }
-            );
-
+            [new OpenApiSecuritySchemeReference("bearer", document)] = []
+            });
         }
 
         static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
