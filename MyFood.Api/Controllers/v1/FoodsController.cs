@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
@@ -11,7 +13,7 @@ using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
 {
-    //[Authorize]
+    [Authorize] 
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -31,7 +33,6 @@ namespace MyFood.Api.Controllers.v1
             _linkService = linkService;
         }
 
-       
         [HttpGet(Name = nameof(GetAllFoods))]
         public ActionResult GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
         {
@@ -47,10 +48,11 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            // sigurno postavljanje headera
+            Response.Headers["X-Pagination"] = JsonSerializer.Serialize(paginationMetadata);
 
-            var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
-            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+            var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version, Url);
+            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version, Url));
 
             return Ok(new
             {
@@ -63,7 +65,6 @@ namespace MyFood.Api.Controllers.v1
         [Route("{id:int}", Name = nameof(GetSingleFood))]
         public ActionResult GetSingleFood(ApiVersion version, int id)
         {
-
             if (id < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
@@ -78,7 +79,7 @@ namespace MyFood.Api.Controllers.v1
 
             FoodDto item = _mapper.Map<FoodDto>(foodItem);
 
-            return Ok(_linkService.ExpandSingleFoodItem(item, item.Id, version));
+            return Ok(_linkService.ExpandSingleFoodItem(item, item.Id, version, Url));
         }
 
         [HttpGet]
@@ -96,10 +97,10 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            Response.Headers["X-Pagination"] = JsonSerializer.Serialize(paginationMetadata);
 
-            var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
-            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+            var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version, Url);
+            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version, Url));
 
             return Ok(new
             {
@@ -130,7 +131,7 @@ namespace MyFood.Api.Controllers.v1
 
             return CreatedAtRoute(nameof(GetSingleFood),
                 new { version = version.ToString(), id = newFoodItem.Id },
-                _linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
+                _linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version, Url));
         }
 
         [HttpPatch("{id:int}", Name = nameof(PartiallyUpdateFood))]
@@ -168,7 +169,7 @@ namespace MyFood.Api.Controllers.v1
 
             FoodDto foodDto = _mapper.Map<FoodDto>(updated);
 
-            return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
+            return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version, Url));
         }
 
         [HttpDelete]
@@ -219,7 +220,7 @@ namespace MyFood.Api.Controllers.v1
 
             FoodDto foodDto = _mapper.Map<FoodDto>(existingFoodItem);
 
-            return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
+            return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version, Url));
         }
 
         [HttpGet("GetRandomMeal", Name = nameof(GetRandomMeal))]
@@ -231,8 +232,12 @@ namespace MyFood.Api.Controllers.v1
 
             var links = new List<LinkDto>();
 
-            // self 
-            links.Add(new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET"));
+            // siguran null-check za Url.Link
+            var selfLink = Url.Link(nameof(GetRandomMeal), null);
+            if (!string.IsNullOrEmpty(selfLink))
+            {
+                links.Add(new LinkDto(selfLink, "self", "GET"));
+            }
 
             return Ok(new
             {
