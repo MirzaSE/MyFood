@@ -30,12 +30,11 @@ namespace MyFood.Api
                 Description = "Put **_ONLY_** your JWT Bearer token on textbox below!"
             };
 
-            options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, jwtSecurityScheme);
+            options.AddSecurityDefinition("bearer", jwtSecurityScheme);
 
-			options.AddSecurityRequirement(document => new OpenApiSecurityRequirement {
-				{ new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme), new List<string>() }
-			});
-
+            options.AddSecurityRequirement(document => new OpenApiSecurityRequirement {
+				[new OpenApiSecuritySchemeReference("bearer", document)] = []
+            });
         }
 
         static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)

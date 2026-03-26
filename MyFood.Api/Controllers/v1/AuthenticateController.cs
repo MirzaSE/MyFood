@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using MyFood.Application.Dtos;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MyFood.Application;
+using MyFood.Infrastructure.Services;
 
 namespace MyFood.Api.Controllers.v1
 {
@@ -11,40 +9,54 @@ namespace MyFood.Api.Controllers.v1
     [Route("api/[controller]")]
     public class AuthenticateController : ControllerBase
     {
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLoginDto userLogin)
+        private readonly IAuthService _authService;
+
+        public AuthenticateController(IAuthService authService)
         {
-            // Validate user credentials (this is just an example, use a proper validation method)
-            if (userLogin.Username == "test" && userLogin.Password == "password")
-            {
-                var token = GenerateJwtToken(userLogin.Username);
-                return Ok(new { Token = token });
-            }
-            return Unauthorized();
+            _authService = authService;
         }
 
-        private string GenerateJwtToken(string username)
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUser)
         {
-            var claims = new[]
-            { 
-                new Claim(JwtRegisteredClaimNames.UniqueName, username),
-                // Add more claims if needed
-            };
+            var username = registerUser.Username?.Trim();
+            var fullName = registerUser.FullName?.Trim();
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"));  // TODO Get from appsettings
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(registerUser.Password))
+            {
+                return BadRequest(new { Message = "Username, FullName and Password are required." });
+            }
 
-            // TODO Get from appsettings
-            var token = new JwtSecurityToken(
-                issuer: "myfood.domain.com",
-                audience: "myfood.domain.com",
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(2),
-                signingCredentials: creds
-            );
+            var (success, token, error) = await _authService.RegisterAsync(username, fullName, registerUser.Password);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            if (!success)
+            {
+                return BadRequest(new { Message = error });
+            }
+
+            return Ok(new { Token = token });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        {
+            var username = loginDto.Username?.Trim();
+
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(loginDto.Password))
+            {
+                return BadRequest(new { Message = "Username and Password are required." });
+            }
+
+            var (success, token, error) = await _authService.LoginAsync(username, loginDto.Password);
+
+            if (!success)
+            {
+                return Unauthorized(new { Message = error });
+            }
+
+            return Ok(new { Token = token });
         }
     }
-
 }
