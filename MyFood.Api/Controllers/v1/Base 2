@@ -1,0 +1,4 @@
+USE MyFood_Database;
+GO
+
+SELECT Id, UserName, FullName FROM AspNetUsers;
