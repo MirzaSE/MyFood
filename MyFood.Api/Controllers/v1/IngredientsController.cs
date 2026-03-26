@@ -1,7 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application.Dtos;
-using MyFood.Application.Entities;
+using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Repositories;
 
 namespace MyFood.Api.Controllers.v1
