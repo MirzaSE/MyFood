@@ -1,4 +1,4 @@
-using MyFood.Application.Entities;
+using MyFood.Domain.Entities;
 
 public interface IIngredientRepository
 {

@@ -1,0 +1,123 @@
+2026-03-04 18:51:11.676 +01:00 [INF] Executed DbCommand (180ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [MyFood_Database];
+2026-03-04 18:51:11.801 +01:00 [INF] Executed DbCommand (101ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [MyFood_Database] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2026-03-04 18:51:11.824 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-04 18:51:11.874 +01:00 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2026-03-04 18:51:11.875 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-04 18:51:11.885 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-04 18:51:11.894 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-04 18:51:11.901 +01:00 [INF] Applying migration '20250312150424_Initial'.
+2026-03-04 18:51:11.917 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [FoodItems] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(500) NULL,
+    [Type] nvarchar(50) NULL,
+    [Calories] int NOT NULL,
+    [Created] datetime2 NOT NULL,
+    CONSTRAINT [PK_FoodItems] PRIMARY KEY ([Id])
+);
+2026-03-04 18:51:11.933 +01:00 [INF] Executed DbCommand (15ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250312150424_Initial', N'8.0.13');
+2026-03-04 18:51:11.938 +01:00 [INF] Applying migration '20250312162119_ReduceCharacters'.
+2026-03-04 18:51:12.069 +01:00 [INF] Executed DbCommand (124ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var0 sysname;
+SELECT @var0 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[FoodItems]') AND [c].[name] = N'Name');
+IF @var0 IS NOT NULL EXEC(N'ALTER TABLE [FoodItems] DROP CONSTRAINT [' + @var0 + '];');
+ALTER TABLE [FoodItems] ALTER COLUMN [Name] nvarchar(250) NULL;
+2026-03-04 18:51:12.071 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250312162119_ReduceCharacters', N'8.0.13');
+2026-03-04 18:51:19.894 +01:00 [INF] Executed DbCommand (64ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-04 18:51:19.943 +01:00 [INF] User profile is available. Using '/Users/aminajusic/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-03-04 18:51:19.951 +01:00 [INF] Creating key {bd5219cf-1fda-41ee-8ca0-7c60424dc9e9} with creation date 2026-03-04 17:51:19Z, activation date 2026-03-04 17:51:19Z, and expiration date 2026-06-02 17:51:19Z.
+2026-03-04 18:51:19.954 +01:00 [WRN] No XML encryptor configured. Key {bd5219cf-1fda-41ee-8ca0-7c60424dc9e9} may be persisted to storage in unencrypted form.
+2026-03-04 18:51:19.956 +01:00 [INF] Writing data to file '/Users/aminajusic/.aspnet/DataProtection-Keys/key-bd5219cf-1fda-41ee-8ca0-7c60424dc9e9.xml'.
+2026-03-04 18:51:20.271 +01:00 [WRN] The ASP.NET Core developer certificate is not trusted. For information about trusting the ASP.NET Core developer certificate, see https://aka.ms/aspnet/https-trust-dev-cert
+2026-03-04 18:51:20.278 +01:00 [INF] Now listening on: https://localhost:7124
+2026-03-04 18:51:20.278 +01:00 [INF] Now listening on: http://localhost:5124
+2026-03-04 18:51:20.279 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-04 18:51:20.280 +01:00 [INF] Hosting environment: Development
+2026-03-04 18:51:20.280 +01:00 [INF] Content root path: /Users/aminajusic/Desktop/MyFood/MyFood.Api
+2026-03-04 18:51:33.631 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/ - null null
+2026-03-04 18:51:33.648 +01:00 [INF] Incoming request: GET /
+2026-03-04 18:51:33.667 +01:00 [INF] HTTP GET / responded 404 in 16.7782 ms
+2026-03-04 18:51:33.667 +01:00 [INF] Outgoing response: 404
+2026-03-04 18:51:33.668 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/ - 404 0 null 38.2561ms
+2026-03-04 18:51:33.669 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7124/, Response status code: 404
+2026-03-04 18:51:50.202 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger - null null
+2026-03-04 18:51:50.206 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger - 301 0 null 3.9912ms
+2026-03-04 18:51:50.210 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2026-03-04 18:51:50.248 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 37.5315ms
+2026-03-04 18:51:50.263 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - null null
+2026-03-04 18:51:50.264 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - null null
+2026-03-04 18:51:50.264 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - null null
+2026-03-04 18:51:50.280 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-03-04 18:51:50.280 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui.css - 200 144929 text/css 16.7635ms
+2026-03-04 18:51:50.280 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-03-04 18:51:50.281 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-standalone-preset.js - 200 312163 text/javascript 16.9262ms
+2026-03-04 18:51:50.283 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2026-03-04 18:51:50.283 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/swagger-ui-bundle.js - 200 1061536 text/javascript 19.7466ms
+2026-03-04 18:51:50.777 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2026-03-04 18:51:50.790 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - null null
+2026-03-04 18:51:50.790 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2026-03-04 18:51:50.790 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/favicon-32x32.png - 200 628 image/png 0.473ms
+2026-03-04 18:51:50.836 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 58.6986ms
+2026-03-04 18:52:02.389 +01:00 [INF] Request starting HTTP/2 POST https://localhost:7124/api/authenticate/login - application/json-patch+json; x-api-version=1.0 50
+2026-03-04 18:52:02.394 +01:00 [INF] Incoming request: POST /api/authenticate/login
+2026-03-04 18:52:02.395 +01:00 [INF] CORS policy execution successful.
+2026-03-04 18:52:02.397 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.AuthenticateController.Login (MyFood.Api)'
+2026-03-04 18:52:02.404 +01:00 [INF] Route matched with {action = "Login", controller = "Authenticate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Login(MyFood.Application.Dtos.UserLoginDto) on controller MyFood.Api.Controllers.v1.AuthenticateController (MyFood.Api).
+2026-03-04 18:52:02.453 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-03-04 18:52:02.476 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.AuthenticateController.Login (MyFood.Api) in 70.3205ms
+2026-03-04 18:52:02.476 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.AuthenticateController.Login (MyFood.Api)'
+2026-03-04 18:52:02.476 +01:00 [INF] HTTP POST /api/authenticate/login responded 401 in 82.0733 ms
+2026-03-04 18:52:02.476 +01:00 [INF] Outgoing response: 401
+2026-03-04 18:52:02.476 +01:00 [INF] Request finished HTTP/2 POST https://localhost:7124/api/authenticate/login - 401 165 application/problem+json; charset=utf-8; x-api-version=1.0 87.3599ms
+2026-03-04 18:52:30.956 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/api/v1/foods - null null
+2026-03-04 18:52:30.957 +01:00 [INF] Incoming request: GET /api/v1/foods
+2026-03-04 18:52:30.960 +01:00 [INF] Executing endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api)'
+2026-03-04 18:52:30.964 +01:00 [INF] Route matched with {action = "GetAllFoods", controller = "Foods"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult GetAllFoods(Microsoft.AspNetCore.Mvc.ApiVersion, MyFood.Application.QueryParameters) on controller MyFood.Api.Controllers.v1.FoodsController (MyFood.Api).
+2026-03-04 18:52:31.181 +01:00 [INF] Executed DbCommand (19ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [f].[Id], [f].[Calories], [f].[Created], [f].[Name], [f].[Type]
+FROM [FoodItems] AS [f]
+ORDER BY [f].[Name]
+OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+2026-03-04 18:52:31.212 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [FoodItems] AS [f]
+2026-03-04 18:52:31.230 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType2`2[[System.Collections.Generic.IEnumerable`1[[System.Object, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.List`1[[MyFood.Application.LinkDto, MyFood.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-03-04 18:52:31.244 +01:00 [INF] Executed action MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api) in 279.7119ms
+2026-03-04 18:52:31.244 +01:00 [INF] Executed endpoint 'MyFood.Api.Controllers.v1.FoodsController.GetAllFoods (MyFood.Api)'
+2026-03-04 18:52:31.244 +01:00 [INF] HTTP GET /api/v1/foods responded 200 in 286.4370 ms
+2026-03-04 18:52:31.244 +01:00 [INF] Outgoing response: 200
+2026-03-04 18:52:31.246 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/api/v1/foods - 200 2171 application/json; charset=utf-8; x-api-version=1 290.051ms

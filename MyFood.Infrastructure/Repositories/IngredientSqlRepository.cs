@@ -1,4 +1,4 @@
-using MyFood.Application.Entities;
+using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Repositories;
 
 public class IngredientSqlRepository : IIngredientRepository
