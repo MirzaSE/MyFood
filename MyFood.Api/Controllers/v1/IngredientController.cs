@@ -1,11 +1,15 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization; // <-- added
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application.Dtos;
 using MyFood.Application.Entities;
 using MyFood.Application.Repositories;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MyFood.Api.Controllers.v1
 {
+    [Authorize] // <-- Protect all endpoints by default
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -21,6 +25,7 @@ namespace MyFood.Api.Controllers.v1
         }
 
         // GET: api/v1/Ingredient
+        [AllowAnonymous] // <-- public read access
         [HttpGet(Name = nameof(GetAllIngredients))]
         public async Task<IActionResult> GetAllIngredients()
         {
@@ -30,6 +35,7 @@ namespace MyFood.Api.Controllers.v1
         }
 
         // GET: api/v1/Ingredient/5
+        [AllowAnonymous] // <-- public read access
         [HttpGet("{id:int}", Name = nameof(GetIngredientById))]
         public async Task<IActionResult> GetIngredientById(int id)
         {

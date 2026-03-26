@@ -7,8 +7,8 @@ using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Middleware;
 using MyFood.Api.Services;
-using MyFood.Application.Repositories;          // <-- needed for IIngredientRepository
-using MyFood.Infrastructure.Repositories;       // <-- IngredientSqlRepository
+using MyFood.Application.Repositories;
+using MyFood.Infrastructure.Repositories;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using Newtonsoft.Json.Serialization;
@@ -17,49 +17,60 @@ using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using MyFood.Application.Entities;
+using Microsoft.AspNetCore.Identity;
+using MyFood.Infrastructure.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
-        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    {
+        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+    });
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// CORS
 builder.Services.AddCustomCors("AllowAllOrigins");
 
+// Services & Repositories
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
-
-// <--- NEW: Ingredient repository registration
 builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
-
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
+// DbContext
 builder.Services.AddDbContext<FoodDbContext>(opt =>
     opt.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
+// AutoMapper
 builder.Services.AddAutoMapper(typeof(FoodMappings), typeof(IngredientMappings));
 
-// Add support to logging with SERILOG
+// Serilog
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
-// Configure JWT authentication
-var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO: move secret to appSettings
+// --- ADD IDENTITY SERVICES ---
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<FoodDbContext>()
+    .AddDefaultTokenProviders();
+
+// --- CONFIGURE JWT AUTHENTICATION ---
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -71,13 +82,12 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true,      
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "myfood.domain.com",
-        ValidAudience = "myfood.domain.com",
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
-
     options.IncludeErrorDetails = true;
 });
 
@@ -86,7 +96,7 @@ var app = builder.Build();
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
-// Configure the HTTP request pipeline.
+// Configure HTTP pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -110,13 +120,12 @@ else
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
-// Add support to logging requests with SERILOG
 app.UseSerilogRequestLogging();
 
 app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+app.UseAuthentication(); // Must be before Authorization
 app.UseAuthorization();
 
 app.MapControllers();
