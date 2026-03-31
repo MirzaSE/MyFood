@@ -1,29 +1,30 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using MyFood.Api;
 using MyFood.Api.MappingProfiles;
-using MyFood.Api.Middleware;
 using MyFood.Api.Services;
+using MyFood.Domain.Entities;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
 using Newtonsoft.Json.Serialization;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using Serilog;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.WebHost.UseUrls("http://*:8080");
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
-                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
+                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -51,32 +52,33 @@ opt.UseSqlServer(
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
-//Add support to logging with SERILOG
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
+    
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+               .AddEntityFrameworkStores<FoodDbContext>()
+               .AddDefaultTokenProviders();
 
-// Configure JWT authentication
-var key = Encoding.ASCII.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"); // TODO secret should be in appSettings
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,      
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = "myfood.domain.com",
-        ValidAudience = "myfood.domain.com",
-        IssuerSigningKey = new SymmetricSecurityKey(key)
-    };
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["JWT:ValidAudience"],
+            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+        };
+    });
 
-    options.IncludeErrorDetails = true;
-});
+builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 var app = builder.Build();
 
@@ -99,20 +101,20 @@ if (app.Environment.IsDevelopment())
         });
 
     app.SeedData();
-} 
+}
 else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
-
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.UseMiddleware<RequestLoggingMiddleware>();
+//app.UseMiddleware<ExceptionHandlingMiddleware>();
+//app.UseMiddleware<RequestLoggingMiddleware>();
 
 //Add support to logging request with SERILOG
 app.UseSerilogRequestLogging();
 
 app.UseCors("AllowAllOrigins");
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection(); // can cause docker issue
+
 
 app.UseAuthentication();
 app.UseAuthorization();
