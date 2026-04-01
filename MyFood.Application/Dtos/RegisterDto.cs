@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace MyFood.Application.Dtos
 {
-    public class RegisterUserDto
+    public class RegisterDto
     {
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Email format is invalid")]
+        public string Email { get; set; }
+
         [Required(ErrorMessage = "User Name is required")]
         public string Username { get; set; }
 
