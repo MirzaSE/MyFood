@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +12,7 @@ using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
     [Authorize]
-=======
-    //[Authorize]
->>>>>>> 5f86e13 (Add middleware and authentication)
-=======
-    [Authorize]
->>>>>>> a138ff7 (Add JWT authentication setup)
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -40,7 +32,6 @@ namespace MyFood.Api.Controllers.v1
             _linkService = linkService;
         }
 
-       
         [HttpGet(Name = nameof(GetAllFoods))]
         public ActionResult GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
         {
@@ -72,12 +63,6 @@ namespace MyFood.Api.Controllers.v1
         [Route("{id:int}", Name = nameof(GetSingleFood))]
         public ActionResult GetSingleFood(ApiVersion version, int id)
         {
-
-            if (id < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
-            }
-
             FoodEntity foodItem = _foodRepository.GetSingle(id);
 
             if (foodItem == null)
@@ -92,7 +77,7 @@ namespace MyFood.Api.Controllers.v1
 
         [HttpGet]
         [Route("search", Name = nameof(SearchByName))]
-        public ActionResult SearchByName(ApiVersion version,[FromQuery] QueryParameters queryParameters, string name)
+        public ActionResult SearchByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, string name)
         {
             var foodItems = _foodRepository.SearchFoodsByName(name);
 
@@ -240,7 +225,6 @@ namespace MyFood.Api.Controllers.v1
 
             var links = new List<LinkDto>();
 
-            // self 
             links.Add(new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET"));
 
             return Ok(new

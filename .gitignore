@@ -210,10 +210,6 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
-<<<<<<< HEAD
 /MyFood.Api/out/runtimes
 /MyFood.Api/out
-=======
-
 /MyFood.Api/Logs
->>>>>>> 5f86e13 (Add middleware and authentication)
