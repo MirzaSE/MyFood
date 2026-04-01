@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using MyFood.Application.Entities;
 using MyFood.Application.Dtos;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using MyFood.Application.Services;
 
 namespace MyFood.Api.Controllers.v1
 {
@@ -15,100 +10,50 @@ namespace MyFood.Api.Controllers.v1
     [AllowAnonymous]
     public class AuthenticateController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IConfiguration _configuration;
+        private readonly IAuthService _authService;
 
-        public AuthenticateController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public AuthenticateController(IAuthService authService)
         {
-            _userManager = userManager;
-            _configuration = configuration;
+            _authService = authService;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUserDto)
+        public async Task<ActionResult<AuthResponseDto>> Register([FromBody] RegisterDto registerDto)
         {
-            if (string.IsNullOrWhiteSpace(registerUserDto.Username) || string.IsNullOrWhiteSpace(registerUserDto.Password))
+            var response = await _authService.RegisterAsync(registerDto);
+
+            if (!response.Success)
             {
-                return BadRequest("Username and password are required.");
+                return BadRequest(response);
             }
 
-            var existingUser = await _userManager.FindByNameAsync(registerUserDto.Username);
-            if (existingUser != null)
-            {
-                return BadRequest("User already exists.");
-            }
-
-            var user = new ApplicationUser
-            {
-                UserName = registerUserDto.Username,
-                FullName = registerUserDto.Username
-            };
-
-            var result = await _userManager.CreateAsync(user, registerUserDto.Password);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            return Ok("User registered successfully.");
+            return Ok(response);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto loginDto)
         {
-            if (string.IsNullOrWhiteSpace(loginDto.Username) || string.IsNullOrWhiteSpace(loginDto.Password))
+            var response = await _authService.LoginAsync(loginDto);
+
+            if (!response.Success)
             {
-                return BadRequest("Username and password are required.");
+                return Unauthorized(response);
             }
 
-            var user = await _userManager.FindByNameAsync(loginDto.Username);
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            var passwordValid = await _userManager.CheckPasswordAsync(user, loginDto.Password);
-            if (!passwordValid)
-            {
-                return Unauthorized();
-            }
-
-            var token = GenerateJwtToken(user);
-
-            return Ok(new { token });
+            return Ok(response);
         }
 
-        private string GenerateJwtToken(ApplicationUser user)
+        [HttpPost("verify-email")]
+        public async Task<ActionResult<AuthResponseDto>> VerifyEmail([FromBody] VerifyEmailDto verifyEmailDto)
         {
-            var jwtSettings = _configuration.GetSection("Jwt");
-            var key = jwtSettings["Key"] ?? throw new InvalidOperationException("JWT key is not configured.");
-            var issuer = jwtSettings["Issuer"] ?? throw new InvalidOperationException("JWT issuer is not configured.");
-            var audience = jwtSettings["Audience"] ?? throw new InvalidOperationException("JWT audience is not configured.");
-            var durationInMinutes = int.Parse(jwtSettings["DurationInMinutes"] ?? "60");
+            var response = await _authService.VerifyEmailAsync(verifyEmailDto);
 
-            var claims = new[]
+            if (!response.Success)
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName ?? string.Empty),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty)
-            };
+                return BadRequest(response);
+            }
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-            var expires = DateTime.UtcNow.AddMinutes(durationInMinutes);
-
-            var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: issuer,
-                audience: audience,
-                claims: claims,
-                expires: expires,
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return Ok(response);
         }
     }
 

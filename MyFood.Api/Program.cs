@@ -15,7 +15,12 @@ using MyFood.Api.Services;
 using MyFood.Domain.Entities;
 =======
 using MyFood.Application.Entities;
+<<<<<<< HEAD
 >>>>>>> a138ff7 (Add JWT authentication setup)
+=======
+using MyFood.Application.Repositories;
+using MyFood.Application.Services;
+>>>>>>> 3bdfcc1 (Assignment 3 done)
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
@@ -50,6 +55,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCustomCors("AllowAllOrigins");
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IVerificationTokenService, VerificationTokenService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
 builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
