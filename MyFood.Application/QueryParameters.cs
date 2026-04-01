@@ -16,5 +16,10 @@ namespace MyFood.Application
         public string? Query { get; set; } = "";
 
         public string OrderBy { get; set; } = "Name";
+
+        public int GetTotalPages(int totalCount)
+        {
+            return (int)Math.Ceiling(totalCount / (double)PageCount);
+        }
     }
 }
