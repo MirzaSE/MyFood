@@ -18,11 +18,19 @@ namespace MyFood.Application.Services
 
         public string GenerateToken(ApplicationUser user)
         {
-            var jwtSettings = _configuration.GetSection("Jwt");
-            var key = jwtSettings["Key"] ?? throw new InvalidOperationException("JWT key is not configured.");
-            var issuer = jwtSettings["Issuer"] ?? throw new InvalidOperationException("JWT issuer is not configured.");
-            var audience = jwtSettings["Audience"] ?? throw new InvalidOperationException("JWT audience is not configured.");
-            var durationInMinutes = int.Parse(jwtSettings["DurationInMinutes"] ?? "60");
+            var jwtSettings = _configuration.GetSection("JWT");
+            var key = jwtSettings["Secret"]
+                ?? _configuration["Jwt:Key"]
+                ?? throw new InvalidOperationException("JWT key is not configured.");
+            var issuer = jwtSettings["ValidIssuer"]
+                ?? _configuration["Jwt:Issuer"]
+                ?? throw new InvalidOperationException("JWT issuer is not configured.");
+            var audience = jwtSettings["ValidAudience"]
+                ?? _configuration["Jwt:Audience"]
+                ?? throw new InvalidOperationException("JWT audience is not configured.");
+
+            var durationSetting = jwtSettings["DurationInMinutes"] ?? _configuration["Jwt:DurationInMinutes"];
+            var durationInMinutes = int.TryParse(durationSetting, out var parsedDuration) ? parsedDuration : 60;
 
             var claims = new[]
             {
