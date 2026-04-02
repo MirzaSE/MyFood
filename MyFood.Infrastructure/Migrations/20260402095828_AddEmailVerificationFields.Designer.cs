@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFood.Infrastructure.Repositories;
 
@@ -11,9 +12,11 @@ using MyFood.Infrastructure.Repositories;
 namespace MyFood.Infrastructure.Migrations
 {
     [DbContext(typeof(FoodDbContext))]
-    partial class FoodDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260402095828_AddEmailVerificationFields")]
+    partial class AddEmailVerificationFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,7 +158,7 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("MyFood.Application.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -173,6 +176,10 @@ namespace MyFood.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -226,7 +233,7 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>
+            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -253,7 +260,7 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("FoodItems");
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -261,17 +268,20 @@ namespace MyFood.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("FoodEntityId")
+                    b.Property<int>("FoodId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.Property<string>("Quantity")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FoodEntityId");
+                    b.HasIndex("FoodId");
 
                     b.ToTable("Ingredients");
                 });
@@ -287,7 +297,7 @@ namespace MyFood.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MyFood.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MyFood.Application.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -296,7 +306,7 @@ namespace MyFood.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MyFood.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MyFood.Application.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -311,7 +321,7 @@ namespace MyFood.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyFood.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MyFood.Application.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -320,25 +330,25 @@ namespace MyFood.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MyFood.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MyFood.Application.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
                 {
-                    b.HasOne("MyFood.Domain.Entities.FoodEntity", "FoodEntity")
+                    b.HasOne("MyFood.Application.Entities.FoodEntity", "Food")
                         .WithMany("Ingredients")
-                        .HasForeignKey("FoodEntityId")
+                        .HasForeignKey("FoodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("FoodEntity");
+                    b.Navigation("Food");
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>
+            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
                 {
                     b.Navigation("Ingredients");
                 });
