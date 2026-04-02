@@ -12,7 +12,8 @@ namespace MyFood.Infrastructure.Repositories
         }
 
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
-        public DbSet<IngredientEntity> Ingredients { get; set; } = null!; 
+        public DbSet<IngredientEntity> Ingredients { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,6 +24,12 @@ namespace MyFood.Infrastructure.Repositories
                 .WithOne(i => i.FoodEntity)
                 .HasForeignKey(i => i.FoodEntityId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasIndex(u => u.Email).IsUnique();
+                entity.HasIndex(u => u.Username).IsUnique();
+            });
         }
     }
     
