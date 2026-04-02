@@ -26,14 +26,18 @@ public class AuthenticateController : ControllerBase
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
-        var user = await userManager.FindByNameAsync(model.Username);
-        if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+        if (model == null || string.IsNullOrWhiteSpace(model.Username) || string.IsNullOrWhiteSpace(model.Password))
+            return BadRequest("Username and password are required.");
+
+        var user = await userManager.FindByNameAsync(model.Username!);
+        if (user != null && await userManager.CheckPasswordAsync(user, model.Password!))
         {
             var userRoles = await userManager.GetRolesAsync(user);
 
+
             var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -42,7 +46,11 @@ public class AuthenticateController : ControllerBase
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole));
             }
 
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+            var jwtSecret = _configuration["JWT:Secret"];
+            if (string.IsNullOrWhiteSpace(jwtSecret))
+                return StatusCode(StatusCodes.Status500InternalServerError, "JWT secret is not configured.");
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
@@ -63,9 +71,12 @@ public class AuthenticateController : ControllerBase
 
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
+    public async Task<IActionResult> Register([FromBody] RegisterDto model)
     {
-        var userExists = await userManager.FindByNameAsync(model.Username);
+        if (model == null || string.IsNullOrWhiteSpace(model.Username) || string.IsNullOrWhiteSpace(model.Password))
+            return BadRequest("Username and password are required.");
+
+        var userExists = await userManager.FindByNameAsync(model.Username!);
         if (userExists != null)
             return StatusCode(StatusCodes.Status500InternalServerError, "User exists");
 
@@ -74,7 +85,7 @@ public class AuthenticateController : ControllerBase
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = model.Username
         };
-        var result = await userManager.CreateAsync(user, model.Password);
+        var result = await userManager.CreateAsync(user, model.Password!);
         if (!result.Succeeded)
             return StatusCode(StatusCodes.Status500InternalServerError, "User creation failed! Please check user details and try again.");
 
