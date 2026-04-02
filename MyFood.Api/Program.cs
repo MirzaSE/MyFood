@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Services;
+using MyFood.Application.Repositories;
+using MyFood.Application.Services;
 using MyFood.Domain.Entities;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
@@ -21,7 +23,6 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.WebHost.UseUrls("http://*:8080");
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
@@ -34,7 +35,13 @@ builder.Services.AddCustomCors("AllowAllOrigins");
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IVerificationTokenService, VerificationTokenService>();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -44,10 +51,9 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-//opt.UseInMemoryDatabase("FoodDatabase"));
-opt.UseSqlServer(
-           builder.Configuration.GetConnectionString("DefaultConnection"),
-           b => b.MigrationsAssembly("MyFood.Infrastructure")));
+    opt.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
