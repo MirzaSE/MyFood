@@ -1,83 +1,131 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
-using MyFood.Domain.Entities;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using MyFood.Application.Services;
+
+namespace MyFood.Api.Controllers.v1;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthenticateController : ControllerBase
+public class AuthController : ControllerBase
 {
-    private readonly UserManager<ApplicationUser> userManager;
-    private readonly RoleManager<IdentityRole> roleManager;
-    private readonly IConfiguration _configuration;
+    private readonly IAuthService _authService;
 
-    public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    public AuthController(IAuthService authService)
     {
-        this.userManager = userManager;
-        this.roleManager = roleManager;
-        _configuration = configuration;
+        _authService = authService;
     }
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Login([FromBody] LoginDto model)
+    public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto loginDto)
     {
-        var user = await userManager.FindByNameAsync(model.Username);
-        if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+        if (loginDto == null)
         {
-            var userRoles = await userManager.GetRolesAsync(user);
-
-            var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-            foreach (var userRole in userRoles)
+            return BadRequest(new AuthResponseDto
             {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
+                Success = false,
+                Message = "Login request is required."
             });
         }
-        return Unauthorized();
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var authResponse = await _authService.LoginAsync(loginDto);
+            if (!authResponse.Success)
+            {
+                return Unauthorized(authResponse);
+            }
+
+            return Ok(authResponse);
+        }
+        catch
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto
+            {
+                Success = false,
+                Message = "An unexpected error occurred during login."
+            });
+        }
     }
 
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
+    public async Task<ActionResult<AuthResponseDto>> Register([FromBody] RegisterDto registerDto)
     {
-        var userExists = await userManager.FindByNameAsync(model.Username);
-        if (userExists != null)
-            return StatusCode(StatusCodes.Status500InternalServerError, "User exists");
+        if (registerDto == null)
+        {
+            return BadRequest(new AuthResponseDto
+            {
+                Success = false,
+                Message = "Registration request is required."
+            });
+        }
 
-        ApplicationUser user = new ApplicationUser()
-        {            
-            SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = model.Username
-        };
-        var result = await userManager.CreateAsync(user, model.Password);
-        if (!result.Succeeded)
-            return StatusCode(StatusCodes.Status500InternalServerError, "User creation failed! Please check user details and try again.");
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
-        return Ok("User created successfully!");
+        try
+        {
+            var authResponse = await _authService.RegisterAsync(registerDto);
+            if (!authResponse.Success)
+            {
+                return BadRequest(authResponse);
+            }
+
+            return Ok(authResponse);
+        }
+        catch
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto
+            {
+                Success = false,
+                Message = "An unexpected error occurred during registration."
+            });
+        }
+    }
+
+    [HttpPost]
+    [Route("verify-email")]
+    public async Task<ActionResult<AuthResponseDto>> VerifyEmail([FromBody] VerifyEmailDto verifyEmailDto)
+    {
+        if (verifyEmailDto == null)
+        {
+            return BadRequest(new AuthResponseDto
+            {
+                Success = false,
+                Message = "Email verification request is required."
+            });
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var response = await _authService.VerifyEmailAsync(verifyEmailDto);
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+        catch
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto
+            {
+                Success = false,
+                Message = "An unexpected error occurred during email verification."
+            });
+        }
     }
 }
