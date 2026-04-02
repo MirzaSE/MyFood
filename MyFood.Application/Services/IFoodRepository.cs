@@ -1,7 +1,6 @@
-﻿using MyFood.Application;
-using MyFood.Domain.Entities;
+﻿using MyFood.Domain.Entities;
 
-namespace MyFood.Infrastructure.Repositories
+namespace MyFood.Application.Services
 {
     public interface IFoodRepository
     {
@@ -15,5 +14,6 @@ namespace MyFood.Infrastructure.Repositories
         IEnumerable<FoodEntity> SearchFoodsByName(string name);
         int Count();
         bool Save();
+        object GetAll(object queryParameters);
     }
 }
