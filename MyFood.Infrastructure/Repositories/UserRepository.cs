@@ -16,6 +16,9 @@ public class UserRepository : IUserRepository
     public async Task<ApplicationUser?> FindByUsernameAsync(string username)
         => await _userManager.FindByNameAsync(username);
 
+    public async Task<ApplicationUser?> FindByEmailAsync(string email)
+        => await _userManager.FindByEmailAsync(email);
+
     public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
         => await _userManager.CheckPasswordAsync(user, password);
 
@@ -25,6 +28,12 @@ public class UserRepository : IUserRepository
     public async Task<(bool Succeeded, IEnumerable<string> Errors)> CreateAsync(ApplicationUser user, string password)
     {
         var result = await _userManager.CreateAsync(user, password);
+        return (result.Succeeded, result.Errors.Select(e => e.Description));
+    }
+
+    public async Task<(bool Succeeded, IEnumerable<string> Errors)> UpdateAsync(ApplicationUser user)
+    {
+        var result = await _userManager.UpdateAsync(user);
         return (result.Succeeded, result.Errors.Select(e => e.Description));
     }
 }

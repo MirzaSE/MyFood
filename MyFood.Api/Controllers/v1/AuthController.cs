@@ -42,4 +42,19 @@ public class AuthController : ControllerBase
 
         return Ok(result);
     }
+    [HttpGet("verify-email")]
+    public async Task<ActionResult<AuthResponseDto>> VerifyEmail(
+        [FromQuery] string email,
+        [FromQuery] string token)
+    {
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
+            return BadRequest(new AuthResponseDto { Success = false, Message = "Email and token are required." });
+
+        var result = await _authService.VerifyEmailAsync(email, token);
+
+        if (!result.Success)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
 }

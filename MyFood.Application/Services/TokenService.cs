@@ -1,12 +1,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using MyFood.Application.Services;
 using MyFood.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace MyFood.Infrastructure.Services;
+namespace MyFood.Application.Services;
 
 public class TokenService : ITokenService
 {
