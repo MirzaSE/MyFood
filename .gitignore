@@ -212,3 +212,9 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 /MyFood.Api/Logs
+
+# Guard against accidentally tracked Windows-style build folders
+**/bin\\Debug/
+**/bin\\Release/
+**/obj\\Debug/
+**/obj\\Release/
