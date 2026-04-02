@@ -14,12 +14,17 @@ using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
 using Newtonsoft.Json.Serialization;
-using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
+using Serilog;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
+#pragma warning disable ASPDEPR006
+builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 // Add services to the container.
 builder.WebHost.UseUrls("http://*:8080");
 builder.Services.AddControllers()
@@ -33,11 +38,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCustomCors("AllowAllOrigins");
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
+
+// Register authentication and password services for clean architecture
+builder.Services.AddScoped<MyFood.Application.Services.IUserRepository, UserSqlRepository>();
+builder.Services.AddScoped<MyFood.Application.Services.ITokenService, JwtTokenService>();
+builder.Services.AddScoped<MyFood.Application.Services.IAuthService, MyFood.Application.Services.AuthService>();
+builder.Services.AddScoped<MyFood.Application.Services.IPasswordService, MyFood.Application.Services.PasswordService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
+
+// LinkService 
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
-builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -49,12 +61,10 @@ opt.UseSqlServer(
            builder.Configuration.GetConnectionString("DefaultConnection"),
            b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
-
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
-    
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                .AddEntityFrameworkStores<FoodDbContext>()
                .AddDefaultTokenProviders();
@@ -74,11 +84,11 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = true,
             ValidAudience = builder.Configuration["JWT:ValidAudience"],
             ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-        };
+            IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]!)
+            ),
+             };
     });
-
-builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 var app = builder.Build();
 
