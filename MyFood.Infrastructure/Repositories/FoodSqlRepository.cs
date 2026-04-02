@@ -22,6 +22,11 @@ namespace MyFood.Infrastructure.Repositories
             return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
         }
 
+        public async Task<FoodEntity> GetSingleAsync(int id)
+        {
+            return await _foodDbContext.FoodItems.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public void Add(FoodEntity item)
         {
             _foodDbContext.FoodItems.Add(item);
