@@ -2,6 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
+using MyFood.Application.Services;
 using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Helpers;
 
@@ -40,7 +41,7 @@ namespace MyFood.Infrastructure.Repositories
 
         public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
         {
-            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
+            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x => x.Name);
 
             if (queryParameters.HasQuery())
             {
