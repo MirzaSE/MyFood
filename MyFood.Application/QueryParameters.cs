@@ -1,4 +1,6 @@
 
+using System;
+
 namespace MyFood.Application
 {
     public class QueryParameters
@@ -16,5 +18,11 @@ namespace MyFood.Application
         public string? Query { get; set; } = "";
 
         public string OrderBy { get; set; } = "Name";
+        
+        // Add this method to calculate total pages
+        public int GetTotalPages(int totalCount)
+        {
+            return (int)Math.Ceiling((double)totalCount / PageCount);
+        }
     }
 }

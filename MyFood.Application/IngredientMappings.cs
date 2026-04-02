@@ -1,6 +1,7 @@
 using AutoMapper;
-using MyFood.Application.Entities;
 using MyFood.Application.Dtos;
+using MyFood.Domain.Entities;
+
 
 namespace MyFood.Api.MappingProfiles
 {

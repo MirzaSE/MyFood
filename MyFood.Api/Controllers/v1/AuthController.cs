@@ -1,11 +1,7 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using MyFood.Infrastructure.Entities;
-using System.Text;
+using MyFood.Application.Services;
+using System.Threading.Tasks;
 
 namespace MyFood.Api.Controllers
 {
@@ -13,63 +9,74 @@ namespace MyFood.Api.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IConfiguration _config;
+        // Notice: Now depends on IAuthService (Application layer), not UserManager
+        private readonly IAuthService _authService;
 
-        public AuthController(UserManager<ApplicationUser> userManager, IConfiguration config)
+        public AuthController(IAuthService authService)
         {
-            _userManager = userManager;
-            _config = config;
+            _authService = authService;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterUserDto dto)
+        public async Task<ActionResult<AuthResponseDto>> Register([FromBody] RegisterDto registerDto)
         {
-            var user = new ApplicationUser
+            // Validate model state
+            if (!ModelState.IsValid)
             {
-                UserName = dto.Username,
-                FullName = dto.FullName
-            };
+                return BadRequest(ModelState);
+            }
 
-            var result = await _userManager.CreateAsync(user, dto.Password);
+            // Call the service - it handles all business logic
+            var result = await _authService.RegisterAsync(registerDto);
 
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
+            if (!result.Success)
+            {
+                // Return 400 Bad Request with error message
+                return BadRequest(new { error = result.Message });
+            }
 
-            return Ok(new { user.Id, user.UserName, user.FullName });
+            // Return 200 OK with the result
+            return Ok(result);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto dto)
-        {
-            var user = await _userManager.FindByNameAsync(dto.Username);
-            if (user == null) return Unauthorized();
+public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto loginDto)
+{
+    // Validate model state
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(ModelState);
+    }
 
-            var valid = await _userManager.CheckPasswordAsync(user, dto.Password);
-            if (!valid) return Unauthorized();
+    // Call the service
+    var result = await _authService.LoginAsync(loginDto);
 
-            var jwtSettings = _config.GetSection("Jwt");
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
+    // If login failed, return 401 Unauthorized
+    if (!result.Success)
+    {
+        return Unauthorized(new { error = result.Message });
+    }
 
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName ?? "")
-            };
+    // Return success with token
+    return Ok(result);
+}
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+[HttpGet("verify-email")]
+public async Task<ActionResult<AuthResponseDto>> VerifyEmail([FromQuery] string userId, [FromQuery] string token)
+{
+    if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
+    {
+        return BadRequest(new { error = "UserId and token are required" });
+    }
 
-            var token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"],
-                audience: jwtSettings["Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(double.Parse(jwtSettings["DurationInMinutes"] ?? "60")),
-                signingCredentials: creds
-            );
+    var result = await _authService.VerifyEmailAsync(userId, token);
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+    if (!result.Success)
+    {
+        return BadRequest(new { error = result.Message });
+    }
 
-            return Ok(new { token = tokenString });
-        }
+    return Ok(result);
+}
     }
 }

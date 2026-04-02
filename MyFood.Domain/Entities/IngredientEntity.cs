@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MyFood.Application.Entities
+namespace MyFood.Domain.Entities
 {
     public class IngredientEntity 
     {
@@ -12,9 +12,7 @@ namespace MyFood.Application.Entities
 
         public int Quantity { get; set; }
 
-        // Foreign key linking to FoodEntity
-        [ForeignKey("foodItem")]
-        public int Food_Id { get; set; }
+        public int FoodId { get; set; }  // ← Changed from Food_Id
 
         public FoodEntity foodItem { get; set; } = null!;
     }

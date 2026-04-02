@@ -8,6 +8,7 @@ using MyFood.Api.MappingProfiles;
 using MyFood.Api.Middleware;
 using MyFood.Api.Services;
 using MyFood.Application.Repositories;
+using MyFood.Application.Services;
 using MyFood.Infrastructure.Repositories;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
@@ -17,9 +18,11 @@ using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using MyFood.Application.Entities;
+using MyFood.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using MyFood.Infrastructure.Entities;
+using MyFood.Infrastructure.Services;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,9 +48,16 @@ builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+builder.Services.AddScoped<IFoodService, FoodService>(); 
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IEmailService, EmailService>();  // ← Add this
+builder.Services.AddScoped<IVerificationTokenService, VerificationTokenService>(); 
 
 // DbContext
 builder.Services.AddDbContext<FoodDbContext>(opt =>
@@ -63,13 +73,14 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 // --- ADD IDENTITY SERVICES ---
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+
+builder.Services.AddIdentity<MyFood.Domain.Entities.ApplicationUser, IdentityRole>()  // ← Updated namespace
     .AddEntityFrameworkStores<FoodDbContext>()
     .AddDefaultTokenProviders();
 
 // --- CONFIGURE JWT AUTHENTICATION ---
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+var key = Encoding.ASCII.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not configured"));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -84,8 +95,8 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
+        ValidIssuer = jwtSettings["Issuer"] ?? throw new InvalidOperationException("JWT Issuer not configured"),
+        ValidAudience = jwtSettings["Audience"] ?? throw new InvalidOperationException("JWT Audience not configured"),
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
     options.IncludeErrorDetails = true;

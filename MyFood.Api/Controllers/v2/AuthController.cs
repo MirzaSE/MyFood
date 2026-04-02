@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
-using MyFood.Infrastructure.Entities; // <-- updated namespace
+using MyFood.Domain.Entities; // <-- updated namespace
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -24,7 +24,7 @@ namespace MyFood.Api.Controllers.v1
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterUserDto dto)
+        public async Task<IActionResult> Register(RegisterDto dto)
         {
             var user = new ApplicationUser
             {

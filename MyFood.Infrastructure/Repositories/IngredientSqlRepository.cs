@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using MyFood.Application.Entities;
+using MyFood.Domain.Entities;
 using MyFood.Application.Repositories;
 
 namespace MyFood.Infrastructure.Repositories
@@ -40,7 +40,7 @@ namespace MyFood.Infrastructure.Repositories
 
             existing.Name = ingredient.Name;
             existing.Quantity = ingredient.Quantity;
-            existing.Food_Id = ingredient.Food_Id;
+            existing.FoodId = ingredient.FoodId;
 
             await _context.SaveChangesAsync();
 

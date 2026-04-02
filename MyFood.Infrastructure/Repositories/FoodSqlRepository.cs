@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
-using MyFood.Application.Entities;
+using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Helpers;
+using MyFood.Application.Services;
 
 namespace MyFood.Infrastructure.Repositories
 {
@@ -14,7 +15,7 @@ namespace MyFood.Infrastructure.Repositories
             _foodDbContext = foodDbContext;
         }
 
-        // 🔹 Fix: Include Ingredients
+        // ?? Fix: Include Ingredients
         public FoodEntity GetSingle(int id)
         {
             return _foodDbContext.FoodItems
@@ -39,7 +40,7 @@ namespace MyFood.Infrastructure.Repositories
             return item;
         }
 
-        // 🔹 Optional: Include Ingredients in GetAll if you want them in the list
+        // ?? Optional: Include Ingredients in GetAll if you want them in the list
         public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
         {
             IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems
