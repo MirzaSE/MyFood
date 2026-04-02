@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application.Dtos;
 using MyFood.Application.Services;
@@ -13,10 +14,19 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    [HttpPost]
-    [Route("login")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
+        if (model == null)
+        {
+            ModelState.AddModelError(string.Empty, "Request body cannot be empty.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(BuildValidationResponse());
+        }
+
         var result = await _authService.LoginAsync(model);
         if (!result.Success)
         {
@@ -26,10 +36,19 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost]
-    [Route("register")]
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto model)
     {
+        if (model == null)
+        {
+            ModelState.AddModelError(string.Empty, "Request body cannot be empty.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(BuildValidationResponse());
+        }
+
         var result = await _authService.RegisterAsync(model);
 
         if (!result.Success)
@@ -38,5 +57,20 @@ public class AuthController : ControllerBase
         }
 
         return Ok(result);
+    }
+
+    private AuthResponseDto BuildValidationResponse()
+    {
+        var errors = ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => string.IsNullOrWhiteSpace(e.ErrorMessage) ? e.Exception?.Message : e.ErrorMessage)
+            .Where(e => !string.IsNullOrWhiteSpace(e))
+            .ToArray();
+
+        return new AuthResponseDto
+        {
+            Success = false,
+            Errors = errors.Length > 0 ? errors : new[] { "One or more validation errors occurred." }
+        };
     }
 }
