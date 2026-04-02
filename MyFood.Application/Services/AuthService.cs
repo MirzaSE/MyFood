@@ -62,27 +62,26 @@ namespace MyFood.Application.Services
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
-            var user = await _userManager.FindByNameAsync(loginDto.Username);
-            if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
-            {
-                return new AuthResponseDto
+                var user = await _userManager.FindByNameAsync(loginDto.Username); //get user
+                if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password)) //validate user and check if it exists. Validate password
                 {
-                    Success = false,
-                    Errors = new[] { "Invalid username or password." }
-                };
-            }
-
-            return await GenerateAuthResponseAsync(user);
+                    return new AuthResponseDto
+                    {
+                        Success = false,
+                        Errors = new[] { "Invalid username or password." }
+                    }; //return response if auth attempt is invalid.
+                }
+            return await GenerateAuthResponseAsync(user); // Generate JWT Token and return rsponse
         }
 
         public async Task<bool> ValidateCredentialsAsync(string username, string password)
-        {
+        { //validation logic:
             var user = await _userManager.FindByNameAsync(username);
-            if (user == null)
+            if (user == null) // see if user is null, if yes, return false
             {
                 return false;
             }
-
+            //otherwsie, check password against stored ones
             return await _userManager.CheckPasswordAsync(user, password);
         }
 
