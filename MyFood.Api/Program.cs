@@ -10,6 +10,7 @@ using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Services;
 using MyFood.Application.Services;
+using MyFood.Application.Services.Passwords;
 using MyFood.Domain.Entities;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
@@ -43,6 +44,7 @@ builder.Services.AddScoped<IFoodService, FoodService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddSingleton<IPasswordService, PasswordService>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 

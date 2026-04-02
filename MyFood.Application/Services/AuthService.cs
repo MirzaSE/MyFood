@@ -11,11 +11,16 @@ namespace MyFood.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
+        private readonly IPasswordService _passwordService;
 
-        public AuthService(IUserRepository userRepository, ITokenService tokenService)
+        public AuthService(
+            IUserRepository userRepository,
+            ITokenService tokenService,
+            IPasswordService passwordService)
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
+            _passwordService = passwordService;
         }
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
@@ -25,9 +30,15 @@ namespace MyFood.Application.Services
                 return FailureResponse("Registration payload is required.");
             }
 
-            if (string.IsNullOrWhiteSpace(registerDto.Username) || string.IsNullOrWhiteSpace(registerDto.Password))
+            if (string.IsNullOrWhiteSpace(registerDto.Username))
             {
-                return FailureResponse("Username and password are required.");
+                return FailureResponse("Username is required.");
+            }
+
+            var passwordResult = _passwordService.ValidateStrength(registerDto.Password);
+            if (!passwordResult.IsStrong)
+            {
+                return FailureResponse(passwordResult.Errors);
             }
 
             var existingUser = await _userRepository.FindByUsernameAsync(registerDto.Username);
