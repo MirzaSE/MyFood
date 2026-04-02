@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
 using MyFood.Application.Dtos;
 using MyFood.Application.Entities;
+using MyFood.Application.Services;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
@@ -18,16 +19,16 @@ namespace MyFood.Api.Controllers.v1
     [Route("api/v{version:apiVersion}/[controller]")]
     public class FoodsController : ControllerBase
     {
-        private readonly IFoodRepository _foodRepository;
+        private readonly IFoodService _foodService;
         private readonly IMapper _mapper;
         private readonly ILinkService<FoodsController> _linkService;
 
         public FoodsController(
-            IFoodRepository foodRepository,
+            IFoodService foodService,
             IMapper mapper,
             ILinkService<FoodsController> linkService)
         {
-            _foodRepository = foodRepository;
+            _foodService = foodService;
             _mapper = mapper;
             _linkService = linkService;
         }
@@ -36,9 +37,9 @@ namespace MyFood.Api.Controllers.v1
         [HttpGet(Name = nameof(GetAllFoods))]
         public ActionResult GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
         {
-            List<FoodEntity> foodItems = _foodRepository.GetAll(queryParameters).ToList();
+            List<FoodEntity> foodItems = _foodService.GetAll(queryParameters).ToList();
 
-            var allItemCount = _foodRepository.Count();
+            var allItemCount = _foodService.Count();
 
             var paginationMetadata = new
             {
@@ -70,7 +71,7 @@ namespace MyFood.Api.Controllers.v1
                 throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
             }
 
-            FoodEntity foodItem = _foodRepository.GetSingle(id);
+            FoodEntity foodItem = _foodService.GetSingle(id);
 
             if (foodItem == null)
             {
@@ -86,7 +87,7 @@ namespace MyFood.Api.Controllers.v1
         [Route("search", Name = nameof(SearchByName))]
         public ActionResult SearchByName(ApiVersion version,[FromQuery] QueryParameters queryParameters, string name)
         {
-            var foodItems = _foodRepository.SearchFoodsByName(name);
+            var foodItems = _foodService.SearchFoodsByName(name);
 
             var allItemCount = foodItems.Count();
             var paginationMetadata = new
@@ -119,18 +120,12 @@ namespace MyFood.Api.Controllers.v1
 
             FoodEntity toAdd = _mapper.Map<FoodEntity>(foodCreateDto);
 
-            _foodRepository.Add(toAdd);
+            FoodEntity created = _foodService.Add(toAdd);
 
-            if (!_foodRepository.Save())
-            {
-                throw new Exception("Creating a fooditem failed on save.");
-            }
-
-            FoodEntity newFoodItem = _foodRepository.GetSingle(toAdd.Id);
-            FoodDto foodDto = _mapper.Map<FoodDto>(newFoodItem);
+            FoodDto foodDto = _mapper.Map<FoodDto>(created);
 
             return CreatedAtRoute(nameof(GetSingleFood),
-                new { version = version.ToString(), id = newFoodItem.Id },
+                new { version = version.ToString(), id = created.Id },
                 _linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
         }
 
@@ -142,7 +137,7 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
-            FoodEntity existingEntity = _foodRepository.GetSingle(id);
+            FoodEntity existingEntity = _foodService.GetSingle(id);
 
             if (existingEntity == null)
             {
@@ -160,12 +155,7 @@ namespace MyFood.Api.Controllers.v1
             }
 
             _mapper.Map(foodUpdateDto, existingEntity);
-            FoodEntity updated = _foodRepository.Update(id, existingEntity);
-
-            if (!_foodRepository.Save())
-            {
-                throw new Exception("Updating a fooditem failed on save.");
-            }
+            FoodEntity updated = _foodService.Update(id, existingEntity);
 
             FoodDto foodDto = _mapper.Map<FoodDto>(updated);
 
@@ -176,19 +166,14 @@ namespace MyFood.Api.Controllers.v1
         [Route("{id:int}", Name = nameof(RemoveFood))]
         public ActionResult RemoveFood(int id)
         {
-            FoodEntity foodItem = _foodRepository.GetSingle(id);
+            FoodEntity foodItem = _foodService.GetSingle(id);
 
             if (foodItem == null)
             {
                 return NotFound();
             }
 
-            _foodRepository.Delete(id);
-
-            if (!_foodRepository.Save())
-            {
-                throw new Exception("Deleting a fooditem failed on save.");
-            }
+            _foodService.Delete(id);
 
             return NoContent();
         }
@@ -202,7 +187,7 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
-            var existingFoodItem = _foodRepository.GetSingle(id);
+            var existingFoodItem = _foodService.GetSingle(id);
 
             if (existingFoodItem == null)
             {
@@ -211,12 +196,7 @@ namespace MyFood.Api.Controllers.v1
 
             _mapper.Map(foodUpdateDto, existingFoodItem);
 
-            _foodRepository.Update(id, existingFoodItem);
-
-            if (!_foodRepository.Save())
-            {
-                throw new Exception("Updating a fooditem failed on save.");
-            }
+            _foodService.Update(id, existingFoodItem);
 
             FoodDto foodDto = _mapper.Map<FoodDto>(existingFoodItem);
 
@@ -226,7 +206,7 @@ namespace MyFood.Api.Controllers.v1
         [HttpGet("GetRandomMeal", Name = nameof(GetRandomMeal))]
         public ActionResult GetRandomMeal()
         {
-            ICollection<FoodEntity> foodItems = _foodRepository.GetRandomMeal();
+            ICollection<FoodEntity> foodItems = _foodService.GetRandomMeal();
 
             IEnumerable<FoodDto> dtos = foodItems.Select(x => _mapper.Map<FoodDto>(x));
 

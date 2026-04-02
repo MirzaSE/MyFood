@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyFood.Application.Dtos;
 using MyFood.Application.Entities;
 using MyFood.Infrastructure.Repositories;
+using MyFood.Application.Repositories;
 
 namespace MyFood.Api.Controllers.v1
 {

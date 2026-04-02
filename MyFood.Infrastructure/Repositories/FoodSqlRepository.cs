@@ -1,9 +1,8 @@
-﻿
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
 using MyFood.Application.Entities;
 using MyFood.Infrastructure.Helpers;
+using MyFood.Application.Repositories;
 
 namespace MyFood.Infrastructure.Repositories
 {
