@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
 using MyFood.Application.Entities;
+using MyFood.Application.Services;
 using MyFood.Infrastructure.Helpers;
 
 namespace MyFood.Infrastructure.Repositories
@@ -15,9 +16,9 @@ namespace MyFood.Infrastructure.Repositories
             _foodDbContext = foodDbContext;
         }
 
-        public IngredientEntity GetSingle(int id)
+        public IngredientEntity? GetSingle(int id)
         {
-            return _foodDbContext.Ingredients.First(x => x.Id == id);
+            return _foodDbContext.Ingredients.FirstOrDefault(x => x.Id == id);
         }
 
         public void Add(IngredientEntity item)
@@ -28,7 +29,11 @@ namespace MyFood.Infrastructure.Repositories
         public void Delete(int id)
         {
             IngredientEntity ingredientItem = GetSingle(id);
-            _foodDbContext.Ingredients.Remove(ingredientItem);
+
+            if (ingredientItem != null)
+            {
+                _foodDbContext.Ingredients.Remove(ingredientItem);
+            }
         }
 
         public IngredientEntity Update(int id, IngredientEntity item)

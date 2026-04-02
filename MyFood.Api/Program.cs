@@ -7,6 +7,7 @@ using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Middleware;
 using MyFood.Api.Services;
+using MyFood.Application.Services;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Domain.Entities;
+using MyFood.Infrastructure.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +36,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCustomCors("AllowAllOrigins");
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
+builder.Services.AddScoped<IFoodService, FoodService>();
+builder.Services.AddScoped<IIngredientService, IngredientService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddSingleton<IVerificationTokenService, VerificationTokenService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
 builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
@@ -63,7 +71,9 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 // Configure JWT authentication
-var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]); // TODO secret should be in appSettings
+var jwtKey = builder.Configuration["Jwt:Key"]
+    ?? throw new InvalidOperationException("Jwt:Key must be configured.");
+var key = Encoding.ASCII.GetBytes(jwtKey);
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
