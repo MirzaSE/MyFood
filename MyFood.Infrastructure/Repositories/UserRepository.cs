@@ -40,6 +40,16 @@ namespace MyFood.Infrastructure.Repositories
             return _userManager.FindByNameAsync(username);
         }
 
+        public Task<ApplicationUser?> FindByEmailAsync(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return Task.FromResult<ApplicationUser?>(null);
+            }
+
+            return _userManager.FindByEmailAsync(email);
+        }
+
         public Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
         {
             if (user == null || string.IsNullOrWhiteSpace(password))
@@ -66,6 +76,16 @@ namespace MyFood.Infrastructure.Repositories
             }
 
             return _userManager.GetRolesAsync(user);
+        }
+
+        public Task UpdateAsync(ApplicationUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            return _userManager.UpdateAsync(user);
         }
     }
 }

@@ -59,6 +59,28 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("verify-email")]
+    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDto model)
+    {
+        if (model == null)
+        {
+            ModelState.AddModelError(string.Empty, "Request body cannot be empty.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(BuildValidationResponse());
+        }
+
+        var result = await _authService.VerifyEmailAsync(model);
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
     private AuthResponseDto BuildValidationResponse()
     {
         var errors = ModelState.Values

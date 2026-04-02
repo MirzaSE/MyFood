@@ -6,6 +6,7 @@ namespace MyFood.Application.Services
     {
         Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto);
         Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
+        Task<AuthResponseDto> VerifyEmailAsync(VerifyEmailDto verifyEmailDto);
         Task<bool> ValidateCredentialsAsync(string username, string password);
     }
 }

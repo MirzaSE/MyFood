@@ -12,15 +12,21 @@ namespace MyFood.Application.Services
         private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
         private readonly IPasswordService _passwordService;
+        private readonly IEmailService _emailService;
+        private readonly IVerificationTokenService _verificationTokenService;
 
         public AuthService(
             IUserRepository userRepository,
             ITokenService tokenService,
-            IPasswordService passwordService)
+            IPasswordService passwordService,
+            IEmailService emailService,
+            IVerificationTokenService verificationTokenService)
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
             _passwordService = passwordService;
+            _emailService = emailService;
+            _verificationTokenService = verificationTokenService;
         }
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
@@ -35,6 +41,11 @@ namespace MyFood.Application.Services
                 return FailureResponse("Username is required.");
             }
 
+            if (string.IsNullOrWhiteSpace(registerDto.Email))
+            {
+                return FailureResponse("Email is required.");
+            }
+
             var passwordResult = _passwordService.ValidateStrength(registerDto.Password);
             if (!passwordResult.IsStrong)
             {
@@ -47,10 +58,19 @@ namespace MyFood.Application.Services
                 return FailureResponse("User already exists.");
             }
 
+            var existingEmailUser = await _userRepository.FindByEmailAsync(registerDto.Email);
+            if (existingEmailUser != null)
+            {
+                return FailureResponse("Email is already registered.");
+            }
+
             var user = new ApplicationUser
             {
                 UserName = registerDto.Username,
-                SecurityStamp = Guid.NewGuid().ToString()
+                Email = registerDto.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                IsEmailVerified = false,
+                EmailConfirmed = false
             };
 
             var result = await _userRepository.CreateAsync(user, registerDto.Password);
@@ -59,7 +79,13 @@ namespace MyFood.Application.Services
                 return FailureResponse(result.Errors.Select(e => e.Description));
             }
 
-            return await GenerateAuthResponseAsync(user);
+            var verificationToken = _verificationTokenService.GenerateToken();
+            user.EmailVerificationToken = verificationToken;
+            user.EmailVerificationTokenExpiresAt = DateTime.UtcNow.AddHours(24);
+            await _userRepository.UpdateAsync(user);
+            await _emailService.SendVerificationEmailAsync(registerDto.Email, verificationToken);
+
+            return SuccessResponse("Registration successful. Please verify your email to continue.");
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
@@ -80,7 +106,54 @@ namespace MyFood.Application.Services
                 return FailureResponse("Invalid username or password.");
             }
 
+            if (!user.IsEmailVerified)
+            {
+                return FailureResponse("Please verify your email address before logging in.");
+            }
+
             return await GenerateAuthResponseAsync(user);
+        }
+
+        public async Task<AuthResponseDto> VerifyEmailAsync(VerifyEmailDto verifyEmailDto)
+        {
+            if (verifyEmailDto == null)
+            {
+                return FailureResponse("Verification payload is required.");
+            }
+
+            var user = await _userRepository.FindByEmailAsync(verifyEmailDto.Email);
+            if (user == null)
+            {
+                return FailureResponse("User with the provided email was not found.");
+            }
+
+            if (user.IsEmailVerified)
+            {
+                return SuccessResponse("Email is already verified.");
+            }
+
+            if (string.IsNullOrWhiteSpace(user.EmailVerificationToken) ||
+                !user.EmailVerificationTokenExpiresAt.HasValue)
+            {
+                return FailureResponse("No verification token is associated with this account.");
+            }
+
+            var expiresAt = user.EmailVerificationTokenExpiresAt.Value;
+            if (!_verificationTokenService.ValidateToken(
+                    verifyEmailDto.Token,
+                    user.EmailVerificationToken,
+                    expiresAt))
+            {
+                return FailureResponse("Invalid or expired verification token.");
+            }
+
+            user.IsEmailVerified = true;
+            user.EmailConfirmed = true;
+            user.EmailVerificationToken = null;
+            user.EmailVerificationTokenExpiresAt = null;
+            await _userRepository.UpdateAsync(user);
+
+            return SuccessResponse("Email verified successfully. You can now log in.");
         }
 
         public async Task<bool> ValidateCredentialsAsync(string username, string password)
@@ -125,6 +198,15 @@ namespace MyFood.Application.Services
             {
                 Success = false,
                 Errors = sanitizedErrors?.Length > 0 ? sanitizedErrors : new[] { "Authentication request failed." }
+            };
+        }
+
+        private static AuthResponseDto SuccessResponse(string message)
+        {
+            return new AuthResponseDto
+            {
+                Success = true,
+                Message = message
             };
         }
     }
