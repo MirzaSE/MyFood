@@ -15,7 +15,10 @@ public class AuthenticateController : ControllerBase
     private readonly RoleManager<IdentityRole> roleManager;
     private readonly IConfiguration _configuration;
 
-    public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    public AuthenticateController(
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IConfiguration configuration)
     {
         this.userManager = userManager;
         this.roleManager = roleManager;
@@ -32,17 +35,20 @@ public class AuthenticateController : ControllerBase
             var userRoles = await userManager.GetRolesAsync(user);
 
             var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
+            {
+                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
 
             foreach (var userRole in userRoles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole));
             }
 
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            var secret = _configuration["JWT:Secret"]
+                ?? throw new InvalidOperationException("JWT:Secret is not configured.");
+
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
@@ -50,7 +56,7 @@ public class AuthenticateController : ControllerBase
                 expires: DateTime.Now.AddHours(3),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
+            );
 
             return Ok(new
             {
@@ -70,13 +76,15 @@ public class AuthenticateController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "User exists");
 
         ApplicationUser user = new ApplicationUser()
-        {            
+        {
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = model.Username
         };
+
         var result = await userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
-            return StatusCode(StatusCodes.Status500InternalServerError, "User creation failed! Please check user details and try again.");
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "User creation failed! Please check user details and try again.");
 
         return Ok("User created successfully!");
     }
