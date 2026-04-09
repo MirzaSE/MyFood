@@ -15,33 +15,30 @@ namespace MyFood.Application.Services
             _mapper = mapper;
         }
 
-        public Task<IEnumerable<FoodDto>> GetAllFoodsAsync(QueryParameters queryParameters)
+        public async Task<IEnumerable<FoodDto>> GetAllFoodsAsync(QueryParameters queryParameters)
         {
             var foodEntities = _foodRepository.GetAll(queryParameters).ToList();
-            var dtos = _mapper.Map<IEnumerable<FoodDto>>(foodEntities);
-            return Task.FromResult(dtos);
+            return await Task.FromResult(_mapper.Map<IEnumerable<FoodDto>>(foodEntities));
         }
 
-        public Task<FoodDto?> GetFoodByIdAsync(int id)
+        public async Task<FoodDto?> GetFoodByIdAsync(int id)
         {
             var foodEntity = _foodRepository.GetSingle(id);
             if (foodEntity == null)
             {
-                return Task.FromResult<FoodDto?>(null);
+                return null;
             }
 
-            var dto = _mapper.Map<FoodDto>(foodEntity);
-            return Task.FromResult<FoodDto?>(dto);
+            return await Task.FromResult(_mapper.Map<FoodDto>(foodEntity));
         }
 
-        public Task<IEnumerable<FoodDto>> SearchFoodsByNameAsync(string name)
+        public async Task<IEnumerable<FoodDto>> SearchFoodsByNameAsync(string name)
         {
             var foodEntities = _foodRepository.SearchFoodsByName(name).ToList();
-            var dtos = _mapper.Map<IEnumerable<FoodDto>>(foodEntities);
-            return Task.FromResult(dtos);
+            return await Task.FromResult(_mapper.Map<IEnumerable<FoodDto>>(foodEntities));
         }
 
-        public Task<FoodDto> CreateFoodAsync(FoodCreateDto foodCreateDto)
+        public async Task<FoodDto> CreateFoodAsync(FoodCreateDto foodCreateDto)
         {
             var entity = _mapper.Map<FoodEntity>(foodCreateDto);
             _foodRepository.Add(entity);
@@ -52,16 +49,15 @@ namespace MyFood.Application.Services
             }
 
             var createdEntity = _foodRepository.GetSingle(entity.Id) ?? entity;
-            var dto = _mapper.Map<FoodDto>(createdEntity);
-            return Task.FromResult(dto);
+            return await Task.FromResult(_mapper.Map<FoodDto>(createdEntity));
         }
 
-        public Task<FoodDto?> UpdateFoodAsync(int id, FoodUpdateDto foodUpdateDto)
+        public async Task<FoodDto?> UpdateFoodAsync(int id, FoodUpdateDto foodUpdateDto)
         {
             var existingEntity = _foodRepository.GetSingle(id);
             if (existingEntity == null)
             {
-                return Task.FromResult<FoodDto?>(null);
+                return null;
             }
 
             _mapper.Map(foodUpdateDto, existingEntity);
@@ -72,16 +68,34 @@ namespace MyFood.Application.Services
                 throw new InvalidOperationException("Updating a fooditem failed on save.");
             }
 
-            var dto = _mapper.Map<FoodDto>(updatedEntity);
-            return Task.FromResult<FoodDto?>(dto);
+            return await Task.FromResult(_mapper.Map<FoodDto>(updatedEntity));
         }
 
-        public Task<bool> DeleteFoodAsync(int id)
+        public async Task<FoodDto?> PatchFoodAsync(int id, FoodUpdateDto foodUpdateDto)
         {
             var existingEntity = _foodRepository.GetSingle(id);
             if (existingEntity == null)
             {
-                return Task.FromResult(false);
+                return null;
+            }
+
+            _mapper.Map(foodUpdateDto, existingEntity);
+            var updatedEntity = _foodRepository.Update(id, existingEntity);
+
+            if (!_foodRepository.Save())
+            {
+                throw new InvalidOperationException("Updating a fooditem failed on save.");
+            }
+
+            return await Task.FromResult(_mapper.Map<FoodDto>(updatedEntity));
+        }
+
+        public async Task<bool> DeleteFoodAsync(int id)
+        {
+            var existingEntity = _foodRepository.GetSingle(id);
+            if (existingEntity == null)
+            {
+                return false;
             }
 
             _foodRepository.Delete(id);
@@ -91,14 +105,13 @@ namespace MyFood.Application.Services
                 throw new InvalidOperationException("Deleting a fooditem failed on save.");
             }
 
-            return Task.FromResult(true);
+            return await Task.FromResult(true);
         }
 
-        public Task<IEnumerable<FoodDto>> GetRandomMealAsync()
+        public async Task<IEnumerable<FoodDto>> GetRandomMealAsync()
         {
             var foodItems = _foodRepository.GetRandomMeal();
-            var dtos = _mapper.Map<IEnumerable<FoodDto>>(foodItems);
-            return Task.FromResult(dtos);
+            return await Task.FromResult(_mapper.Map<IEnumerable<FoodDto>>(foodItems));
         }
 
         public Task<int> GetTotalFoodCountAsync()

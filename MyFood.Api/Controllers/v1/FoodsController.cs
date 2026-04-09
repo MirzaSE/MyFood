@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
@@ -18,24 +17,20 @@ namespace MyFood.Api.Controllers.v1
     public class FoodsController : ControllerBase
     {
         private readonly IFoodService _foodService;
-        private readonly IMapper _mapper;
         private readonly ILinkService<FoodsController> _linkService;
 
         public FoodsController(
             IFoodService foodService,
-            IMapper mapper,
             ILinkService<FoodsController> linkService)
         {
             _foodService = foodService;
-            _mapper = mapper;
             _linkService = linkService;
         }
 
-       
         [HttpGet(Name = nameof(GetAllFoods))]
         public async Task<ActionResult> GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
         {
-            var foodDtos = await _foodService.GetAllFoodsAsync(queryParameters);
+            var foodDtos = (await _foodService.GetAllFoodsAsync(queryParameters)).ToList();
             var allItemCount = await _foodService.GetTotalFoodCountAsync();
 
             var paginationMetadata = new
@@ -46,45 +41,35 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
             var toReturn = foodDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
 
-            return Ok(new
-            {
-                value = toReturn,
-                links = links
-            });
+            return Ok(new { value = toReturn, links });
         }
 
-        [HttpGet]
-        [Route("{id:int}", Name = nameof(GetSingleFood))]
+        [HttpGet("{id:int}", Name = nameof(GetSingleFood))]
         public async Task<ActionResult> GetSingleFood(ApiVersion version, int id)
         {
-
             if (id < 0)
-            {
                 throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
-            }
 
-            var foodDto = await _foodService.GetFoodByIdAsync(id);
+            var item = await _foodService.GetFoodByIdAsync(id);
+            if (item == null) return NotFound();
 
-            if (foodDto == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
+            return Ok(_linkService.ExpandSingleFoodItem(item, item.Id, version));
         }
 
-        [HttpGet]
-        [Route("search", Name = nameof(SearchByName))]
-        public async Task<ActionResult> SearchByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, string name)
+        [HttpGet("search", Name = nameof(SearchByName))]
+        public async Task<ActionResult> SearchByName(
+            ApiVersion version,
+            [FromQuery] QueryParameters queryParameters,
+            [FromQuery] string name)
         {
-            var foodDtos = await _foodService.SearchFoodsByNameAsync(name);
+            var foodItems = (await _foodService.SearchFoodsByNameAsync(name)).ToList();
+            var allItemCount = foodItems.Count;
 
-            var allItemCount = foodDtos.Count();
             var paginationMetadata = new
             {
                 totalCount = allItemCount,
@@ -93,112 +78,90 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
-            var toReturn = foodDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
 
-            return Ok(new
-            {
-                value = toReturn,
-                links = links
-            });
+            return Ok(new { value = toReturn, links });
         }
 
         [HttpPost(Name = nameof(AddFood))]
-        public async Task<ActionResult<FoodDto>> AddFood(ApiVersion version, [FromBody] FoodCreateDto foodCreateDto)
+        public async Task<ActionResult> AddFood(ApiVersion version, [FromBody] FoodCreateDto foodCreateDto)
         {
-            if (foodCreateDto == null)
-            {
-                return BadRequest();
-            }
+            if (foodCreateDto == null) return BadRequest();
 
-            var foodDto = await _foodService.CreateFoodAsync(foodCreateDto);
+            var created = await _foodService.CreateFoodAsync(foodCreateDto);
 
-            return CreatedAtRoute(nameof(GetSingleFood),
-                new { version = version.ToString(), id = foodDto.Id },
-                _linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
+            return CreatedAtRoute(
+                nameof(GetSingleFood),
+                new { version = version.ToString(), id = created.Id },
+                _linkService.ExpandSingleFoodItem(created, created.Id, version));
         }
 
         [HttpPatch("{id:int}", Name = nameof(PartiallyUpdateFood))]
-        public async Task<ActionResult<FoodDto>> PartiallyUpdateFood(ApiVersion version, int id, [FromBody] JsonPatchDocument<FoodUpdateDto> patchDoc)
+        public async Task<ActionResult> PartiallyUpdateFood(
+            ApiVersion version,
+            int id,
+            [FromBody] JsonPatchDocument<FoodUpdateDto> patchDoc)
         {
-            if (patchDoc == null)
+            if (patchDoc == null) return BadRequest();
+
+            var existing = await _foodService.GetFoodByIdAsync(id);
+            if (existing == null) return NotFound();
+
+            var foodUpdateDto = new FoodUpdateDto
             {
-                return BadRequest();
-            }
+                Name = existing.Name,
+                Type = existing.Type,
+                Calories = existing.Calories
+            };
 
-            var existingFood = await _foodService.GetFoodByIdAsync(id);
-            if (existingFood == null)
-            {
-                return NotFound();
-            }
+            patchDoc.ApplyTo(foodUpdateDto, ModelState);
 
-            var foodUpdateDto = _mapper.Map<FoodUpdateDto>(existingFood);
-            patchDoc.ApplyTo(foodUpdateDto);
-
-            TryValidateModel(foodUpdateDto);
-
-            if (!ModelState.IsValid)
-            {
+            if (!TryValidateModel(foodUpdateDto))
                 return BadRequest(ModelState);
-            }
 
-            var foodDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
-            if (foodDto == null)
-            {
-                return NotFound();
-            }
+            var updated = await _foodService.PatchFoodAsync(id, foodUpdateDto);
+            if (updated == null) return NotFound();
 
-            return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
+            return Ok(_linkService.ExpandSingleFoodItem(updated, updated.Id, version));
         }
 
-        [HttpDelete]
-        [Route("{id:int}", Name = nameof(RemoveFood))]
+        [HttpDelete("{id:int}", Name = nameof(RemoveFood))]
         public async Task<ActionResult> RemoveFood(int id)
         {
             var deleted = await _foodService.DeleteFoodAsync(id);
-            if (!deleted)
-            {
-                return NotFound();
-            }
+            if (!deleted) return NotFound();
 
             return NoContent();
         }
 
-        [HttpPut]
-        [Route("{id:int}", Name = nameof(UpdateFood))]
-        public async Task<ActionResult<FoodDto>> UpdateFood(ApiVersion version, int id, [FromBody] FoodUpdateDto foodUpdateDto)
+        [HttpPut("{id:int}", Name = nameof(UpdateFood))]
+        public async Task<ActionResult> UpdateFood(
+            ApiVersion version,
+            int id,
+            [FromBody] FoodUpdateDto foodUpdateDto)
         {
-            if (foodUpdateDto == null)
-            {
-                return BadRequest();
-            }
+            if (foodUpdateDto == null) return BadRequest();
 
-            var foodDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
-            if (foodDto == null)
-            {
-                return NotFound();
-            }
+            var updated = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
+            if (updated == null) return NotFound();
 
-            return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
+            return Ok(_linkService.ExpandSingleFoodItem(updated, updated.Id, version));
         }
 
         [HttpGet("GetRandomMeal", Name = nameof(GetRandomMeal))]
         public async Task<ActionResult> GetRandomMeal()
         {
-            var foodDtos = await _foodService.GetRandomMealAsync();
+            var foodItems = (await _foodService.GetRandomMealAsync()).ToList();
 
-            var links = new List<LinkDto>();
-
-            // self 
-            links.Add(new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET"));
-
-            return Ok(new
+            var links = new List<LinkDto>
             {
-                value = foodDtos,
-                links = links
-            });
+                new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET")
+            };
+
+            return Ok(new { value = foodItems, links });
         }
     }
 }
