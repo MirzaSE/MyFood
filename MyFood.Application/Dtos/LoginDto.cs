@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+
 namespace MyFood.Application.Dtos
 {
     public class LoginDto

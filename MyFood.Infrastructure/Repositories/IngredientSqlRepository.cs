@@ -1,4 +1,4 @@
-using MyFood.Application.Entities;
+using MyFood.Domain.Entities;
 
 namespace MyFood.Infrastructure.Repositories
 {

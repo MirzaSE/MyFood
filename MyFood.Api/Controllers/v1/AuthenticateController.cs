@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application.Dtos;
 using MyFood.Application.Services;
@@ -56,5 +56,4 @@ namespace MyFood.Api.Controllers.v1
             return Ok(response);
         }
     }
-
 }

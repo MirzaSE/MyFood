@@ -27,16 +27,16 @@ builder.Host.UseSerilog((context, configuration) =>
 
 builder.WebHost.UseUrls("http://*:8080");
 builder.Services.AddControllers()
-                .AddNewtonsoftJson(options =>
-                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+    .AddNewtonsoftJson(options =>
+        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddCustomCors("AllowAllOrigins");
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
+builder.Services.AddScoped<IFoodService, FoodService>();
 builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -47,7 +47,6 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
@@ -60,8 +59,8 @@ builder.Services.AddDbContext<FoodDbContext>(opt =>
         b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-               .AddEntityFrameworkStores<FoodDbContext>()
-               .AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<FoodDbContext>()
+    .AddDefaultTokenProviders();
 
 var jwtSecret = builder.Configuration["JWT:Secret"]
     ?? throw new InvalidOperationException("JWT:Secret is missing in configuration.");
@@ -72,18 +71,18 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.SaveToken = true;
-        options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidAudience = builder.Configuration["JWT:ValidAudience"],
-            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
+    };
+});
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
@@ -95,16 +94,15 @@ var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(
-        options =>
+    app.UseSwaggerUI(options =>
+    {
+        foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
         {
-            foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
-            {
-                options.SwaggerEndpoint(
-                    $"/swagger/{description.GroupName}/swagger.json",
-                    description.GroupName.ToUpperInvariant());
-            }
-        });
+            options.SwaggerEndpoint(
+                $"/swagger/{description.GroupName}/swagger.json",
+                description.GroupName.ToUpperInvariant());
+        }
+    });
 
     app.SeedData();
 }
@@ -113,8 +111,8 @@ else
     app.AddProductionExceptionHandling(loggerFactory);
 }
 
+app.UseSerilogRequestLogging();
 app.UseCors("AllowAllOrigins");
-
 app.UseAuthentication();
 app.UseAuthorization();
 
