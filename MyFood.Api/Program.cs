@@ -87,8 +87,6 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-builder.Services.AddAutoMapper(typeof(FoodMappings));
-
 var app = builder.Build();
 
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
