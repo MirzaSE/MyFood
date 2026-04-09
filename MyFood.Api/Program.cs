@@ -9,10 +9,13 @@ using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Middleware;
 using MyFood.Api.Services;
+using MyFood.Application.Repositories;
+using MyFood.Application.Services;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
 using MyFood.Infrastructure.Repositories.Models;
+using MyFood.Infrastructure.Services;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Serilog;
@@ -23,18 +26,21 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
-                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); 
+                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCustomCors("AllowAllOrigins");
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IVerificationTokenService, VerificationTokenService>(); 
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
@@ -54,7 +60,6 @@ builder.Services.AddDbContext<FoodDbContext>(opt =>
         b => b.MigrationsAssembly("MyFood.Infrastructure"));
 });
 
-
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 //Add support to logging with SERILOG
@@ -73,7 +78,7 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true,      
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
@@ -94,6 +99,12 @@ var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<FoodDbContext>();
+        db.Database.Migrate();
+    }
+
     app.UseSwagger();
     app.UseSwaggerUI(
         options =>
@@ -104,16 +115,19 @@ if (app.Environment.IsDevelopment())
                     $"/swagger/{description.GroupName}/swagger.json",
                     description.GroupName.ToUpperInvariant());
             }
-            // Set the default swagger endpoint
             options.RoutePrefix = "swagger";
         });
 
     app.SeedData();
-} 
+
+    // ➡️ Dodano
+    app.UseDeveloperExceptionPage();
+}
 else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
+
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();

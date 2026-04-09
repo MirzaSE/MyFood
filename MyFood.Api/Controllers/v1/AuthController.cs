@@ -1,11 +1,6 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
-using MyFood.Infrastructure.Repositories.Models;
+using MyFood.Application.Services;
 
 namespace MyFood.Api.Controllers.v1;
 
@@ -13,13 +8,11 @@ namespace MyFood.Api.Controllers.v1;
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IConfiguration _config;
+    private readonly IAuthService _authService;
 
-    public AuthController(UserManager<ApplicationUser> userManager, IConfiguration config)
+    public AuthController(IAuthService authService)
     {
-        _userManager = userManager;
-        _config = config;
+        _authService = authService;
     }
 
     [HttpPost("register")]
@@ -28,22 +21,19 @@ public class AuthController : ControllerBase
         if (dto == null || string.IsNullOrEmpty(dto.Username) || string.IsNullOrEmpty(dto.Password))
             return BadRequest(new { message = "Username and password are required." });
 
-        var existing = await _userManager.FindByNameAsync(dto.Username);
-        if (existing != null)
-            return Conflict(new { message = "Username already exists." });
-
-        var user = new ApplicationUser
+        var registerDto = new RegisterDto
         {
-            UserName = dto.Username,
-            Email = dto.Username,     // simplest option if you don't have real email
-            FullName = dto.Username  // your extra property
+            Username = dto.Username,
+            Password = dto.Password,
+            Email = dto.Username,
+            FullName = dto.Username
         };
 
-        var result = await _userManager.CreateAsync(user, dto.Password);
-        if (!result.Succeeded)
-            return BadRequest(result.Errors.Select(e => e.Description));
+        var result = await _authService.RegisterAsync(registerDto);
+        if (!result.Success)
+            return BadRequest(new { message = result.Message });
 
-        return Ok(new { message = "User registered successfully." });
+        return Ok(new { message = result.Message, user = result.User });
     }
 
     [HttpPost("login")]
@@ -52,43 +42,20 @@ public class AuthController : ControllerBase
         if (dto == null || string.IsNullOrEmpty(dto.Username) || string.IsNullOrEmpty(dto.Password))
             return BadRequest(new { message = "Username and password are required." });
 
-        var user = await _userManager.FindByNameAsync(dto.Username);
-        if (user == null)
-            return Unauthorized(new { message = "Invalid credentials." });
+        var result = await _authService.LoginAsync(dto);
+        if (!result.Success)
+            return Unauthorized(new { message = result.Message });
 
-        var ok = await _userManager.CheckPasswordAsync(user, dto.Password);
-        if (!ok)
-            return Unauthorized(new { message = "Invalid credentials." });
-
-        var token = GenerateJwt(user);
-        return Ok(new { token });
+        return Ok(new { token = result.Token, user = result.User });
     }
 
-    private string GenerateJwt(ApplicationUser user)
+    [HttpPost("verify-email")]
+    public async Task<IActionResult> VerifyEmail([FromQuery] string token)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var result = await _authService.VerifyEmailAsync(token ?? string.Empty);
+        if (!result.Success)
+            return BadRequest(new { message = result.Message });
 
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Name, user.UserName ?? ""),
-            new Claim("UserId", user.Id),
-            new Claim("Username", user.UserName ?? "")
-        };
-
-        var issuer = _config["Jwt:Issuer"]!;
-        var audience = _config["Jwt:Audience"]!;
-        var minutes = Convert.ToDouble(_config["Jwt:DurationInMinutes"]!);
-
-        var token = new JwtSecurityToken(
-            issuer: issuer,
-            audience: audience,
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(minutes),
-            signingCredentials: creds
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return Ok(new { message = result.Message });
     }
 }
