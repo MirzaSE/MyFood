@@ -1,4 +1,5 @@
 using MyFood.Application.Dtos;
+using MyFood.Domain.Entities;
 
 namespace MyFood.Application.Services
 {
@@ -9,7 +10,6 @@ namespace MyFood.Application.Services
         Task<IEnumerable<FoodDto>> SearchFoodsByNameAsync(string name);
         Task<FoodDto> CreateFoodAsync(FoodCreateDto foodCreateDto);
         Task<FoodDto?> UpdateFoodAsync(int id, FoodUpdateDto foodUpdateDto);
-        Task<FoodDto?> PatchFoodAsync(int id, FoodUpdateDto foodUpdateDto);
         Task<bool> DeleteFoodAsync(int id);
         Task<IEnumerable<FoodDto>> GetRandomMealAsync();
         Task<int> GetTotalFoodCountAsync();
