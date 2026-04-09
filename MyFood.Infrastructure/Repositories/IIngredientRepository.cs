@@ -1,15 +1,15 @@
-using MyFood.Application.Entities;
+using MyFood.Domain.Entities;
 
-namespace MyFood.Infrastructure.Repositories
+namespace MyFood.Application.Repositories
 {
     public interface IIngredientRepository
     {
-        IngredientEntity GetSingle(int id);
         IQueryable<IngredientEntity> GetAll();
+        IngredientEntity? GetSingle(int id);
         IQueryable<IngredientEntity> GetByFoodId(int foodId);
         void Add(IngredientEntity item);
-        void Delete(int id);
         IngredientEntity Update(int id, IngredientEntity item);
+        void Delete(int id);
         bool Save();
     }
 }

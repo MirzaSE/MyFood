@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyFood.Application.Dtos
 {
-    public class RegisterUserDto
+    public class LoginDto
     {
         [Required(ErrorMessage = "User Name is required")]
         public string Username { get; set; }

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using MyFood.Application.Entities;
+using MyFood.Application.Repositories;
+using MyFood.Domain.Entities;
 
 namespace MyFood.Infrastructure.Repositories
 {
@@ -12,7 +13,7 @@ namespace MyFood.Infrastructure.Repositories
             _foodDbContext = foodDbContext;
         }
 
-        public IngredientEntity GetSingle(int id)
+        public IngredientEntity? GetSingle(int id)
         {
             return _foodDbContext.Ingredients.FirstOrDefault(x => x.Id == id);
         }
@@ -25,7 +26,7 @@ namespace MyFood.Infrastructure.Repositories
         public IQueryable<IngredientEntity> GetByFoodId(int foodId)
         {
             return _foodDbContext.Ingredients
-                .Where(x => x.FoodId == foodId);
+                .Where(x => x.FoodEntityId == foodId);
         }
 
         public void Add(IngredientEntity item)
@@ -35,8 +36,11 @@ namespace MyFood.Infrastructure.Repositories
 
         public void Delete(int id)
         {
-            IngredientEntity ingredient = GetSingle(id);
-            _foodDbContext.Ingredients.Remove(ingredient);
+            var ingredient = GetSingle(id);
+            if (ingredient != null)
+            {
+                _foodDbContext.Ingredients.Remove(ingredient);
+            }
         }
 
         public IngredientEntity Update(int id, IngredientEntity item)
@@ -47,7 +51,7 @@ namespace MyFood.Infrastructure.Repositories
 
         public bool Save()
         {
-            return (_foodDbContext.SaveChanges() >= 0);
+            return _foodDbContext.SaveChanges() >= 0;
         }
     }
 }

@@ -16,14 +16,14 @@ namespace MyFood.Api.Controllers.v1
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterUserDto dto)
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto dto)
         {
             var result = await _authService.RegisterAsync(dto);
             return Ok(result);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginDto dto)
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var token = await _authService.LoginAsync(dto);
             return Ok(new { token });

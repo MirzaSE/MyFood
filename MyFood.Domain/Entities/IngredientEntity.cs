@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MyFood.Application.Entities
+namespace MyFood.Domain.Entities
 {
     public class IngredientEntity
     {
@@ -11,8 +11,8 @@ namespace MyFood.Application.Entities
 
         public string? Quantity { get; set; }
 
-        public int FoodId { get; set; }
+        public int FoodEntityId { get; set; }
 
-        public FoodEntity? Food { get; set; }
+        public FoodEntity? FoodEntity { get; set; }
     }
 }

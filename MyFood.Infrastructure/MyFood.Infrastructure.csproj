@@ -36,8 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-  <EmbeddedResource Remove="**/*.resx" />
-  <None Remove="**/*.resx" />
-</ItemGroup>
+    <EmbeddedResource Remove="**/*.resx" />
+    <None Remove="**/*.resx" />
+  </ItemGroup>
 
 </Project>

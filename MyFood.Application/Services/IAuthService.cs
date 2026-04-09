@@ -5,6 +5,6 @@ namespace MyFood.Application.Services
     public interface IAuthService
     {
         Task<string> RegisterAsync(RegisterUserDto dto);
-        Task<string> LoginAsync(UserLoginDto dto);
+        Task<string> LoginAsync(LoginDto dto);
     }
 }

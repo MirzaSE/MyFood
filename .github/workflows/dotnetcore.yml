@@ -13,9 +13,12 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
+<<<<<<< HEAD
 
     - name: Restore
       run: dotnet restore
 
+=======
+>>>>>>> cec6bc4a77b0f659e2561cb9a61251c8bd562042
     - name: Build with dotnet
       run: dotnet build --configuration Release

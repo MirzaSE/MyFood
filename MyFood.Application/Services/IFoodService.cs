@@ -1,17 +1,17 @@
 using MyFood.Application;
-using MyFood.Application.Entities;
+using MyFood.Application.Dtos;
 
 namespace MyFood.Application.Services
 {
     public interface IFoodService
     {
-        IQueryable<FoodEntity> GetAll(QueryParameters queryParameters);
-        FoodEntity? GetSingle(int id);
-        IEnumerable<FoodEntity> SearchFoodsByName(string name);
-        FoodEntity Add(FoodEntity item);
-        FoodEntity Update(int id, FoodEntity item);
-        void Delete(int id);
-        ICollection<FoodEntity> GetRandomMeal();
-        int Count();
+        Task<IEnumerable<FoodDto>> GetAllFoodsAsync(QueryParameters queryParameters);
+        Task<FoodDto?> GetFoodByIdAsync(int id);
+        Task<IEnumerable<FoodDto>> SearchFoodsByNameAsync(string name);
+        Task<FoodDto> CreateFoodAsync(FoodCreateDto foodCreateDto);
+        Task<FoodDto?> UpdateFoodAsync(int id, FoodUpdateDto foodUpdateDto);
+        Task<bool> DeleteFoodAsync(int id);
+        Task<IEnumerable<FoodDto>> GetRandomMealAsync();
+        Task<int> GetTotalFoodCountAsync();
     }
 }

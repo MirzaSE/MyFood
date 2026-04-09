@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
-using MyFood.Application.Entities;
 using MyFood.Application.Services;
+using MyFood.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -40,7 +40,7 @@ namespace MyFood.Api.Services
             return "User created successfully";
         }
 
-        public async Task<string> LoginAsync(UserLoginDto dto)
+        public async Task<string> LoginAsync(LoginDto dto)
         {
             var user = await _userManager.FindByNameAsync(dto.Username!);
 
