@@ -1,12 +1,10 @@
-﻿
-
-using MyFood.Application;
-using MyFood.Application.Entities;
-using MyFood.Infrastructure.Helpers;
+﻿using MyFood.Application;
+using MyFood.Application.Services;
+using MyFood.Domain.Entities;
 
 namespace MyFood.Infrastructure.Repositories
 {
-    public class FoodSqlRepository : IFoodRepository
+    public class FoodSqlRepository : MyFood.Application.Services.IFoodRepository
     {
         private readonly FoodDbContext _foodDbContext;
 
@@ -15,7 +13,7 @@ namespace MyFood.Infrastructure.Repositories
             _foodDbContext = foodDbContext;
         }
 
-        public FoodEntity GetSingle(int id)
+        public FoodEntity? GetSingle(int id)
         {
             return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
         }
@@ -27,8 +25,11 @@ namespace MyFood.Infrastructure.Repositories
 
         public void Delete(int id)
         {
-            FoodEntity foodItem = GetSingle(id);
-            _foodDbContext.FoodItems.Remove(foodItem);
+            var foodItem = GetSingle(id);
+            if (foodItem != null)
+            {
+                _foodDbContext.FoodItems.Remove(foodItem);
+            }
         }
 
         public FoodEntity Update(int id, FoodEntity item)
@@ -39,18 +40,32 @@ namespace MyFood.Infrastructure.Repositories
 
         public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
         {
-            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
+            var allItems = _foodDbContext.FoodItems.OrderBy(x => x.Name).AsQueryable();
 
             if (queryParameters.HasQuery())
             {
-                _allItems = _allItems
-                    .Where(x => x.Calories.ToString().Contains(queryParameters.Query.ToLowerInvariant())
-                    || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+                var loweredQuery = queryParameters.Query.ToLowerInvariant();
+                allItems = allItems.Where(x =>
+                    x.Calories.ToString().Contains(loweredQuery) ||
+                    (x.Name != null && x.Name.ToLowerInvariant().Contains(loweredQuery)));
             }
 
-            return _allItems
+            return allItems
                 .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
                 .Take(queryParameters.PageCount);
+        }
+
+        public IQueryable<FoodEntity> SearchFoodsByName(string name)
+        {
+            var foodItems = _foodDbContext.FoodItems.OrderBy(x => x.Name).AsQueryable();
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return foodItems;
+            }
+
+            var loweredName = name.ToLowerInvariant();
+            return foodItems.Where(x => x.Name != null && x.Name.ToLowerInvariant().Contains(loweredName));
         }
 
         public int Count()
@@ -60,25 +75,29 @@ namespace MyFood.Infrastructure.Repositories
 
         public bool Save()
         {
-            return (_foodDbContext.SaveChanges() >= 0);
+            return _foodDbContext.SaveChanges() >= 0;
         }
 
         public ICollection<FoodEntity> GetRandomMeal()
         {
-            List<FoodEntity> toReturn = new List<FoodEntity>();
+            var toReturn = new List<FoodEntity>();
 
-            toReturn.Add(GetRandomItem("Starter"));
-            toReturn.Add(GetRandomItem("Main"));
-            toReturn.Add(GetRandomItem("Dessert"));
+            var starter = GetRandomItem("Starter");
+            var main = GetRandomItem("Main");
+            var dessert = GetRandomItem("Dessert");
+
+            if (starter != null) toReturn.Add(starter);
+            if (main != null) toReturn.Add(main);
+            if (dessert != null) toReturn.Add(dessert);
 
             return toReturn;
         }
 
-        private FoodEntity GetRandomItem(string type)
+        private FoodEntity? GetRandomItem(string type)
         {
             return _foodDbContext.FoodItems
                 .Where(x => x.Type == type)
-                .OrderBy(o => Guid.NewGuid())
+                .OrderBy(_ => Guid.NewGuid())
                 .FirstOrDefault();
         }
     }

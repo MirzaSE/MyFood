@@ -1,0 +1,9 @@
+namespace MyFood.Application.Dtos
+{
+    public class UpdateIngredientDto
+    {
+        public string? Name { get; set; }
+        public string? Quantity { get; set; }
+        public int FoodId { get; set; }
+    }
+}

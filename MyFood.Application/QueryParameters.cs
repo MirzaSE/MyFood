@@ -16,5 +16,7 @@ namespace MyFood.Application
         public string? Query { get; set; } = "";
 
         public string OrderBy { get; set; } = "Name";
+
+        public bool HasQuery() => !string.IsNullOrWhiteSpace(Query);
     }
 }

@@ -1,44 +1,59 @@
-using MyFood.Application.Entities;
-using MyFood.Infrastructure.Repositories;
+using MyFood.Domain.Entities;
 
-public class IngredientSqlRepository : IIngredientRepository
+namespace MyFood.Infrastructure.Repositories
 {
-    private readonly FoodDbContext _context;
-
-    public IngredientSqlRepository(FoodDbContext context)
+    public class IngredientSqlRepository : IIngredientRepository
     {
-        _context = context;
-    }
+        private readonly FoodDbContext _foodDbContext;
 
-    public void AddIngredient(IngredientEntity ingredient)
-    {
-        _context.Ingredients.Add(ingredient);
-        _context.SaveChanges();
-    }
-
-    public IEnumerable<IngredientEntity> GetAllIngredients()
-    {
-        return _context.Ingredients.ToList();
-    }
-
-    public IngredientEntity GetIngredientById(int id)
-    {
-        return _context.Ingredients.FirstOrDefault(i => i.Id == id);
-    }
-
-    public void UpdateIngredient(IngredientEntity ingredient)
-    {
-        _context.Ingredients.Update(ingredient);
-        _context.SaveChanges();
-    }
-
-    public void DeleteIngredient(int id)
-    {
-        var ingredient = _context.Ingredients.Find(id);
-        if (ingredient != null)
+        public IngredientSqlRepository(FoodDbContext foodDbContext)
         {
-            _context.Ingredients.Remove(ingredient);
-            _context.SaveChanges();
+            _foodDbContext = foodDbContext;
+        }
+
+        public IngredientEntity GetSingle(int id)
+        {
+            return _foodDbContext.Ingredients.FirstOrDefault(x => x.Id == id);
+        }
+
+        public void Add(IngredientEntity item)
+        {
+            _foodDbContext.Ingredients.Add(item);
+        }
+
+        public void Delete(int id)
+        {
+            IngredientEntity ingredientItem = GetSingle(id);
+            _foodDbContext.Ingredients.Remove(ingredientItem);
+        }
+
+        public IngredientEntity Update(int id, IngredientEntity item)
+        {
+            _foodDbContext.Ingredients.Update(item);
+            return item;
+        }
+
+        public IQueryable<IngredientEntity> GetAll()
+        {
+            return _foodDbContext.Ingredients.OrderBy(x => x.Name);
+        }
+
+        public IEnumerable<IngredientEntity> GetByFoodId(int foodId)
+        {
+            return _foodDbContext.Ingredients
+                .Where(x => x.FoodId == foodId)
+                .OrderBy(x => x.Name)
+                .ToList();
+        }
+
+        public int Count()
+        {
+            return _foodDbContext.Ingredients.Count();
+        }
+
+        public bool Save()
+        {
+            return (_foodDbContext.SaveChanges() >= 0);
         }
     }
 }

@@ -1,0 +1,63 @@
+2026-03-11 15:47:25.690 +01:00 [INF] Executed DbCommand (18ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (Size = 250), @p3='?' (Size = 50), @p4='?' (DbType = Int32), @p5='?' (DbType = DateTime2), @p6='?' (Size = 250), @p7='?' (Size = 50), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 250), @p11='?' (Size = 50), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 250), @p15='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [FoodItems] USING (
+VALUES (@p0, @p1, @p2, @p3, 0),
+(@p4, @p5, @p6, @p7, 1),
+(@p8, @p9, @p10, @p11, 2),
+(@p12, @p13, @p14, @p15, 3)) AS i ([Calories], [Created], [Name], [Type], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Calories], [Created], [Name], [Type])
+VALUES (i.[Calories], i.[Created], i.[Name], i.[Type])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-11 15:47:25.723 +01:00 [INF] User profile is available. Using '/Users/lejladoric/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-03-11 15:47:25.972 +01:00 [INF] Now listening on: https://localhost:7124
+2026-03-11 15:47:25.972 +01:00 [INF] Now listening on: http://localhost:5124
+2026-03-11 15:47:25.973 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-11 15:47:25.973 +01:00 [INF] Hosting environment: Development
+2026-03-11 15:47:25.973 +01:00 [INF] Content root path: /Users/lejladoric/Desktop/MyFood/MyFood/MyFood.Api
+2026-03-11 15:47:27.874 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/index.html - null null
+2026-03-11 15:47:27.920 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/index.html - 200 null text/html;charset=utf-8 46.2411ms
+2026-03-11 15:47:28.296 +01:00 [INF] Request starting HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - null null
+2026-03-11 15:47:28.357 +01:00 [INF] Request finished HTTP/2 GET https://localhost:7124/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 61.2464ms
+2026-03-11 17:18:23.279 +01:00 [INF] Application is shutting down...
+2026-03-11 17:31:20.798 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-11 17:31:20.823 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-11 17:31:20.825 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-11 17:31:20.826 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-11 17:31:20.839 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-11 17:31:20.844 +01:00 [INF] Applying migration '20260311161924_NewMigration'.
+2026-03-11 17:31:20.859 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260311161924_NewMigration', N'8.0.13');
+2026-03-11 17:32:59.439 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-11 17:32:59.462 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-11 17:32:59.464 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-11 17:32:59.467 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-11 17:32:59.476 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-11 17:32:59.481 +01:00 [INF] Applying migration '20260311163244_NewMigration2'.
+2026-03-11 17:32:59.535 +01:00 [INF] Executed DbCommand (41ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var0 sysname;
+SELECT @var0 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[FoodItems]') AND [c].[name] = N'Name');
+IF @var0 IS NOT NULL EXEC(N'ALTER TABLE [FoodItems] DROP CONSTRAINT [' + @var0 + '];');
+ALTER TABLE [FoodItems] ALTER COLUMN [Name] nvarchar(260) NULL;
+2026-03-11 17:32:59.537 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260311163244_NewMigration2', N'8.0.13');
