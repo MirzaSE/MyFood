@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +48,7 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
             var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
@@ -70,9 +70,9 @@ namespace MyFood.Api.Controllers.v1
                 throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
             }
 
-            FoodEntity foodItem = _foodRepository.GetSingle(id);
+            FoodEntity? foodItem = _foodRepository.GetSingle(id);
 
-            if (foodItem == null)
+            if (foodItem is null)
             {
                 return NotFound();
             }
@@ -97,7 +97,7 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            Response.Headers["X-Pagination"] = JsonSerializer.Serialize(paginationMetadata);
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
             var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
@@ -126,7 +126,12 @@ namespace MyFood.Api.Controllers.v1
                 throw new Exception("Creating a fooditem failed on save.");
             }
 
-            FoodEntity newFoodItem = _foodRepository.GetSingle(toAdd.Id);
+            FoodEntity? newFoodItem = _foodRepository.GetSingle(toAdd.Id);
+            if (newFoodItem is null)
+            {
+                throw new InvalidOperationException("Food was saved but could not be reloaded.");
+            }
+
             FoodDto foodDto = _mapper.Map<FoodDto>(newFoodItem);
 
             return CreatedAtRoute(nameof(GetSingleFood),
@@ -142,9 +147,9 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
-            FoodEntity existingEntity = _foodRepository.GetSingle(id);
+            FoodEntity? existingEntity = _foodRepository.GetSingle(id);
 
-            if (existingEntity == null)
+            if (existingEntity is null)
             {
                 return NotFound();
             }
@@ -176,9 +181,9 @@ namespace MyFood.Api.Controllers.v1
         [Route("{id:int}", Name = nameof(RemoveFood))]
         public ActionResult RemoveFood(int id)
         {
-            FoodEntity foodItem = _foodRepository.GetSingle(id);
+            FoodEntity? foodItem = _foodRepository.GetSingle(id);
 
-            if (foodItem == null)
+            if (foodItem is null)
             {
                 return NotFound();
             }
@@ -202,9 +207,9 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
-            var existingFoodItem = _foodRepository.GetSingle(id);
+            FoodEntity? existingFoodItem = _foodRepository.GetSingle(id);
 
-            if (existingFoodItem == null)
+            if (existingFoodItem is null)
             {
                 return NotFound();
             }
@@ -232,8 +237,11 @@ namespace MyFood.Api.Controllers.v1
 
             var links = new List<LinkDto>();
 
-            // self 
-            links.Add(new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET"));
+            var selfHref = Url.Link(nameof(GetRandomMeal), null);
+            if (!string.IsNullOrWhiteSpace(selfHref))
+            {
+                links.Add(new LinkDto(selfHref, "self", "GET"));
+            }
 
             return Ok(new
             {

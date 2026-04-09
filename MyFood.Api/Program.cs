@@ -9,8 +9,9 @@ using Microsoft.IdentityModel.Tokens;
 using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Services;
-using MyFood.Domain.Entities;
+using MyFood.Application;
 using MyFood.Infrastructure;
+using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
 using Newtonsoft.Json.Serialization;
@@ -45,6 +46,7 @@ builder.Services.AddScoped<MyFood.Application.Services.ITokenService, JwtTokenSe
 builder.Services.AddScoped<MyFood.Application.Services.IAuthService, MyFood.Application.Services.AuthService>();
 builder.Services.AddScoped<MyFood.Application.Services.IPasswordService, MyFood.Application.Services.PasswordService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
+builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
 
 // LinkService 
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));

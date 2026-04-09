@@ -1,4 +1,4 @@
-﻿
+
 
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
@@ -16,7 +16,7 @@ namespace MyFood.Infrastructure.Repositories
             _foodDbContext = foodDbContext;
         }
 
-        public FoodEntity GetSingle(int id)
+        public FoodEntity? GetSingle(int id)
         {
             return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
         }
@@ -28,8 +28,11 @@ namespace MyFood.Infrastructure.Repositories
 
         public void Delete(int id)
         {
-            FoodEntity foodItem = GetSingle(id);
-            _foodDbContext.FoodItems.Remove(foodItem);
+            var foodItem = GetSingle(id);
+            if (foodItem is not null)
+            {
+                _foodDbContext.FoodItems.Remove(foodItem);
+            }
         }
 
         public FoodEntity Update(int id, FoodEntity item)
@@ -40,20 +43,19 @@ namespace MyFood.Infrastructure.Repositories
 
         public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
         {
-            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
+            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x => x.Name);
 
-            if (queryParameters.HasQuery())
+            if (queryParameters.HasQuery() && !string.IsNullOrWhiteSpace(queryParameters.Query))
             {
-                _allItems = _allItems
-                    .Where(x => x.Calories.ToString().Contains(queryParameters.Query.ToLowerInvariant())
-                    || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+                var query = queryParameters.Query.ToLowerInvariant();
+                _allItems = _allItems.Where(x =>
+                    x.Calories.ToString().Contains(query) ||
+                    (x.Name != null && x.Name.ToLowerInvariant().Contains(query))
+                );
             }
 
-            return _allItems
-                .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
-                .Take(queryParameters.PageCount);
+            return _allItems;
         }
-
         public int Count()
         {
             return _foodDbContext.FoodItems.Count();
@@ -68,9 +70,12 @@ namespace MyFood.Infrastructure.Repositories
         {
             List<FoodEntity> toReturn = new List<FoodEntity>();
 
-            toReturn.Add(GetRandomItem("Starter"));
-            toReturn.Add(GetRandomItem("Main"));
-            toReturn.Add(GetRandomItem("Dessert"));
+            var starter = GetRandomItem("Starter");
+            if (starter != null) toReturn.Add(starter);
+            var main = GetRandomItem("Main");
+            if (main != null) toReturn.Add(main);
+            var dessert = GetRandomItem("Dessert");
+            if (dessert != null) toReturn.Add(dessert);
 
             return toReturn;
         }
@@ -85,7 +90,7 @@ namespace MyFood.Infrastructure.Repositories
             // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
         }
 
-        private FoodEntity GetRandomItem(string type)
+        private FoodEntity? GetRandomItem(string type)
         {
             return _foodDbContext.FoodItems
                 .Where(x => x.Type == type)
