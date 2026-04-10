@@ -1,6 +1,9 @@
-﻿using MyFood.Application.DTOs.Auth;
+﻿using Microsoft.AspNetCore.Identity;
+using MyFood.Application.Dtos;
 using MyFood.Application.Dtos;
 using MyFood.Domain.Entities;
+using LoginDto = MyFood.Application.Dtos.LoginDto;
+using RegisterUserDto = MyFood.Application.Dtos.RegisterUserDto;
 
 namespace MyFood.Application.Services
 {
@@ -36,8 +39,12 @@ namespace MyFood.Application.Services
             var user = new ApplicationUser
             {
                 UserName = dto.Username,
-                PasswordHash = _passwordService.HashPassword(dto.Password)
+                Email = dto.Username + "@test.com",
+                FullName = dto.Username 
             };
+
+            var hasher = new PasswordHasher<ApplicationUser>();
+            user.PasswordHash = hasher.HashPassword(user, dto.Password);
 
             await _userRepository.AddAsync(user);
 
@@ -63,9 +70,10 @@ namespace MyFood.Application.Services
                 };
             }
 
-            var valid = _passwordService.VerifyPassword(dto.Password, user.PasswordHash);
+            var hasher = new PasswordHasher<ApplicationUser>();
+            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
 
-            if (!valid)
+            if (result != PasswordVerificationResult.Success)
             {
                 return new AuthResponseDto
                 {

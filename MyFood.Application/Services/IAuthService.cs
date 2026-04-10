@@ -1,5 +1,5 @@
 ﻿using MyFood.Application.Dtos;
-using MyFood.Application.DTOs.Auth;
+
 
 public interface IAuthService
 {

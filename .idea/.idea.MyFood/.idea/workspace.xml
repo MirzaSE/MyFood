@@ -6,19 +6,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ebf8b86-e375-4155-8ce0-a985422d18bc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/MyFood.Application/Dtos/AuthResponseDto.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MyFood.Application/Services/AuthService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MyFood.Application/Services/IAuthService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MyFood.Application/Services/IPasswordService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MyFood.Application/Services/ITokenService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MyFood.Application/Services/IUserRepository.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MyFood.Application/Services/PasswordService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MyFood.Application/Services/TokenService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MyFood.Infrastructure/Repositories/UserRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MyFood/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MyFood/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyFood.Api/MyFood.Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Api/MyFood.Api.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Api/Controllers/v1/AuthController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Api/Controllers/v1/AuthenticateController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Api/Controllers/v1/AuthenticateController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MyFood.Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyFood.Application/MyFood.Application.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Application/MyFood.Application.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Application/Dtos/Auth/LoginDto.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Application/Dtos/Auth/RegisterUserDto.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Application/Services/AuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Application/Services/AuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Application/Services/IAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Application/Services/IAuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Infrastructure/Migrations/FoodDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Infrastructure/Migrations/FoodDbContextModelSnapshot.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +25,11 @@
     <option name="firstShow" value="false" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="spring2026/assignment3/ajsa.jusic/230302171" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -68,7 +69,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "spring2026/assignment3/ajsa.jusic/230302171",
+    "git-widget-placeholder": "#38 on spring2026/assignment3/ajsa.jusic/230302171",
     "ignore.virus.scanning.warn.message": "true",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.pluginManager",

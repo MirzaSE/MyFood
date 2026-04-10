@@ -1,12 +1,13 @@
-/*
+
  using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using MyFood.Application.DTOs.Auth;
+using MyFood.Application.Dtos;
 using MyFood.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -57,6 +58,12 @@ public class AuthenticateController : ControllerBase
 
         return Ok(new { token });
     }
+    [HttpGet("test")]
+    [Authorize]
+    public IActionResult Test()
+    {
+        return Ok("Authorized");
+    }
 
     private string GenerateToken(ApplicationUser user)
     {
@@ -81,4 +88,4 @@ public class AuthenticateController : ControllerBase
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-} */
+} 

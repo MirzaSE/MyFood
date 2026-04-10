@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Services;
@@ -19,15 +18,12 @@ using MyFood.Infrastructure.Repositories;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
-using MyFood.Domain.Entities;
-using MyFood.Application.Services;
-using MyFood.Infrastructure.Repositories;
+
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://*:8080");
+
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
@@ -75,9 +71,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<FoodDbContext>()
-    .AddDefaultTokenProviders();
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -94,7 +88,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     };
 });
 
-builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 
 builder.Services.AddAuthentication(options =>
