@@ -19,6 +19,11 @@ namespace MyFood.Infrastructure.Services
 
         public string GenerateToken(ApplicationUser user)
         {
+            var signingKey = _configuration["Jwt:Key"] ?? _configuration["JWT:Secret"];
+            var issuer = _configuration["Jwt:Issuer"] ?? _configuration["JWT:ValidIssuer"];
+            var audience = _configuration["Jwt:Audience"] ?? _configuration["JWT:ValidAudience"];
+            var durationInMinutes = _configuration.GetValue<int?>("Jwt:DurationInMinutes") ?? 180;
+
             var authClaims = new List<Claim>
             {
                 new(ClaimTypes.Name, user.UserName ?? string.Empty),
@@ -27,12 +32,12 @@ namespace MyFood.Infrastructure.Services
             };
 
             var authSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!));
+                Encoding.UTF8.GetBytes(signingKey!));
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.UtcNow.AddHours(3),
+                issuer: issuer,
+                audience: audience,
+                expires: DateTime.UtcNow.AddMinutes(durationInMinutes),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );
