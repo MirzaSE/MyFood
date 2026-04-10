@@ -35,4 +35,7 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Remove="**/*.resx" />
+
 </Project>
