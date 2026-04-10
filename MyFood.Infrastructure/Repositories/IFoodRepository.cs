@@ -1,7 +1,7 @@
-using MyFood.Application;
+﻿using MyFood.Application;
 using MyFood.Domain.Entities;
 
-namespace MyFood.Application.Services
+namespace MyFood.Infrastructure.Repositories
 {
     public interface IFoodRepository
     {
