@@ -1,0 +1,2 @@
+SELECT * FROM dbo.Ingredients;
+SELECT * FROM dbo.FoodItems;

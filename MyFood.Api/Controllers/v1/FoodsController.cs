@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
 using MyFood.Application.Dtos;
 using MyFood.Application.Services;
-using MyFood.Domain.Entities;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using System.Text.Json;
@@ -32,7 +31,6 @@ namespace MyFood.Api.Controllers.v1
             _linkService = linkService;
         }
 
-       
         [HttpGet(Name = nameof(GetAllFoods))]
         public async Task<ActionResult> GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
         {
@@ -63,7 +61,6 @@ namespace MyFood.Api.Controllers.v1
         [Route("{id:int}", Name = nameof(GetSingleFood))]
         public async Task<ActionResult> GetSingleFood(ApiVersion version, int id)
         {
-
             if (id < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
@@ -81,11 +78,11 @@ namespace MyFood.Api.Controllers.v1
 
         [HttpGet]
         [Route("search", Name = nameof(SearchByName))]
-        public async Task<ActionResult> SearchByName(ApiVersion version,[FromQuery] QueryParameters queryParameters, string name)
+        public async Task<ActionResult> SearchByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, string name)
         {
             var foodDtos = await _foodService.SearchFoodsByNameAsync(name);
-
             var allItemCount = foodDtos.Count();
+
             var paginationMetadata = new
             {
                 totalCount = allItemCount,
@@ -189,10 +186,10 @@ namespace MyFood.Api.Controllers.v1
         {
             var foodDtos = await _foodService.GetRandomMealAsync();
 
-            var links = new List<LinkDto>();
-
-            // self 
-            links.Add(new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET"));
+            var links = new List<LinkDto>
+            {
+                new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET")
+            };
 
             return Ok(new
             {

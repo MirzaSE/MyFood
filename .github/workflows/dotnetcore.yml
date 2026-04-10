@@ -4,14 +4,20 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: '10.0.x'
-    - name: Build with dotnet
-      run: dotnet build --configuration Release
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build with dotnet
+        run: dotnet build --configuration Release /p:TreatWarningsAsErrors=false --verbosity detailed

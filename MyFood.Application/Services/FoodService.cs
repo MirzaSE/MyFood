@@ -1,6 +1,7 @@
 using AutoMapper;
+using MyFood.Application;
 using MyFood.Application.Dtos;
-using MyFood.Application.Services;
+using MyFood.Application.Repositories;
 using MyFood.Domain.Entities;
 
 namespace MyFood.Application.Services
