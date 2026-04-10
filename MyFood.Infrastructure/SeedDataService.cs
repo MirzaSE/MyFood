@@ -1,4 +1,4 @@
-﻿using MyFood.Domain.Entities;
+using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Repositories;
 
 namespace MyFood.Api.Services
@@ -7,10 +7,15 @@ namespace MyFood.Api.Services
     {
         public void Initialize(FoodDbContext context)
         {
-            context.FoodItems.Add(new FoodEntity() { Calories = 1000, Type = "Starter", Name = "Lasagne", Created = DateTime.Now });
-            context.FoodItems.Add(new FoodEntity() { Calories = 1100, Type = "Main", Name = "Hamburger", Created = DateTime.Now });
-            context.FoodItems.Add(new FoodEntity() { Calories = 1200, Type = "Dessert", Name = "Spaghetti", Created = DateTime.Now });
-            context.FoodItems.Add(new FoodEntity() { Calories = 1300, Type = "Starter", Name = "Pizza", Created = DateTime.Now });
+            if (context.FoodItems.Any())
+            {
+                return;
+            }
+
+            context.FoodItems.Add(new FoodEntity { Calories = 1000, Type = "Starter", Name = "Lasagne", Created = DateTime.Now });
+            context.FoodItems.Add(new FoodEntity { Calories = 1100, Type = "Main", Name = "Hamburger", Created = DateTime.Now });
+            context.FoodItems.Add(new FoodEntity { Calories = 1200, Type = "Dessert", Name = "Spaghetti", Created = DateTime.Now });
+            context.FoodItems.Add(new FoodEntity { Calories = 1300, Type = "Starter", Name = "Pizza", Created = DateTime.Now });
 
             context.SaveChanges();
         }
