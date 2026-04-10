@@ -82,7 +82,7 @@ namespace MyFood.Infrastructure.Repositories
                 .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
                 .ToList();
 
-            // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
+            
         }
 
         private FoodEntity GetRandomItem(string type)

@@ -34,7 +34,7 @@ public class PasswordService : IPasswordService
     {
         if (password.Length < 8)
         {
-            return "Password must be at least 8 characters long.";
+            return "Password cannot be less than 8 symbols long.";
         }
 
         if (!Regex.IsMatch(password, "[A-Z]"))
@@ -49,12 +49,12 @@ public class PasswordService : IPasswordService
 
         if (!Regex.IsMatch(password, "[0-9]"))
         {
-            return "Password must contain at least one digit.";
+            return "Password must contain at least one number.";
         }
 
         if (!Regex.IsMatch(password, "[@$!%*?&]"))
         {
-            return "Password must contain at least one special character (@$!%*?&).";
+            return "Password must contain at least one special character.";
         }
 
         return string.Empty;

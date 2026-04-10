@@ -1,0 +1,2 @@
+- provjeri dtos jer nisam sigurna jel sve ok
+- pogledati u services jesam li dodala za password
