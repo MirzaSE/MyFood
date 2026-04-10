@@ -1,19 +1,18 @@
-using MyFood.Application;
 using MyFood.Domain.Entities;
+
 
 namespace MyFood.Application.Services
 {
     public interface IFoodRepository
     {
-        FoodEntity GetSingle(int id);
-        void Add(FoodEntity item);
-        void Delete(int id);
-        FoodEntity Update(int id, FoodEntity item);
-        IQueryable<FoodEntity> GetAll(QueryParameters queryParameters);
-        ICollection<FoodEntity> GetRandomMeal();
-
-        IEnumerable<FoodEntity> SearchFoodsByName(string name);
-        int Count();
-        bool Save();
+        Task<FoodEntity?> GetSingleAsync(int id);
+        Task AddAsync(FoodEntity item);
+        void Delete(FoodEntity item);
+        void Update(FoodEntity item);
+        Task<List<FoodEntity>> GetAllAsync(QueryParameters queryParameters);
+        Task<List<FoodEntity>> GetRandomMealAsync();
+        Task<List<FoodEntity>> SearchFoodsByNameAsync(string name);
+        Task<int> CountAsync();
+        Task<bool> SaveAsync();
     }
 }

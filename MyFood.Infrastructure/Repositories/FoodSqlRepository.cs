@@ -1,5 +1,4 @@
 ﻿
-
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
 using MyFood.Application.Services;
@@ -17,29 +16,27 @@ namespace MyFood.Infrastructure.Repositories
             _foodDbContext = foodDbContext;
         }
 
-        public FoodEntity GetSingle(int id)
+        public async Task<FoodEntity?> GetSingleAsync(int id)
         {
-            return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
+            return await _foodDbContext.FoodItems.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public void Add(FoodEntity item)
+        public async Task AddAsync(FoodEntity item)
         {
-            _foodDbContext.FoodItems.Add(item);
+            await _foodDbContext.FoodItems.AddAsync(item);
         }
 
-        public void Delete(int id)
+        public void Delete(FoodEntity foodItem)
         {
-            FoodEntity foodItem = GetSingle(id);
             _foodDbContext.FoodItems.Remove(foodItem);
         }
 
-        public FoodEntity Update(int id, FoodEntity item)
+        public void Update(FoodEntity item)
         {
             _foodDbContext.FoodItems.Update(item);
-            return item;
         }
 
-        public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
+        public async Task<List<FoodEntity>> GetAllAsync(QueryParameters queryParameters)
         {
             IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
 
@@ -50,48 +47,47 @@ namespace MyFood.Infrastructure.Repositories
                     || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
             }
 
-            return _allItems
+            return await _allItems
                 .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
-                .Take(queryParameters.PageCount);
+                .Take(queryParameters.PageCount)
+                .ToListAsync();
         }
 
-        public int Count()
+        public Task<int> CountAsync()
         {
-            return _foodDbContext.FoodItems.Count();
+            return _foodDbContext.FoodItems.CountAsync();
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsync()
         {
-            return (_foodDbContext.SaveChanges() >= 0);
+            return (await _foodDbContext.SaveChangesAsync() >= 0);
         }
 
-        public ICollection<FoodEntity> GetRandomMeal()
+        public async Task<List<FoodEntity>> GetRandomMealAsync()
         {
-            List<FoodEntity> toReturn = new List<FoodEntity>();
-
-            toReturn.Add(GetRandomItem("Starter"));
-            toReturn.Add(GetRandomItem("Main"));
-            toReturn.Add(GetRandomItem("Dessert"));
-
-            return toReturn;
+            var meal = new List<FoodEntity?>();
+            meal.Add(await GetRandomItemAsync("Starter"));
+            meal.Add(await GetRandomItemAsync("Main"));
+            meal.Add(await GetRandomItemAsync("Dessert"));
+            return meal.Where(x => x is not null).Cast<FoodEntity>().ToList();
         }
 
 
-        public IEnumerable<FoodEntity> SearchFoodsByName(string name)
+        public async Task<List<FoodEntity>> SearchFoodsByNameAsync(string name)
         {
-            return _foodDbContext.FoodItems
+            return await _foodDbContext.FoodItems
                 .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
-                .ToList();
+                .ToListAsync();
 
             // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
         }
 
-        private FoodEntity GetRandomItem(string type)
+        private async Task<FoodEntity?> GetRandomItemAsync(string type)
         {
-            return _foodDbContext.FoodItems
+            return await _foodDbContext.FoodItems
                 .Where(x => x.Type == type)
                 .OrderBy(o => Guid.NewGuid())
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
     }
 }
