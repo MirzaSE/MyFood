@@ -1,6 +1,5 @@
 using AutoMapper;
 using MyFood.Application.Dtos;
-using MyFood.Application.Services;
 using MyFood.Domain.Entities;
 
 namespace MyFood.Application.Services
@@ -41,10 +40,10 @@ namespace MyFood.Application.Services
 
             if (!_foodRepository.Save())
             {
-                throw new Exception("Creating a food item failed on save.");
+                throw new InvalidOperationException("Creating a fooditem failed on save.");
             }
 
-            var newFoodEntity = _foodRepository.GetSingle(foodEntity.Id);
+            var newFoodEntity = _foodRepository.GetSingle(foodEntity.Id) ?? foodEntity;
             return await Task.FromResult(_mapper.Map<FoodDto>(newFoodEntity));
         }
 
@@ -61,7 +60,26 @@ namespace MyFood.Application.Services
 
             if (!_foodRepository.Save())
             {
-                throw new Exception("Updating a food item failed on save.");
+                throw new InvalidOperationException("Updating a fooditem failed on save.");
+            }
+
+            return await Task.FromResult(_mapper.Map<FoodDto>(updatedEntity));
+        }
+
+        public async Task<FoodDto?> PatchFoodAsync(int id, FoodUpdateDto foodUpdateDto)
+        {
+            var existingEntity = _foodRepository.GetSingle(id);
+            if (existingEntity == null)
+            {
+                return null;
+            }
+
+            _mapper.Map(foodUpdateDto, existingEntity);
+            var updatedEntity = _foodRepository.Update(id, existingEntity);
+
+            if (!_foodRepository.Save())
+            {
+                throw new InvalidOperationException("Updating a fooditem failed on save.");
             }
 
             return await Task.FromResult(_mapper.Map<FoodDto>(updatedEntity));
@@ -79,10 +97,10 @@ namespace MyFood.Application.Services
 
             if (!_foodRepository.Save())
             {
-                throw new Exception("Deleting a food item failed on save.");
+                throw new InvalidOperationException("Deleting a fooditem failed on save.");
             }
 
-            return true;
+            return await Task.FromResult(true);
         }
 
         public async Task<IEnumerable<FoodDto>> GetRandomMealAsync()
@@ -91,9 +109,9 @@ namespace MyFood.Application.Services
             return await Task.FromResult(_mapper.Map<IEnumerable<FoodDto>>(foodEntities));
         }
 
-        public async Task<int> GetTotalFoodCountAsync()
+        public Task<int> GetTotalFoodCountAsync()
         {
-            return await Task.FromResult(_foodRepository.Count());
+            return Task.FromResult(_foodRepository.Count());
         }
     }
 }
