@@ -1,4 +1,4 @@
-﻿
+
 namespace MyFood.Application.Dtos
 {
     public class FoodUpdateDto

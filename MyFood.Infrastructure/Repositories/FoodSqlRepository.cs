@@ -1,10 +1,8 @@
-﻿
-
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
-using MyFood.Application.Services;
 using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Helpers;
+using MyFood.Application.Services;
 
 namespace MyFood.Infrastructure.Repositories
 {
@@ -17,9 +15,12 @@ namespace MyFood.Infrastructure.Repositories
             _foodDbContext = foodDbContext;
         }
 
+        // ?? Fix: Include Ingredients
         public FoodEntity GetSingle(int id)
         {
-            return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
+            return _foodDbContext.FoodItems
+                .Include(f => f.Ingredients)
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public void Add(FoodEntity item)
@@ -39,9 +40,12 @@ namespace MyFood.Infrastructure.Repositories
             return item;
         }
 
+        // ?? Optional: Include Ingredients in GetAll if you want them in the list
         public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
         {
-            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
+            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems
+                .Include(f => f.Ingredients)
+                .OrderBy(x => x.Name);
 
             if (queryParameters.HasQuery())
             {
@@ -76,19 +80,18 @@ namespace MyFood.Infrastructure.Repositories
             return toReturn;
         }
 
-
         public IEnumerable<FoodEntity> SearchFoodsByName(string name)
         {
             return _foodDbContext.FoodItems
+                .Include(f => f.Ingredients) // include ingredients here too
                 .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
                 .ToList();
-
-            // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
         }
 
         private FoodEntity GetRandomItem(string type)
         {
             return _foodDbContext.FoodItems
+                .Include(f => f.Ingredients) // include ingredients here as well
                 .Where(x => x.Type == type)
                 .OrderBy(o => Guid.NewGuid())
                 .FirstOrDefault();
