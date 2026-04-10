@@ -1,6 +1,8 @@
+using MyFood.Application;
 using MyFood.Application.Dtos;
 
-namespace MyFood.Application.Services{
+namespace MyFood.Application.Services
+{
     public interface IFoodService
     {
         Task<IEnumerable<FoodDto>> GetAllFoodsAsync(QueryParameters queryParameters);
