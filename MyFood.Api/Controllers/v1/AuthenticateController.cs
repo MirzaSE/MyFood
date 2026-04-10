@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Identity;
+/*
+ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.DTOs.Auth;
@@ -80,4 +81,4 @@ public class AuthenticateController : ControllerBase
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-}
+} */
