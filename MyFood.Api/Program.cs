@@ -36,6 +36,12 @@ builder.Services.AddCustomCors("AllowAllOrigins");
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
 builder.Services.AddScoped<IFoodService, FoodService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IVerificationTokenService, VerificationTokenService>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
@@ -86,6 +92,44 @@ var app = builder.Build();
 
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<FoodDbContext>();
+
+    await dbContext.Database.ExecuteSqlRawAsync(
+        """
+        IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+        BEGIN
+            CREATE TABLE [__EFMigrationsHistory] (
+                [MigrationId] nvarchar(150) NOT NULL,
+                [ProductVersion] nvarchar(32) NOT NULL,
+                CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+            );
+        END
+
+        IF COL_LENGTH('AspNetUsers', 'IsEmailVerified') IS NULL
+            ALTER TABLE [AspNetUsers] ADD [IsEmailVerified] bit NOT NULL CONSTRAINT [DF_AspNetUsers_IsEmailVerified] DEFAULT(0);
+
+        IF COL_LENGTH('AspNetUsers', 'VerificationToken') IS NULL
+            ALTER TABLE [AspNetUsers] ADD [VerificationToken] nvarchar(max) NULL;
+
+        IF COL_LENGTH('AspNetUsers', 'VerificationTokenExpiryUtc') IS NULL
+            ALTER TABLE [AspNetUsers] ADD [VerificationTokenExpiryUtc] datetime2 NULL;
+
+        IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20250312150424_Initial')
+            INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20250312150424_Initial', N'10.0.5');
+
+        IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20250312162119_ReduceCharacters')
+            INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20250312162119_ReduceCharacters', N'10.0.5');
+
+        IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20260325112226_AuthenticationUser')
+            INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20260325112226_AuthenticationUser', N'10.0.5');
+
+        IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20260410140445_AddEmailVerificationToApplicationUser')
+            INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20260410140445_AddEmailVerificationToApplicationUser', N'10.0.5');
+        """);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -4,5 +4,8 @@ namespace MyFood.Domain.Entities
 {
     public class ApplicationUser : IdentityUser
     {
+        public bool IsEmailVerified { get; set; }
+        public string? VerificationToken { get; set; }
+        public DateTime? VerificationTokenExpiryUtc { get; set; }
     }
 }
