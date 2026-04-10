@@ -13,30 +13,34 @@ using MyFood.Application.Services;
 using MyFood.Domain.Entities;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
+using MyFood.Api.Services;
 using MyFood.Infrastructure.Repositories;
 using Newtonsoft.Json.Serialization;
-using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.WebHost.UseUrls("http://*:8080");
-builder.Services.AddControllers()
-                .AddNewtonsoftJson(options =>
-                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCustomCors("AllowAllOrigins");
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
+builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
 builder.Services.AddScoped<IFoodService, FoodService>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
+
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -46,61 +50,90 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-//opt.UseInMemoryDatabase("FoodDatabase"));
-opt.UseSqlServer(
-           builder.Configuration.GetConnectionString("DefaultConnection"),
-           b => b.MigrationsAssembly("MyFood.Infrastructure")));
+    opt.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("MyFood.Infrastructure")));
 
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
+builder.Services.AddAutoMapper(typeof(IngredientMappings));
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
     
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-               .AddEntityFrameworkStores<FoodDbContext>()
-               .AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<FoodDbContext>()
+    .AddDefaultTokenProviders();
+
+
+
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = 401;
+        return Task.CompletedTask;
+    };
+
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode = 403;
+        return Task.CompletedTask;
+    };
+});
+
+
 
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+})
+.AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.SaveToken = true;
-        options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidAudience = builder.Configuration["JWT:ValidAudience"],
-            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+    };
+});
 
-builder.Services.AddAutoMapper(typeof(FoodMappings));
+
+builder.Services.AddAuthorization();
+
 
 var app = builder.Build();
 
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(
-        options =>
+    app.UseSwaggerUI(options =>
+    {
+        foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
         {
-            foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
-            {
-                options.SwaggerEndpoint(
-                    $"/swagger/{description.GroupName}/swagger.json",
-                    description.GroupName.ToUpperInvariant());
-            }
-        });
+            options.SwaggerEndpoint(
+                $"/swagger/{description.GroupName}/swagger.json",
+                description.GroupName.ToUpperInvariant());
+        }
+    });
 
     app.SeedData();
 }
@@ -108,15 +141,8 @@ else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
-//app.UseMiddleware<ExceptionHandlingMiddleware>();
-//app.UseMiddleware<RequestLoggingMiddleware>();
-
-//Add support to logging request with SERILOG
-app.UseSerilogRequestLogging();
 
 app.UseCors("AllowAllOrigins");
-//app.UseHttpsRedirection(); // can cause docker issue
-
 
 app.UseAuthentication();
 app.UseAuthorization();

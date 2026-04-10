@@ -9,6 +9,7 @@ using MyFood.Domain.Entities;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyFood.Api.Controllers.v1
 {
@@ -76,7 +77,9 @@ namespace MyFood.Api.Controllers.v1
                 return NotFound();
             }
 
-            return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
+            FoodDto item = _mapper.Map<FoodDto>(foodDto);
+
+            return Ok(_linkService.ExpandSingleFoodItem(item, item.Id, version));
         }
 
         [HttpGet]
