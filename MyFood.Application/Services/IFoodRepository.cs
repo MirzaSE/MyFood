@@ -15,5 +15,6 @@ namespace MyFood.Application.Services
         IEnumerable<FoodEntity> SearchFoodsByName(string name);
         int Count();
         bool Save();
+        Task<FoodEntity> GetSingleAsync(int id);
     }
 }

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -19,20 +19,17 @@ namespace MyFood.Api.Controllers.v1
     public class FoodsController : ControllerBase
     {
         private readonly IFoodService _foodService;
-        private readonly IMapper _mapper;
         private readonly ILinkService<FoodsController> _linkService;
 
         public FoodsController(
             IFoodService foodService,
-            IMapper mapper,
             ILinkService<FoodsController> linkService)
         {
             _foodService = foodService;
-            _mapper = mapper;
             _linkService = linkService;
         }
 
-       
+
         [HttpGet(Name = nameof(GetAllFoods))]
         public async Task<ActionResult> GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
         {
@@ -63,7 +60,6 @@ namespace MyFood.Api.Controllers.v1
         [Route("{id:int}", Name = nameof(GetSingleFood))]
         public async Task<ActionResult> GetSingleFood(ApiVersion version, int id)
         {
-
             if (id < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
@@ -128,26 +124,11 @@ namespace MyFood.Api.Controllers.v1
             {
                 return BadRequest();
             }
-
-            var existingDto = await _foodService.GetFoodByIdAsync(id);
-
-            if (existingDto == null)
+            var updatedDto = await _foodService.PartialUpdateFoodAsync(id, patchDoc);
+            if (updatedDto == null)
             {
                 return NotFound();
             }
-
-            FoodUpdateDto foodUpdateDto = _mapper.Map<FoodUpdateDto>(existingDto);
-            patchDoc.ApplyTo(foodUpdateDto);
-
-            TryValidateModel(foodUpdateDto);
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
-
             return Ok(_linkService.ExpandSingleFoodItem(updatedDto, updatedDto.Id, version));
         }
 
@@ -191,7 +172,6 @@ namespace MyFood.Api.Controllers.v1
 
             var links = new List<LinkDto>();
 
-            // self 
             links.Add(new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET"));
 
             return Ok(new
@@ -201,4 +181,5 @@ namespace MyFood.Api.Controllers.v1
             });
         }
     }
+
 }
