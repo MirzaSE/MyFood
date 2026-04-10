@@ -1,83 +1,87 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
-using MyFood.Domain.Entities;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using MyFood.Application.Services;
 
-[Route("api/[controller]")]
-[ApiController]
-public class AuthenticateController : ControllerBase
+namespace MyFood.Api.Controllers.v1
 {
-    private readonly UserManager<ApplicationUser> userManager;
-    private readonly RoleManager<IdentityRole> roleManager;
-    private readonly IConfiguration _configuration;
-
-    public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiController]
+    [ApiVersion("1.0")]
+    public class AuthenticateController : ControllerBase
     {
-        this.userManager = userManager;
-        this.roleManager = roleManager;
-        _configuration = configuration;
-    }
+        private readonly IAuthService _authService;
 
-    [HttpPost]
-    [Route("login")]
-    public async Task<IActionResult> Login([FromBody] LoginDto model)
-    {
-        var user = await userManager.FindByNameAsync(model.Username);
-        if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+        public AuthenticateController(IAuthService authService)
         {
-            var userRoles = await userManager.GetRolesAsync(user);
+            _authService = authService;
+        }
 
-            var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-            foreach (var userRole in userRoles)
+        [HttpPost]
+        [Route("login")]
+        public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto model)
+        {
+            if (model == null)
             {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                return BadRequest(new AuthResponseDto
+                {
+                    Success = false,
+                    Message = "Invalid login request"
+                });
             }
 
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            var response = await _authService.LoginAsync(model);
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            return Ok(new
+            if (!response.Success)
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            });
+                return Unauthorized(response);
+            }
+
+            return Ok(response);
         }
-        return Unauthorized();
-    }
 
-    [HttpPost]
-    [Route("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
-    {
-        var userExists = await userManager.FindByNameAsync(model.Username);
-        if (userExists != null)
-            return StatusCode(StatusCodes.Status500InternalServerError, "User exists");
+        [HttpPost]
+        [Route("register")]
+        public async Task<ActionResult<AuthResponseDto>> Register([FromBody] RegisterDto model)
+        {
+            if (model == null)
+            {
+                return BadRequest(new AuthResponseDto
+                {
+                    Success = false,
+                    Message = "Invalid registration request"
+                });
+            }
 
-        ApplicationUser user = new ApplicationUser()
-        {            
-            SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = model.Username
-        };
-        var result = await userManager.CreateAsync(user, model.Password);
-        if (!result.Succeeded)
-            return StatusCode(StatusCodes.Status500InternalServerError, "User creation failed! Please check user details and try again.");
+            var response = await _authService.RegisterAsync(model);
 
-        return Ok("User created successfully!");
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+        [HttpPost]
+        [Route("verify-email")]
+        public async Task<ActionResult<AuthResponseDto>> VerifyEmail([FromQuery] string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest(new AuthResponseDto
+                {
+                    Success = false,
+                    Message = "Verification token is required"
+                });
+            }
+
+            var response = await _authService.VerifyEmailAsync(token);
+
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
     }
 }
