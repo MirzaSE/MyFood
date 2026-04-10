@@ -1,6 +1,7 @@
 using MyFood.Application.Dtos;
 using MyFood.Domain.Entities;
 
+
 namespace MyFood.Application.Services
 {
     public interface IFoodService

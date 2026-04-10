@@ -2,6 +2,7 @@ using AutoMapper;
 using MyFood.Application.Dtos;
 using MyFood.Domain.Entities;
 
+
 namespace MyFood.Application.Services
 {
     public class FoodService : IFoodService
@@ -21,9 +22,9 @@ namespace MyFood.Application.Services
             return _mapper.Map<IEnumerable<FoodDto>>(foodEntities);
         }
 
-        public Task<int> GetTotalFoodCountAsync()
+        public async Task<int> GetTotalFoodCountAsync()
         {
-            return _foodRepository.CountAsync();
+            return await _foodRepository.CountAsync();
         }
 
         public async Task<FoodDto?> GetFoodByIdAsync(int id)

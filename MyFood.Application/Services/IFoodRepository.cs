@@ -1,5 +1,6 @@
 using MyFood.Domain.Entities;
 
+
 namespace MyFood.Application.Services
 {
     public interface IFoodRepository
