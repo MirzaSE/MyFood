@@ -1,4 +1,3 @@
-using MyFood.Application;
 using MyFood.Domain.Entities;
 
 namespace MyFood.Application.Services
@@ -15,5 +14,6 @@ namespace MyFood.Application.Services
         IEnumerable<FoodEntity> SearchFoodsByName(string name);
         int Count();
         bool Save();
+        object GetAll(object queryParameters);
     }
 }

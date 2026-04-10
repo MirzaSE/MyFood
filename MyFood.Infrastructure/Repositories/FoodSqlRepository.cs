@@ -41,7 +41,7 @@ namespace MyFood.Infrastructure.Repositories
 
         public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
         {
-            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
+            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x => x.Name);
 
             if (queryParameters.HasQuery())
             {
@@ -92,6 +92,11 @@ namespace MyFood.Infrastructure.Repositories
                 .Where(x => x.Type == type)
                 .OrderBy(o => Guid.NewGuid())
                 .FirstOrDefault();
+        }
+
+        public object GetAll(object queryParameters)
+        {
+            throw new NotImplementedException();
         }
     }
 }

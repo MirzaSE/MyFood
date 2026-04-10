@@ -32,7 +32,7 @@ namespace MyFood.Api.Controllers.v1
             _linkService = linkService;
         }
 
-       
+
         [HttpGet(Name = nameof(GetAllFoods))]
         public async Task<ActionResult> GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
         {
@@ -63,7 +63,6 @@ namespace MyFood.Api.Controllers.v1
         [Route("{id:int}", Name = nameof(GetSingleFood))]
         public async Task<ActionResult> GetSingleFood(ApiVersion version, int id)
         {
-
             if (id < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
@@ -81,7 +80,7 @@ namespace MyFood.Api.Controllers.v1
 
         [HttpGet]
         [Route("search", Name = nameof(SearchByName))]
-        public async Task<ActionResult> SearchByName(ApiVersion version,[FromQuery] QueryParameters queryParameters, string name)
+        public async Task<ActionResult> SearchByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, string name)
         {
             var foodDtos = await _foodService.SearchFoodsByNameAsync(name);
 
@@ -114,11 +113,11 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
-            var foodDto = await _foodService.CreateFoodAsync(foodCreateDto);
+            var newFoodItem = _foodService.CreateFoodAsync(foodCreateDto);
 
             return CreatedAtRoute(nameof(GetSingleFood),
-                new { version = version.ToString(), id = foodDto.Id },
-                _linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
+                new { version = version.ToString(), id = newFoodItem.Id },
+                _linkService.ExpandSingleFoodItem(newFoodItem, newFoodItem.Id, version));
         }
 
         [HttpPatch("{id:int}", Name = nameof(PartiallyUpdateFood))]
@@ -129,24 +128,12 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
-            var existingDto = await _foodService.GetFoodByIdAsync(id);
+            var updatedDto = await _foodService.PartialUpdateFoodAsync(id, patchDoc);
 
-            if (existingDto == null)
+            if (updatedDto == null)
             {
                 return NotFound();
             }
-
-            FoodUpdateDto foodUpdateDto = _mapper.Map<FoodUpdateDto>(existingDto);
-            patchDoc.ApplyTo(foodUpdateDto);
-
-            TryValidateModel(foodUpdateDto);
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
 
             return Ok(_linkService.ExpandSingleFoodItem(updatedDto, updatedDto.Id, version));
         }
@@ -155,9 +142,10 @@ namespace MyFood.Api.Controllers.v1
         [Route("{id:int}", Name = nameof(RemoveFood))]
         public async Task<ActionResult> RemoveFood(int id)
         {
-            var result = await _foodService.DeleteFoodAsync(id);
 
-            if (!result)
+            var deleted = await _foodService.DeleteFoodAsync(id);
+
+            if (deleted == false)
             {
                 return NotFound();
             }
@@ -174,14 +162,14 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
-            var updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
+            var updatedFood = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
 
-            if (updatedDto == null)
+            if (updatedFood == null)
             {
                 return NotFound();
             }
 
-            return Ok(_linkService.ExpandSingleFoodItem(updatedDto, updatedDto.Id, version));
+            return Ok(_linkService.ExpandSingleFoodItem(updatedFood, updatedFood.Id, version));
         }
 
         [HttpGet("GetRandomMeal", Name = nameof(GetRandomMeal))]
