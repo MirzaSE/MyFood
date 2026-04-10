@@ -11,7 +11,7 @@ using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Authorize]
@@ -56,7 +56,7 @@ namespace MyFood.Api.Controllers.v1
             return Ok(new
             {
                 value = toReturn,
-                links = links
+                links
             });
         }
 

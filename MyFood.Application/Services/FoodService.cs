@@ -1,6 +1,6 @@
 using AutoMapper;
 using MyFood.Application.Dtos;
-using MyFood.Application.Entities;
+using MyFood.Domain.Entities;
 
 namespace MyFood.Application.Services;
 public class FoodService : IFoodService

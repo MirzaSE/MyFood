@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MyFood.Application.Entities;
 
-namespace MyFood.Application.Entities
+namespace MyFood.Domain.Entities
 {
     public class FoodEntity
     {

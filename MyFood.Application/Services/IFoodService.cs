@@ -13,4 +13,3 @@ public interface IFoodService
     Task<IEnumerable<FoodDto>> GetRandomMealAsync();
     Task<int> GetTotalFoodCountAsync();
 }
-

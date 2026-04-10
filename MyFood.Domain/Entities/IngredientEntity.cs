@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using MyFood.Domain.Entities;
 
 namespace MyFood.Application.Entities
 {
