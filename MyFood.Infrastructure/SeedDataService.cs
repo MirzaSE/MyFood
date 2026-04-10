@@ -1,4 +1,4 @@
-﻿using MyFood.Domain.Entities;
+﻿using MyFood.Application.Entities;
 using MyFood.Infrastructure.Repositories;
 
 namespace MyFood.Api.Services
