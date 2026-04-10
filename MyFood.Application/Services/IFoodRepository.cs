@@ -1,4 +1,4 @@
-// MyFood.Application/Services/IFoodRepository.cs
+﻿// MyFood.Application/Services/IFoodRepository.cs
 using MyFood.Domain.Entities;
 
 namespace MyFood.Application.Services

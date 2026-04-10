@@ -24,4 +24,5 @@ namespace MyFood.Infrastructure.Repositories
                 .HasForeignKey(i => i.FoodId);
         }
     }
+    
 }
