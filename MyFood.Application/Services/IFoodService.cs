@@ -1,5 +1,5 @@
 using MyFood.Application.Dtos;
-using MyFood.Domain.Entities;
+using MyFood.Application;
 
 namespace MyFood.Application.Services
 {
