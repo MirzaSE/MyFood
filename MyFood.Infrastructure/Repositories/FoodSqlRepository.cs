@@ -1,5 +1,4 @@
 ﻿
-
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
 using MyFood.Application.Services;
