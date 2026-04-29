@@ -55,10 +55,11 @@ public class AuthenticateController : ControllerBase
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
+                expiration = token.ValidTo,
+                username = user.UserName
             });
         }
-        return Unauthorized();
+        return Unauthorized(new { message = "Invalid username or password." });
     }
 
     [HttpPost]
@@ -67,7 +68,7 @@ public class AuthenticateController : ControllerBase
     {
         var userExists = await userManager.FindByNameAsync(model.Username);
         if (userExists != null)
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User exists" });
+            return Conflict(new { message = "Invalid username or password" });
 
         ApplicationUser user = new ApplicationUser()
         {            
@@ -76,8 +77,21 @@ public class AuthenticateController : ControllerBase
         };
         var result = await userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User creation failed! Please check user details and try again." });
+            return BadRequest(new { message = "User creation failed! Please check user details and try again." });
 
-        return Ok(new { message = "User created successfully!" });
+        var authsigningkey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+        var token = new JwtSecurityToken(
+            issuer: _configuration["JWT:ValidIssuer"],
+            audience: _configuration["JWT:ValidAudience"],
+            expires: DateTime.Now.AddHours(3),
+            signingCredentials: new SigningCredentials(authsigningkey, SecurityAlgorithms.HmacSha256)
+            );
+
+        return Ok(new
+        {
+            token = new JwtSecurityTokenHandler().WriteToken(token),
+            expiration = token.ValidTo
+        });    
     }
 }

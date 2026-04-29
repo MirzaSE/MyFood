@@ -215,7 +215,7 @@ export const LoginPage: React.FC = () => {
                     <input
                       {...registerForm.register('password', {
                         required: 'Password is required',
-                        minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                        minLength: { value: 6, message: 'Password must be at least 6 characters and contains at least one uppercase letter, one lowercase letter, and one number' },
                       })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
