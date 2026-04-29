@@ -17,15 +17,11 @@ export const authService = {
   },
 
   async register(username: string, email: string, password: string): Promise<AuthResponse> {
-    const payload: RegisterRequest = {
+    const response = await apiClient.post<AuthResponse>('/authenticate/register', {
       username,
+      //email,
       password,
-    };
-    if (email) {
-      payload.email = email;
-    }
-
-    const response = await apiClient.post<AuthResponse>('/authenticate/register', payload);
+    } as RegisterRequest);
 
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
