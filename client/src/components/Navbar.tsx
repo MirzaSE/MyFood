@@ -30,8 +30,9 @@ export const Navbar: React.FC = () => {
           {/* User Info & Logout */}
           <div className="flex items-center space-x-6">
             <div className="hidden sm:block">
-              <p className="text-sm text-gray-300">Welcome back</p>
-              <p className="text-lg font-semibold text-white">{username}</p>
+              <p className="text-lg font-semibold text-white">
+                Welcome back, {username}
+              </p>
             </div>
 
             <div className="w-px h-8 bg-white/10"></div>

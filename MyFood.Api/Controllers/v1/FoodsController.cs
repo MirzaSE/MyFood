@@ -110,9 +110,14 @@ namespace MyFood.Api.Controllers.v1
         public async Task<ActionResult<FoodDto>> AddFood(ApiVersion version, [FromBody] FoodCreateDto foodCreateDto)
         {
             if (foodCreateDto == null)
-            {
                 return BadRequest();
-            }
+
+           
+            if (string.IsNullOrEmpty(foodCreateDto.Name))
+                return BadRequest("Name is required");
+
+            if (foodCreateDto.Calories <= 0)
+                return BadRequest("Calories must be greater than 0");
 
             var foodDto = await _foodService.CreateFoodAsync(foodCreateDto);
 
@@ -120,7 +125,7 @@ namespace MyFood.Api.Controllers.v1
                 new { version = version.ToString(), id = foodDto.Id },
                 _linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
         }
-
+        
         [HttpPatch("{id:int}", Name = nameof(PartiallyUpdateFood))]
         public async Task<ActionResult<FoodDto>> PartiallyUpdateFood(ApiVersion version, int id, [FromBody] JsonPatchDocument<FoodUpdateDto> patchDoc)
         {
@@ -170,20 +175,22 @@ namespace MyFood.Api.Controllers.v1
         public async Task<ActionResult<FoodDto>> UpdateFood(ApiVersion version, int id, [FromBody] FoodUpdateDto foodUpdateDto)
         {
             if (foodUpdateDto == null)
-            {
                 return BadRequest();
-            }
+
+            
+            if (string.IsNullOrEmpty(foodUpdateDto.Name))
+                return BadRequest("Name is required");
+
+            if (foodUpdateDto.Calories <= 0)
+                return BadRequest("Calories must be greater than 0");
 
             var updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
 
             if (updatedDto == null)
-            {
                 return NotFound();
-            }
 
             return Ok(_linkService.ExpandSingleFoodItem(updatedDto, updatedDto.Id, version));
         }
-
         [HttpGet("GetRandomMeal", Name = nameof(GetRandomMeal))]
         public async Task<ActionResult> GetRandomMeal()
         {

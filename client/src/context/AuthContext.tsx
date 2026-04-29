@@ -22,6 +22,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string) => {
     const response = await authService.login(username, password);
+
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("username", response.username);
+    
     setToken(response.token);
     setUsername(response.username);
     setIsAuthenticated(true);
@@ -29,6 +33,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const register = async (username: string, email: string, password: string) => {
     const response = await authService.register(username, email, password);
+
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("username", response.username);
+    
     setToken(response.token);
     setUsername(response.username);
     setIsAuthenticated(true);
@@ -36,6 +44,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     authService.logout();
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    
     setToken(null);
     setUsername(null);
     setIsAuthenticated(false);
