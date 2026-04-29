@@ -29,9 +29,8 @@ export const Navbar: React.FC = () => {
 
          {/* User Info & Logout */}
           <div className="flex flex-col items-end space-y-2">
-            <div className="hidden sm:block text-right">
-              <p className="text-sm text-gray-300">Welcome back</p>
-              <p className="text-lg font-semibold text-white">{username}</p>
+            <div className="text-right">
+              <p className="text-sm text-gray-300">Welcome back, <span className="font-semibold text-white">{username}</span></p>
             </div>
 
             <button
