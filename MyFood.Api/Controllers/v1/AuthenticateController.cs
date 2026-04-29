@@ -67,7 +67,7 @@ public class AuthenticateController : ControllerBase
     {
         var userExists = await userManager.FindByNameAsync(model.Username);
         if (userExists != null)
-            return StatusCode(StatusCodes.Status500InternalServerError, "User exists");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User exists" });
 
         ApplicationUser user = new ApplicationUser()
         {            
@@ -76,8 +76,8 @@ public class AuthenticateController : ControllerBase
         };
         var result = await userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
-            return StatusCode(StatusCodes.Status500InternalServerError, "User creation failed! Please check user details and try again.");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User creation failed! Please check user details and try again." });
 
-        return Ok("User created successfully!");
+        return Ok(new { message = "User created successfully!" });
     }
 }
