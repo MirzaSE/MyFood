@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { X } from 'lucide-react';
+import { AlertCircle, X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
 
 interface FoodModalProps {
@@ -18,6 +18,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
   initialData,
   isLoading = false,
 }) => {
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -31,17 +32,32 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     } : undefined,
   });
 
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    reset({
+      name: initialData?.name ?? '',
+      type: initialData?.type ?? '',
+      calories: initialData?.calories ?? 0,
+    });
+    setSubmitError(null);
+  }, [initialData, isOpen, reset]);
+
   const handleClose = () => {
     reset();
+    setSubmitError(null);
     onClose();
   };
 
   const onSubmitForm = async (data: FoodCreateDto) => {
     try {
+      setSubmitError(null);
       await onSubmit(data);
       reset();
-    } catch (error) {
-      console.error('Form submission error:', error);
+    } catch (error: any) {
+      setSubmitError(error.response?.data?.message || 'Failed to save food.');
     }
   };
 
@@ -65,6 +81,13 @@ export const FoodModal: React.FC<FoodModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8">
+          {submitError && (
+            <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start space-x-3">
+              <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
+              <p className="text-red-200 text-sm">{submitError}</p>
+            </div>
+          )}
+
           <div className="mt-8">
             <label className="block text-sm font-semibold text-gray-300 mb-2" >
               Food Name
@@ -101,7 +124,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               {...register('calories', {
                 required: 'Calories is required',
                 valueAsNumber: true,
-                min: { value: 0, message: 'Calories must be positive' },
+                min: { value: 1, message: 'Calories must be greater than 0' },
               })}
               type="number"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
