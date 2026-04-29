@@ -2,40 +2,33 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { AuthContextType } from '../types';
 import { authService } from '../services/authService';
 
-function readStoredAuth(): { token: string | null; username: string | null; isAuthenticated: boolean } {
-  const token = localStorage.getItem('token');
-  const username = localStorage.getItem('username');
-  return {
-    token,
-    username,
-    isAuthenticated: Boolean(token && username),
-  };
-}
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const initial = readStoredAuth();
-  const [isAuthenticated, setIsAuthenticated] = useState(initial.isAuthenticated);
-  const [username, setUsername] = useState<string | null>(initial.username);
-  const [token, setToken] = useState<string | null>(initial.token);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
+  // Initialize from localStorage on mount
   useEffect(() => {
-    const { token: t, username: u, isAuthenticated: ok } = readStoredAuth();
-    setToken(t);
-    setUsername(u);
-    setIsAuthenticated(ok);
+    const storedToken = localStorage.getItem('token');
+    const storedUsername = localStorage.getItem('username');
+    if (storedToken && storedUsername) {
+      setToken(storedToken);
+      setUsername(storedUsername);
+      setIsAuthenticated(true);
+    }
   }, []);
 
-  const login = async (user: string, password: string) => {
-    const response = await authService.login(user.trim(), password);
+  const login = async (username: string, password: string) => {
+    const response = await authService.login(username, password);
     setToken(response.token);
     setUsername(response.username);
     setIsAuthenticated(true);
   };
 
-  const register = async (user: string, email: string, password: string) => {
-    const response = await authService.register(user.trim(), email.trim(), password);
+  const register = async (username: string, email: string, password: string) => {
+    const response = await authService.register(username, email, password);
     setToken(response.token);
     setUsername(response.username);
     setIsAuthenticated(true);
