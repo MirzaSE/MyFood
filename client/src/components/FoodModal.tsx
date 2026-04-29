@@ -1,8 +1,8 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 import { X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
-import React,{useEffect} from 'react';
+import {useEffect} from 'react';
 
 interface FoodModalProps {
   isOpen: boolean;
