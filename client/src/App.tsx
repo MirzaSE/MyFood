@@ -6,11 +6,13 @@ import { FoodPage } from './pages/FoodPage';
 import './App.css';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth() as any;
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
+
+  
 
   return <>{children}</>;
 };
@@ -18,6 +20,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
+  
   return (
     <Routes>
       <Route

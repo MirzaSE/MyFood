@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
+import React,{useEffect} from 'react';
 
 interface FoodModalProps {
   isOpen: boolean;
@@ -30,6 +31,16 @@ export const FoodModal: React.FC<FoodModalProps> = ({
       calories: initialData.calories,
     } : undefined,
   });
+
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        name: initialData.name,
+        type: initialData.type,
+        calories: initialData.calories,
+      });
+    }
+  }, [initialData, reset]);
 
   const handleClose = () => {
     reset();
@@ -70,7 +81,10 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Name
             </label>
             <input
-              {...register('name', { required: 'Name is required' })}
+              {...register('name',{
+                required:'Name is required',
+                validate:(v: { trim: () => { (): any; new(): any; length: number; }; })=>v.trim().length>1 || 'Name too short'
+              })}
               type="text"
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 text-base transition-all"
               placeholder="e.g., Grilled Chicken"
@@ -84,7 +98,10 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Type
             </label>
             <input
-              {...register('type', { required: 'Type is required' })}
+              {...register('type',{
+              required:'Type is required',
+              validate:(v: { trim: () => { (): any; new(): any; length: number; }; })=>v.trim().length>1 || 'Type too short'
+              })}              
               type="text"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
               placeholder="e.g., Protein, Vegetable"
@@ -98,10 +115,10 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Calories
             </label>
             <input
-              {...register('calories', {
-                required: 'Calories is required',
-                valueAsNumber: true,
-                min: { value: 0, message: 'Calories must be positive' },
+              {...register('calories',{
+                required:'Calories required',
+                valueAsNumber:true,
+                min:{value:1,message:'Calories must be greater than 0'}
               })}
               type="number"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"

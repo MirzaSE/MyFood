@@ -2,49 +2,49 @@ import apiClient from './api';
 import type { LoginRequest, RegisterRequest, AuthResponse } from '../types';
 
 export const authService = {
-  async login(username: string, password: string): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>('/authenticate/login', {
-      username,
-      password,
-    } as LoginRequest);
+  async login(username:string,password:string):Promise<AuthResponse>{
+    try{
+      const response=await apiClient.post<AuthResponse>('/authenticate/login',{
+        username,
+        password,
+      } as LoginRequest);
 
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('username', response.data.username);
+      if(response.data.token){
+        localStorage.setItem('token',response.data.token);
+        localStorage.setItem('username',response.data.username);
+      }
+
+      return response.data;
+    }catch(error:any){
+      throw new Error(
+        error?.response?.data?.message || 'Login failed'
+      );
     }
-
-    return response.data;
   },
 
-  async register(username: string, email: string, password: string): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>('/authenticate/register', {
-      username,
-      //email,
-      password,
-    } as RegisterRequest);
+  async register(username:string,email:string,password:string):Promise<AuthResponse>{
+    try{
+      const response=await apiClient.post<AuthResponse>('/authenticate/register',{
+        username,
+        email,
+        password,
+      } as RegisterRequest);
 
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('username', response.data.username);
+      if(response.data.token){
+        localStorage.setItem('token',response.data.token);
+        localStorage.setItem('username',response.data.username);
+      }
+
+      return response.data;
+    }catch(error:any){
+      throw new Error(
+        error?.response?.data?.message || 'Registration failed'
+      );
     }
-
-    return response.data;
   },
 
-  logout() {
+  logout(){
     localStorage.removeItem('token');
     localStorage.removeItem('username');
-  },
-
-  getToken(): string | null {
-    return localStorage.getItem('token');
-  },
-
-  getUsername(): string | null {
-    return localStorage.getItem('username');
-  },
-
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('token');
-  },
+  }
 };
