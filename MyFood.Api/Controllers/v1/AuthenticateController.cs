@@ -26,6 +26,13 @@ public class AuthenticateController : ControllerBase
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
+        if (model == null ||
+            string.IsNullOrWhiteSpace(model.Username) ||
+            string.IsNullOrWhiteSpace(model.Password))
+        {
+            return BadRequest(new { message = "Username and password are required." });
+        }
+
         var user = await userManager.FindByNameAsync(model.Username);
         if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
         {
@@ -55,19 +62,29 @@ public class AuthenticateController : ControllerBase
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
+                expiration = token.ValidTo,
+                username = user.UserName
             });
         }
-        return Unauthorized();
+        return Unauthorized(new { message = "Invalid username or password." });
     }
 
     [HttpPost]
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
     {
+        if (model == null ||
+            string.IsNullOrWhiteSpace(model.Username) ||
+            string.IsNullOrWhiteSpace(model.Password))
+        {
+            return BadRequest(new { message = "Username and password are required." });
+        }
+
         var userExists = await userManager.FindByNameAsync(model.Username);
         if (userExists != null)
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User exists" });
+        {
+            return Conflict(new { message = "Username is already taken." });
+        }
 
         ApplicationUser user = new ApplicationUser()
         {            
@@ -76,8 +93,34 @@ public class AuthenticateController : ControllerBase
         };
         var result = await userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User creation failed! Please check user details and try again." });
+        {
+            var errorMessage = result.Errors?.FirstOrDefault()?.Description
+                ?? "User creation failed. Please check your details and try again.";
 
-        return Ok(new { message = "User created successfully!" });
+            return BadRequest(new { message = errorMessage });
+        }
+
+        var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+        var token = new JwtSecurityToken(
+            issuer: _configuration["JWT:ValidIssuer"],
+            audience: _configuration["JWT:ValidAudience"],
+            expires: DateTime.Now.AddHours(3),
+            claims: authClaims,
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            );
+
+        return Ok(new
+        {
+            token = new JwtSecurityTokenHandler().WriteToken(token),
+            expiration = token.ValidTo,
+            username = user.UserName
+        });
     }
 }

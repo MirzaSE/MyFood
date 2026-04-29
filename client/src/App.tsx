@@ -9,7 +9,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
@@ -20,6 +20,7 @@ const AppRoutes: React.FC = () => {
 
   return (
     <Routes>
+      <Route path="/" element={isAuthenticated ? <Navigate to="/foods" replace /> : <LoginPage />} />
       <Route
         path="/login"
         element={isAuthenticated ? <Navigate to="/foods" replace /> : <LoginPage />}
@@ -32,8 +33,7 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="/" element={<Navigate to={isAuthenticated ? '/foods' : '/login'} replace />} />
-      <Route path="*" element={<Navigate to={isAuthenticated ? '/foods' : '/login'} replace />} />
+      <Route path="*" element={<Navigate to={isAuthenticated ? '/foods' : '/'} replace />} />
     </Routes>
   );
 };
