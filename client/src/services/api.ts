@@ -25,9 +25,13 @@ const createApiClient = (): AxiosInstance => {
     (response) => response,
     (error) => {
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        window.location.href = '/login';
+        const path = window.location.pathname.toLowerCase();
+        const isAuthPage = path === '/login' || path === '/';
+        if (!isAuthPage) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          window.location.href = '/login';
+        }
       }
       return Promise.reject(error);
     }

@@ -25,13 +25,34 @@ export const LoginPage: React.FC = () => {
   const loginForm = useForm<LoginFormData>();
   const registerForm = useForm<RegisterFormData>();
 
+  const extractErrorMessage = (err: any, fallbackMessage: string) => {
+    const responseData = err?.response?.data;
+
+    if (typeof responseData?.message === 'string') {
+      return responseData.message;
+    }
+
+    if (responseData?.errors && typeof responseData.errors === 'object') {
+      const allErrors = Object.values(responseData.errors).flat();
+      if (allErrors.length > 0) {
+        return String(allErrors[0]);
+      }
+    }
+
+    if (Array.isArray(responseData?.errors) && responseData.errors.length > 0) {
+      return String(responseData.errors[0]);
+    }
+
+    return fallbackMessage;
+  };
+
   const handleLogin = async (data: LoginFormData) => {
     try {
       setError(null);
       await login(data.username, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(extractErrorMessage(err, 'Login failed. Please try again.'));
     }
   };
 
@@ -45,7 +66,7 @@ export const LoginPage: React.FC = () => {
       await registerUser(data.username, data.email, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(extractErrorMessage(err, 'Registration failed. Please try again.'));
     }
   };
 
@@ -119,7 +140,11 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('username', { required: 'Username is required' })}
+                      {...loginForm.register('username', {
+                        required: 'Username is required',
+                        minLength: { value: 3, message: 'Username must be at least 3 characters' },
+                        maxLength: { value: 50, message: 'Username can be at most 50 characters' },
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your username"
@@ -136,7 +161,11 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('password', { required: 'Password is required' })}
+                      {...loginForm.register('password', {
+                        required: 'Password is required',
+                        minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                        maxLength: { value: 100, message: 'Password can be at most 100 characters' },
+                      })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your password"
@@ -173,7 +202,11 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...registerForm.register('username', { required: 'Username is required' })}
+                      {...registerForm.register('username', {
+                        required: 'Username is required',
+                        minLength: { value: 3, message: 'Username must be at least 3 characters' },
+                        maxLength: { value: 50, message: 'Username can be at most 50 characters' },
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Choose a username"
@@ -216,6 +249,7 @@ export const LoginPage: React.FC = () => {
                       {...registerForm.register('password', {
                         required: 'Password is required',
                         minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                        maxLength: { value: 100, message: 'Password can be at most 100 characters' },
                       })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
