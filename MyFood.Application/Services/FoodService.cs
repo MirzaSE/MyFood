@@ -37,6 +37,7 @@ namespace MyFood.Application.Services
         public async Task<FoodDto> CreateFoodAsync(FoodCreateDto foodCreateDto)
         {
             var foodEntity = _mapper.Map<FoodEntity>(foodCreateDto);
+            foodEntity.Created = DateTime.UtcNow;
             _foodRepository.Add(foodEntity);
 
             if (!_foodRepository.Save())
@@ -56,7 +57,9 @@ namespace MyFood.Application.Services
                 return null;
             }
 
+            var preserveCreated = existingEntity.Created;
             _mapper.Map(foodUpdateDto, existingEntity);
+            existingEntity.Created = preserveCreated;
             var updatedEntity = _foodRepository.Update(id, existingEntity);
 
             if (!_foodRepository.Save())
