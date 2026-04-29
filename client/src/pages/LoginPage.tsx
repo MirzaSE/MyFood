@@ -28,10 +28,16 @@ export const LoginPage: React.FC = () => {
   const handleLogin = async (data: LoginFormData) => {
     try {
       setError(null);
-      await login(data.username, data.password);
+      await login(data.username.trim(), data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      const status = err.response?.status;
+      const message =
+        err.response?.data?.message ||
+        (status === 400 ? 'Invalid password.' : null) ||
+        (status === 404 ? 'User does not exist.' : null) ||
+        'Login failed. Please try again.';
+      setError(message);
     }
   };
 
@@ -42,10 +48,16 @@ export const LoginPage: React.FC = () => {
         setError('Passwords do not match');
         return;
       }
-      await registerUser(data.username, data.email, data.password);
+      await registerUser(data.username.trim(), data.email.trim(), data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      const status = err.response?.status;
+      const message =
+        err.response?.data?.message ||
+        (status === 409 ? 'User already exists.' : null) ||
+        (status === 400 ? 'Invalid password.' : null) ||
+        'Registration failed. Please try again.';
+      setError(message);
     }
   };
 
@@ -119,7 +131,10 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('username', { required: 'Username is required' })}
+                      {...loginForm.register('username', {
+                        required: 'Username is required',
+                        validate: (value) => value.trim().length > 0 || 'Username cannot be empty',
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your username"
@@ -136,7 +151,10 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('password', { required: 'Password is required' })}
+                      {...loginForm.register('password', {
+                        required: 'Password is required',
+                        minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                      })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your password"
@@ -173,7 +191,10 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...registerForm.register('username', { required: 'Username is required' })}
+                      {...registerForm.register('username', {
+                        required: 'Username is required',
+                        validate: (value) => value.trim().length > 0 || 'Username cannot be empty',
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Choose a username"
