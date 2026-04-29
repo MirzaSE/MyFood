@@ -4,6 +4,11 @@ export interface Food {
   type: string;
   calories: number;
   created: string;
+  links?: Array<{
+    href: string;
+    rel: string;
+    method: string;
+  }>;
 }
 
 export interface FoodCreateDto {
@@ -32,6 +37,12 @@ export interface RegisterRequest {
 export interface AuthResponse {
   token: string;
   username: string;
+}
+
+export interface ApiValidationProblem {
+  message?: string;
+  title?: string;
+  errors?: Record<string, string[]>;
 }
 
 export interface AuthContextType {
