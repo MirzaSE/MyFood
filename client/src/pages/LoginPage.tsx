@@ -25,13 +25,28 @@ export const LoginPage: React.FC = () => {
   const loginForm = useForm<LoginFormData>();
   const registerForm = useForm<RegisterFormData>();
 
+  const getApiErrorMessage = (err: any, fallback: string) => {
+    const apiErrors = err?.response?.data?.errors;
+    if (Array.isArray(apiErrors) && apiErrors.length > 0) {
+      return apiErrors.join(' ');
+    }
+    if (apiErrors && typeof apiErrors === 'object') {
+      const modelStateMessages = Object.values(apiErrors).flat().filter(Boolean);
+      if (modelStateMessages.length > 0) {
+        return modelStateMessages.join(' ');
+      }
+    }
+
+    return err?.response?.data?.message || fallback;
+  };
+
   const handleLogin = async (data: LoginFormData) => {
     try {
       setError(null);
-      await login(data.username, data.password);
+      await login(data.username.trim(), data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(getApiErrorMessage(err, 'Login failed. Please try again.'));
     }
   };
 
@@ -42,23 +57,20 @@ export const LoginPage: React.FC = () => {
         setError('Passwords do not match');
         return;
       }
-      await registerUser(data.username, data.email, data.password);
+      await registerUser(data.username.trim(), data.email.trim(), data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(getApiErrorMessage(err, 'Registration failed. Please try again.'));
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-      {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-700"></div>
 
       <div className="relative z-10 w-full max-w-md">
-        {/* Card */}
         <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl overflow-hidden">
-          {/* Header */}
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-8 py-14 text-center">
             <div className="flex justify-center mb-4">
           
@@ -74,7 +86,6 @@ export const LoginPage: React.FC = () => {
             </div>
           )}
 
-          {/* Tabs */}
           <div className="flex border-b border-white/10 px-6 pt-6">
             <button
               onClick={() => {
@@ -110,7 +121,6 @@ export const LoginPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Form Content */}
           <div className="px-8 py-8">
             {activeTab === 'login' && (
               <form onSubmit={loginForm.handleSubmit(handleLogin)} className="food-form">                <div>
@@ -119,7 +129,11 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('username', { required: 'Username is required' })}
+                      {...loginForm.register('username', {
+                        required: 'Username is required',
+                        minLength: { value: 3, message: 'Username must be at least 3 characters' },
+                        setValueAs: (value: string) => value?.trim() ?? '',
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your username"
@@ -136,7 +150,10 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('password', { required: 'Password is required' })}
+                      {...loginForm.register('password', {
+                        required: 'Password is required',
+                        minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                      })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your password"
@@ -173,7 +190,11 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...registerForm.register('username', { required: 'Username is required' })}
+                      {...registerForm.register('username', {
+                        required: 'Username is required',
+                        minLength: { value: 3, message: 'Username must be at least 3 characters' },
+                        setValueAs: (value: string) => value?.trim() ?? '',
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Choose a username"
@@ -192,6 +213,7 @@ export const LoginPage: React.FC = () => {
                     <input
                       {...registerForm.register('email', {
                         required: 'Email is required',
+                        setValueAs: (value: string) => value?.trim() ?? '',
                         pattern: {
                           value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                           message: 'Please enter a valid email',
@@ -266,7 +288,6 @@ export const LoginPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Footer text */}
         <p className="text-center text-gray-400 text-xs mt-8">
           Secure authentication with JWT tokens
         </p>
