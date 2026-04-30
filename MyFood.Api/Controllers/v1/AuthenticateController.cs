@@ -68,7 +68,7 @@ public class AuthenticateController : ControllerBase
     {
         var userExists = await userManager.FindByNameAsync(model.Username);
         if (userExists != null)
-            return Conflict(new { message = "Invalid username or password" });
+            return Conflict(new { message = "Username already exists." });
 
         ApplicationUser user = new ApplicationUser()
         {            
@@ -79,19 +79,27 @@ public class AuthenticateController : ControllerBase
         if (!result.Succeeded)
             return BadRequest(new { message = "User creation failed! Please check user details and try again." });
 
-        var authsigningkey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+        var authClaims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
+
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 
         var token = new JwtSecurityToken(
             issuer: _configuration["JWT:ValidIssuer"],
             audience: _configuration["JWT:ValidAudience"],
             expires: DateTime.Now.AddHours(3),
-            signingCredentials: new SigningCredentials(authsigningkey, SecurityAlgorithms.HmacSha256)
-            );
+            claims: authClaims,
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+        );
 
         return Ok(new
         {
             token = new JwtSecurityTokenHandler().WriteToken(token),
-            expiration = token.ValidTo
-        });    
+            expiration = token.ValidTo,
+            username = user.UserName
+        });
     }
 }
