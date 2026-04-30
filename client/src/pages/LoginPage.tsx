@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { AlertCircle } from 'lucide-react';
+import { formatApiError } from '../utils/formatApiError';
 
 type LoginFormData = {
   username: string;
@@ -31,7 +32,7 @@ export const LoginPage: React.FC = () => {
       await login(data.username, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(formatApiError(err) || 'Login failed. Please try again.');
     }
   };
 
@@ -45,7 +46,7 @@ export const LoginPage: React.FC = () => {
       await registerUser(data.username, data.email, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(formatApiError(err) || 'Registration failed. Please try again.');
     }
   };
 
@@ -70,7 +71,7 @@ export const LoginPage: React.FC = () => {
           {error && (
             <div className="mx-6 mt-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start space-x-3">
               <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
-              <p className="text-red-200 text-sm">{error}</p>
+              <p className="text-red-200 text-sm whitespace-pre-line">{error}</p>
             </div>
           )}
 
@@ -119,7 +120,10 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('username', { required: 'Username is required' })}
+                      {...loginForm.register('username', {
+                        required: 'Username is required',
+                        validate: (value) => value.trim().length > 0 || 'Username cannot be empty',
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your username"
@@ -136,7 +140,10 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('password', { required: 'Password is required' })}
+                      {...loginForm.register('password', {
+                        required: 'Password is required',
+                        validate: (value) => value.trim().length > 0 || 'Password cannot be empty',
+                      })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your password"
@@ -173,7 +180,10 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...registerForm.register('username', { required: 'Username is required' })}
+                      {...registerForm.register('username', {
+                        required: 'Username is required',
+                        validate: (value) => value.trim().length > 0 || 'Username cannot be empty',
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Choose a username"
@@ -216,6 +226,7 @@ export const LoginPage: React.FC = () => {
                       {...registerForm.register('password', {
                         required: 'Password is required',
                         minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                        validate: (value) => value.trim().length > 0 || 'Password cannot be empty',
                       })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
