@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { AlertCircle } from 'lucide-react';
 
 type LoginFormData = {
-  username: string;
+  FullName: string;
   password: string;
 };
 
 type RegisterFormData = {
-  username: string;
+  FullName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -21,15 +21,21 @@ export const LoginPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { login, register: registerUser } = useAuth();
+  const auth = useAuth();
 
+useEffect(() => {
+  if (auth.isAuthenticated && auth.token) {
+    navigate('/foods');
+  }
+}, [auth.isAuthenticated, auth.token, navigate]);
   const loginForm = useForm<LoginFormData>();
   const registerForm = useForm<RegisterFormData>();
 
   const handleLogin = async (data: LoginFormData) => {
     try {
       setError(null);
-      await login(data.username, data.password);
-      navigate('/foods');
+      await login(data.FullName, data.password);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     }
@@ -42,8 +48,8 @@ export const LoginPage: React.FC = () => {
         setError('Passwords do not match');
         return;
       }
-      await registerUser(data.username, data.email, data.password);
-      navigate('/foods');
+      await registerUser(data.FullName, data.email, data.password);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     }
@@ -119,14 +125,14 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('username', { required: 'Username is required' })}
+                      {...loginForm.register('FullName', { required: 'Username is required' })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your username"
                     />
                   </div>
-                  {loginForm.formState.errors.username && (
-                    <span className="text-red-400 text-xs mt-1 block">{loginForm.formState.errors.username.message}</span>
+                  {loginForm.formState.errors.FullName && (
+                    <span className="text-red-400 text-xs mt-1 block">{loginForm.formState.errors.FullName.message}</span>
                   )}
                 </div>
 
@@ -173,14 +179,14 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...registerForm.register('username', { required: 'Username is required' })}
+                      {...registerForm.register('FullName', { required: 'Username is required' })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Choose a username"
                     />
                   </div>
-                  {registerForm.formState.errors.username && (
-                    <span className="text-red-400 text-xs mt-1 block">{registerForm.formState.errors.username.message}</span>
+                  {registerForm.formState.errors.FullName && (
+                    <span className="text-red-400 text-xs mt-1 block">{registerForm.formState.errors.FullName.message}</span>
                   )}
                 </div>
 
