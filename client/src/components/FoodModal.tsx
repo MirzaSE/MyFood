@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
@@ -23,13 +23,21 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FoodCreateDto>({
-    defaultValues: initialData ? {
-      name: initialData.name,
-      type: initialData.type,
-      calories: initialData.calories,
-    } : undefined,
-  });
+  } = useForm<FoodCreateDto>();
+
+  useEffect(() => {
+    if (isOpen) {
+      reset(initialData ? {
+        name: initialData.name,
+        type: initialData.type,
+        calories: initialData.calories,
+      } : {
+        name: '',
+        type: '',
+        calories: undefined,
+      });
+    }
+  }, [isOpen, initialData, reset]);
 
   const handleClose = () => {
     reset();
@@ -50,7 +58,6 @@ export const FoodModal: React.FC<FoodModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
-        {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center">
           <h2 className="text-xl font-bold text-white">
             {initialData ? 'Edit Food' : 'Add New Food'}
@@ -66,7 +73,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
 
         <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8">
           <div className="mt-8">
-            <label className="block text-sm font-semibold text-gray-300 mb-2" >
+            <label className="block text-sm font-semibold text-gray-300 mb-2">
               Food Name
             </label>
             <input
