@@ -21,18 +21,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (username: string, password: string) => {
-    const response = await authService.login(username, password);
-    setToken(response.token);
-    setUsername(response.username);
-    setIsAuthenticated(true);
-  };
+  const response = await authService.login(username, password);
+
+  if (!response?.token) {
+    setIsAuthenticated(false);
+    setToken(null);
+    setUsername(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    throw new Error('Invalid username or password.');
+  }
+
+  setToken(response.token);
+  setUsername(response.username || username);
+  setIsAuthenticated(true);
+};
 
   const register = async (username: string, email: string, password: string) => {
-    const response = await authService.register(username, email, password);
-    setToken(response.token);
-    setUsername(response.username);
-    setIsAuthenticated(true);
-  };
+  const response = await authService.register(username, email, password);
+
+  if (!response?.token) {
+    setIsAuthenticated(false);
+    setToken(null);
+    setUsername(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    throw new Error('Registration failed.');
+  }
+
+  setToken(response.token);
+  setUsername(response.username || username);
+  setIsAuthenticated(true);
+};
 
   const logout = () => {
     authService.logout();
