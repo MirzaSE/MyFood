@@ -25,9 +25,13 @@ const createApiClient = (): AxiosInstance => {
     (response) => response,
     (error) => {
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        window.location.href = '/login';
+        // Don't redirect if it's a login/register request — let the error surface to the UI
+        const url = error.config?.url || '';
+        if (!url.includes('/authenticate/')) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          window.location.href = '/login';
+        }
       }
       return Promise.reject(error);
     }
