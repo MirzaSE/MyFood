@@ -1,24 +1,13 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import type { AuthContextType } from '../types';
 import { authService } from '../services/authService';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-
-  // Initialize from localStorage on mount
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUsername = localStorage.getItem('username');
-    if (storedToken && storedUsername) {
-      setToken(storedToken);
-      setUsername(storedUsername);
-      setIsAuthenticated(true);
-    }
-  }, []);
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
+  const [username, setUsername] = useState<string | null>(() => localStorage.getItem('username'));
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('token'));
 
   const login = async (username: string, password: string) => {
     const response = await authService.login(username, password);
