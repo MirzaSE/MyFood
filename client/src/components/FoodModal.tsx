@@ -1,7 +1,7 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { X } from 'lucide-react';
-import type { Food, FoodCreateDto } from '../types';
+import React, { useEffect } from 'react';
+import { useForm } from "react-hook-form";
+import { X } from "lucide-react";
+import type { Food, FoodCreateDto } from "../types";
 
 interface FoodModalProps {
   isOpen: boolean;
@@ -24,12 +24,26 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     reset,
     formState: { errors },
   } = useForm<FoodCreateDto>({
-    defaultValues: initialData ? {
-      name: initialData.name,
-      type: initialData.type,
-      calories: initialData.calories,
-    } : undefined,
+    defaultValues: initialData
+      ? {
+          name: initialData.name,
+          type: initialData.type,
+          calories: initialData.calories,
+        }
+      : undefined,
   });
+
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        name: initialData.name,
+        type: initialData.type,
+        calories: initialData.calories,
+      });
+    } else {
+      reset({ name: '', type: '', calories: 0 });
+    }
+  },[initialData, reset, isOpen]);
 
   const handleClose = () => {
     reset();
@@ -41,7 +55,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
       await onSubmit(data);
       reset();
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error("Form submission error:", error);
     }
   };
 
@@ -53,7 +67,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
         {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center">
           <h2 className="text-xl font-bold text-white">
-            {initialData ? 'Edit Food' : 'Add New Food'}
+            {initialData ? "Edit Food" : "Add New Food"}
           </h2>
           <button
             onClick={handleClose}
@@ -64,19 +78,26 @@ export const FoodModal: React.FC<FoodModalProps> = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8">
+        <form
+          onSubmit={handleSubmit(onSubmitForm)}
+          className="food-form p-8"
+        >
           <div className="mt-8">
-            <label className="block text-sm font-semibold text-gray-300 mb-2" >
+            <label className="block text-sm font-semibold text-gray-300 mb-2">
               Food Name
             </label>
             <input
-              {...register('name', { required: 'Name is required' })}
+              {...register("name", { required: "Name is required" })}
               type="text"
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 text-base transition-all"
               placeholder="e.g., Grilled Chicken"
               disabled={isLoading}
             />
-            {errors.name && <span className="text-red-400 text-xs mt-1 block">{errors.name.message}</span>}
+            {errors.name && (
+              <span className="text-red-400 text-xs mt-1 block">
+                {errors.name.message}
+              </span>
+            )}
           </div>
 
           <div className="mt-8">
@@ -84,13 +105,17 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Type
             </label>
             <input
-              {...register('type', { required: 'Type is required' })}
+              {...register("type", { required: "Type is required" })}
               type="text"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
               placeholder="e.g., Protein, Vegetable"
               disabled={isLoading}
             />
-            {errors.type && <span className="text-red-400 text-xs mt-1 block">{errors.type.message}</span>}
+            {errors.type && (
+              <span className="text-red-400 text-xs mt-1 block">
+                {errors.type.message}
+              </span>
+            )}
           </div>
 
           <div>
@@ -98,17 +123,24 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Calories
             </label>
             <input
-              {...register('calories', {
-                required: 'Calories is required',
+              {...register("calories", {
+                required: "Calories is required",
                 valueAsNumber: true,
-                min: { value: 0, message: 'Calories must be positive' },
+                min: {
+                  value: 0,
+                  message: "Calories must be positive",
+                },
               })}
               type="number"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
               placeholder="e.g., 250"
               disabled={isLoading}
             />
-            {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
+            {errors.calories && (
+              <span className="text-red-400 text-xs mt-1 block">
+                {errors.calories.message}
+              </span>
+            )}
           </div>
 
           <div className="flex space-x-3 pt-6">
@@ -130,8 +162,10 @@ export const FoodModal: React.FC<FoodModalProps> = ({
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></span>
                   Saving...
                 </span>
+              ) : initialData ? (
+                "Update Food"
               ) : (
-                initialData ? 'Update Food' : 'Create Food'
+                "Create Food"
               )}
             </button>
           </div>
