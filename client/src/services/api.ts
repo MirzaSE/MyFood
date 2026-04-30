@@ -20,15 +20,25 @@ const createApiClient = (): AxiosInstance => {
     return config;
   });
 
-  // Handle 401 responses
+  // Handle responses (IMPORTANT FIX HERE)
   client.interceptors.response.use(
     (response) => response,
     (error) => {
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        window.location.href = '/login';
+        const requestUrl = error.config?.url || '';
+
+        const isAuthRequest =
+          requestUrl.includes('/authenticate/login') ||
+          requestUrl.includes('/authenticate/register');
+
+        // Only redirect if NOT login/register
+        if (!isAuthRequest) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          window.location.href = '/login';
+        }
       }
+
       return Promise.reject(error);
     }
   );
