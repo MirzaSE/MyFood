@@ -35,7 +35,6 @@ namespace MyFood.Infrastructure.Repositories
 
         public FoodEntity Update(int id, FoodEntity item)
         {
-            _foodDbContext.FoodItems.Update(item);
             return item;
         }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
+import { getApiErrorMessage } from '../services/api';
 import { AlertCircle } from 'lucide-react';
 
 type LoginFormData = {
@@ -30,8 +31,8 @@ export const LoginPage: React.FC = () => {
       setError(null);
       await login(data.username, data.password);
       navigate('/foods');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'Login failed. Please try again.'));
     }
   };
 
@@ -44,8 +45,8 @@ export const LoginPage: React.FC = () => {
       }
       await registerUser(data.username, data.email, data.password);
       navigate('/foods');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'Registration failed. Please try again.'));
     }
   };
 
@@ -274,4 +275,3 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
-
