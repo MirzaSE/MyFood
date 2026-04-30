@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { AlertCircle } from 'lucide-react';
+import { formatApiError } from '../utils/formatApiError';
 
 type LoginFormData = {
   username: string;
@@ -31,7 +32,7 @@ export const LoginPage: React.FC = () => {
       await login(data.username, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(formatApiError(err) || 'Login failed. Please try again.');
     }
   };
 
@@ -45,7 +46,7 @@ export const LoginPage: React.FC = () => {
       await registerUser(data.username, data.email, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(formatApiError(err) || 'Registration failed. Please try again.');
     }
   };
 
@@ -70,7 +71,7 @@ export const LoginPage: React.FC = () => {
           {error && (
             <div className="mx-6 mt-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start space-x-3">
               <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
-              <p className="text-red-200 text-sm">{error}</p>
+              <p className="text-red-200 text-sm whitespace-pre-line">{error}</p>
             </div>
           )}
 
