@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
@@ -24,15 +24,38 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     reset,
     formState: { errors },
   } = useForm<FoodCreateDto>({
-    defaultValues: initialData ? {
-      name: initialData.name,
-      type: initialData.type,
-      calories: initialData.calories,
-    } : undefined,
+    defaultValues: initialData
+      ? {
+          name: initialData.name,
+          type: initialData.type,
+          calories: initialData.calories,
+        }
+      : {
+          name: '',
+          type: '',
+          calories: 0,
+        },
   });
 
+  useEffect(() => {
+    if (!isOpen) {
+      reset({ name: '', type: '', calories: 0 });
+      return;
+    }
+
+    if (initialData) {
+      reset({
+        name: initialData.name,
+        type: initialData.type,
+        calories: initialData.calories,
+      });
+    } else {
+      reset({ name: '', type: '', calories: 0 });
+    }
+  }, [initialData, isOpen, reset]);
+
   const handleClose = () => {
-    reset();
+    reset({ name: '', type: '', calories: 0 });
     onClose();
   };
 
