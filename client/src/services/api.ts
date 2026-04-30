@@ -11,24 +11,34 @@ const createApiClient = (): AxiosInstance => {
     },
   });
 
-  // Add auth token to all requests
   client.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
+
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   });
 
-  // Handle 401 responses
   client.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response?.status === 401) {
+      const requestUrl = error.config?.url || '';
+
+      const isAuthRequest =
+        requestUrl.includes('/authenticate/login') ||
+        requestUrl.includes('/authenticate/register');
+
+      if (error.response?.status === 401 && !isAuthRequest) {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('user');
+
         window.location.href = '/login';
       }
+
       return Promise.reject(error);
     }
   );

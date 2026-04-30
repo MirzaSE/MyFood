@@ -25,20 +25,23 @@ export interface LoginRequest {
 
 export interface RegisterRequest {
   username: string;
-  email: string;
   password: string;
 }
 
 export interface AuthResponse {
-  token: string;
-  username: string;
+  token?: string;
+  username?: string;
+  expiration?: string;
+  message?: string;
 }
 
 export interface AuthContextType {
   isAuthenticated: boolean;
   username: string | null;
   token: string | null;
-  login: (username: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
+  isLoading: boolean;
+  login: (username: string, password: string) => Promise<AuthResponse>;
+  register: (username: string, password: string) => Promise<AuthResponse>;
   logout: () => void;
+
 }
