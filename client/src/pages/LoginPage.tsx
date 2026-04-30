@@ -25,27 +25,103 @@ export const LoginPage: React.FC = () => {
   const loginForm = useForm<LoginFormData>();
   const registerForm = useForm<RegisterFormData>();
 
+  const getApiErrorMessage = (err: unknown, fallback: string) => {
+    const apiErr = err as {
+      response?: {
+        data?: {
+          message?: string;
+          errors?: string[] | string;
+        };
+      };
+    };
+
+    const message = apiErr.response?.data?.message;
+    const errors = apiErr.response?.data?.errors;
+
+    if (Array.isArray(errors) && errors.length > 0) {
+      return `${message || fallback}: ${errors.join('; ')}`;
+    }
+
+    if (typeof errors === 'string' && errors.trim()) {
+      return `${message || fallback}: ${errors}`;
+    }
+
+    return message || (err instanceof Error ? err.message : fallback);
+  };
+
+  const applyRegisterFieldErrors = (err: unknown) => {
+    const apiErr = err as {
+      response?: {
+        data?: {
+          message?: string;
+          errors?: string[] | string;
+        };
+      };
+    };
+
+    const errors = apiErr.response?.data?.errors;
+    const messages = Array.isArray(errors) ? errors : typeof errors === 'string' ? [errors] : [];
+
+    registerForm.clearErrors();
+
+    let handled = false;
+
+    messages.forEach((message) => {
+      const lowerMessage = message.toLowerCase();
+
+      if (lowerMessage.includes('user name') || lowerMessage.includes('username')) {
+        registerForm.setError('username', { type: 'server', message });
+        handled = true;
+        return;
+      }
+
+      if (lowerMessage.includes('password')) {
+        registerForm.setError('password', { type: 'server', message });
+        handled = true;
+        return;
+      }
+
+      if (lowerMessage.includes('email')) {
+        registerForm.setError('email', { type: 'server', message });
+        handled = true;
+        return;
+      }
+
+      registerForm.setError('root.server', { type: 'server', message });
+      handled = true;
+    });
+
+    return handled;
+  };
+
   const handleLogin = async (data: LoginFormData) => {
     try {
       setError(null);
       await login(data.username, data.password);
       navigate('/foods');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, 'Login failed. Please try again.'));
     }
   };
 
   const handleRegister = async (data: RegisterFormData) => {
     try {
       setError(null);
+      registerForm.clearErrors();
       if (data.password !== data.confirmPassword) {
-        setError('Passwords do not match');
+        registerForm.setError('confirmPassword', {
+          type: 'validate',
+          message: 'Passwords do not match',
+        });
         return;
       }
       await registerUser(data.username, data.email, data.password);
       navigate('/foods');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } catch (err: unknown) {
+      const handled = applyRegisterFieldErrors(err);
+      if (!handled) {
+        setError(getApiErrorMessage(err, 'Registration failed. Please try again.'));
+      }
     }
   };
 

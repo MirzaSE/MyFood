@@ -24,11 +24,22 @@ const createApiClient = (): AxiosInstance => {
   client.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        window.location.href = '/login';
+      if (error.response) {
+        const requestPath = error.config?.url || '';
+        const isAuthRequest = requestPath.includes('/authenticate/login') || requestPath.includes('/authenticate/register');
+
+        if (error.response.status === 401 && !isAuthRequest) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          window.location.href = '/login';
+        }
+
+        const apiMessage = error.response.data?.message;
+        if (apiMessage) {
+          error.message = apiMessage;
+        }
       }
+
       return Promise.reject(error);
     }
   );
