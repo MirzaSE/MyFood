@@ -35,6 +35,7 @@ export interface AuthResponse {
 }
 
 export interface AuthContextType {
+  isInitializing: boolean;
   isAuthenticated: boolean;
   username: string | null;
   token: string | null;
