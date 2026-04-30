@@ -25,9 +25,14 @@ const createApiClient = (): AxiosInstance => {
     (response) => response,
     (error) => {
       if (error.response?.status === 401) {
+        const hadToken = localStorage.getItem('token');
         localStorage.removeItem('token');
         localStorage.removeItem('username');
-        window.location.href = '/login';
+        // Only force-redirect if the user was already logged in (expired session).
+        // If there's no token, this is a failed login attempt — let the form handle it.
+        if (hadToken) {
+          window.location.href = '/login';
+        }
       }
       return Promise.reject(error);
     }
