@@ -86,6 +86,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
             <input
               {...register('name', {
                 required: 'Name is required',
+                minLength: { value: 2, message: 'Name must be at least 2 characters' },
                 maxLength: { value: 250, message: 'Name cannot exceed 250 characters' },
                 setValueAs: (value: string) => value?.trim() ?? '',
               })}
@@ -104,6 +105,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
             <input
               {...register('type', {
                 required: 'Type is required',
+                minLength: { value: 2, message: 'Type must be at least 2 characters' },
                 maxLength: { value: 50, message: 'Type cannot exceed 50 characters' },
                 setValueAs: (value: string) => value?.trim() ?? '',
               })}
@@ -123,7 +125,8 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               {...register('calories', {
                 required: 'Calories is required',
                 valueAsNumber: true,
-                min: { value: 1, message: 'Calories must be greater than 0' },
+                min: { value: 0, message: 'Calories cannot be negative' },
+                max: { value: 10000, message: 'Calories cannot exceed 10000' },
               })}
               type="number"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
