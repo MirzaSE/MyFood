@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyFood.Application.Entities;
 using MyFood.Domain.Entities;
 
 namespace MyFood.Infrastructure.Repositories
 {
-    public class FoodDbContext : IdentityDbContext<ApplicationUser>
+    public class FoodDbContext : DbContext
     {
         public FoodDbContext(DbContextOptions<FoodDbContext> options)
             : base(options)
@@ -14,5 +13,6 @@ namespace MyFood.Infrastructure.Repositories
 
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
         public DbSet<IngredientEntity> Ingredients {get; set;} = null!;
+        public DbSet<ApplicationUser> Users { get; set; } = null!;
     }
 }

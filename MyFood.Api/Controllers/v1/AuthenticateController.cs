@@ -30,14 +30,6 @@ namespace MyFood.Api.Controllers.v1
             var response = await _authService.LoginAsync(loginDto);
             return StatusCode(response.StatusCode, response);
         }
-
-        [AllowAnonymous]
-        [HttpGet("verify-email")]
-        public async Task<IActionResult> VerifyEmail([FromQuery] string emailOrUsername, [FromQuery] string token)
-        {
-            var response = await _authService.VerifyEmailAsync(emailOrUsername, token);
-            return StatusCode(response.StatusCode, response);
-        }
     }
 
 }
