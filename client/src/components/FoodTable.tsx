@@ -28,6 +28,14 @@ export const FoodTable: React.FC<FoodTableProps> = ({
     }
   };
 
+  const formatDate = (created?: string) => {
+    if (created && new Date(created).getFullYear() > 1) {
+      return new Date(created).toLocaleDateString();
+    }
+
+    return new Date().toLocaleDateString();
+  };
+
   if (foods.length === 0) {
     return (
       <div className="text-center py-16">
@@ -50,31 +58,34 @@ export const FoodTable: React.FC<FoodTableProps> = ({
             key={food.id}
             className="group bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 hover:border-purple-500/50 rounded-xl p-4 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20"
           >
-            {/* Card Header */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 transition-all">
                   {food.name}
                 </h3>
+
                 <span className="inline-block mt-2 px-3 py-1 bg-purple-500/30 text-purple-300 text-xs font-medium rounded-full border border-purple-500/50">
                   {food.type}
                 </span>
               </div>
             </div>
 
-            {/* Card Content */}
             <div className="space-y-3 mb-4">
               <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5">
                 <span className="text-gray-400 text-sm">Calories</span>
-                <span className="text-white font-semibold">{food.calories} kcal</span>
+                <span className="text-white font-semibold">
+                  {food.calories ?? 0} kcal
+                </span>
               </div>
+
               <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5">
                 <span className="text-gray-400 text-sm">Added</span>
-                <span className="text-gray-300 text-sm">{new Date(food.created).toLocaleDateString()}</span>
+                <span className="text-gray-300 text-sm">
+                  {formatDate(food.created)}
+                </span>
               </div>
             </div>
 
-            {/* Card Actions */}
             <div className="flex space-x-2 gap-2">
               <button
                 onClick={() => onEdit(food)}
@@ -99,8 +110,13 @@ export const FoodTable: React.FC<FoodTableProps> = ({
 
                 {showConfirm === food.id && (
                   <div className="absolute right-0 top-full mt-2 bg-slate-900 border border-red-500/50 rounded-lg p-4 z-10 w-56 shadow-xl">
-                    <p className="text-sm text-gray-200 mb-3 font-medium">Delete this item?</p>
-                    <p className="text-xs text-gray-400 mb-4">This action cannot be undone.</p>
+                    <p className="text-sm text-gray-200 mb-3 font-medium">
+                      Delete this item?
+                    </p>
+                    <p className="text-xs text-gray-400 mb-4">
+                      This action cannot be undone.
+                    </p>
+
                     <div className="flex space-x-2">
                       <button
                         onClick={() => setShowConfirm(null)}
@@ -109,6 +125,7 @@ export const FoodTable: React.FC<FoodTableProps> = ({
                       >
                         Cancel
                       </button>
+
                       <button
                         onClick={() => handleDelete(food.id)}
                         className="flex-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-all disabled:opacity-50"
@@ -127,4 +144,3 @@ export const FoodTable: React.FC<FoodTableProps> = ({
     </div>
   );
 };
-

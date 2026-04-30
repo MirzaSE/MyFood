@@ -4,6 +4,7 @@ export interface Food {
   type: string;
   calories: number;
   created: string;
+  createdDate?: string;
 }
 
 export interface FoodCreateDto {
