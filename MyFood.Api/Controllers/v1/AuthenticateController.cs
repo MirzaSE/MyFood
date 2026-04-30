@@ -22,7 +22,6 @@ public class AuthenticateController : ControllerBase
         _configuration = configuration;
     }
 
-    // Helper metoda da ne ponavljamo isti kod dva puta
     private string GenerateToken(ApplicationUser user, IList<string> roles)
     {
         var authClaims = new List<Claim>
@@ -55,14 +54,14 @@ public class AuthenticateController : ControllerBase
     {
         var user = await userManager.FindByNameAsync(model.Username);
 
-        // FIX: vraća poruku greške umjesto praznog 401
+    
         if (user == null || !await userManager.CheckPasswordAsync(user, model.Password))
             return Unauthorized(new { message = "Invalid username or password." });
 
         var userRoles = await userManager.GetRolesAsync(user);
         var tokenString = GenerateToken(user, userRoles);
 
-        // FIX: sada vraća i username zajedno s tokenom
+    
         return Ok(new
         {
             token = tokenString,
@@ -77,7 +76,6 @@ public class AuthenticateController : ControllerBase
     {
         var userExists = await userManager.FindByNameAsync(model.Username);
 
-        // FIX: 409 Conflict umjesto 500
         if (userExists != null)
             return Conflict(new { message = "A user with that username already exists." });
 
@@ -90,12 +88,12 @@ public class AuthenticateController : ControllerBase
         var result = await userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
         {
-            // FIX: vraća konkretnu grešku (npr. password prekratak, nema broj, itd.)
+        
             var errors = string.Join(" ", result.Errors.Select(e => e.Description));
             return BadRequest(new { message = errors });
         }
 
-        // FIX: odmah loguje usera — vraća token umjesto samo poruke
+
         var userRoles = await userManager.GetRolesAsync(user);
         var tokenString = GenerateToken(user, userRoles);
 
