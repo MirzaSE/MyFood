@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -22,7 +23,6 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.WebHost.UseUrls("http://*:8080");
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
@@ -45,11 +45,36 @@ builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
+var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+var useInMemoryDatabase = false;
+
+if (builder.Environment.IsDevelopment())
+{
+    try
+    {
+        using var connection = new SqlConnection(defaultConnection);
+        connection.Open();
+    }
+    catch
+    {
+        useInMemoryDatabase = true;
+        builder.Logging.AddConsole();
+    }
+}
+
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-//opt.UseInMemoryDatabase("FoodDatabase"));
-opt.UseSqlServer(
-           builder.Configuration.GetConnectionString("DefaultConnection"),
-           b => b.MigrationsAssembly("MyFood.Infrastructure")));
+{
+    if (useInMemoryDatabase)
+    {
+        opt.UseInMemoryDatabase("FoodDatabase");
+    }
+    else
+    {
+        opt.UseSqlServer(
+            defaultConnection,
+            b => b.MigrationsAssembly("MyFood.Infrastructure"));
+    }
+});
 
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
@@ -83,6 +108,11 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 var app = builder.Build();
+
+if (useInMemoryDatabase)
+{
+    app.Logger.LogWarning("SQL Server is not reachable. Using in-memory database for development.");
+}
 
 var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
