@@ -9,7 +9,7 @@
 
   <Target Name="RemoveInvalidLiteralWildcards" BeforeTargets="CoreCompile;PrepareResourceNames">
     <ItemGroup>
-      <Compile Remove="@(Compile)" Condition="'%(Compile.Identity)' == '**/*.cs' or '%(Compile.Identity)' == '**\\*.cs'" />
+      <Compile Remove="@(Compile)" Condition="'%(Compile.Identity)' == '**/*.cs' or '%(Compile.Identity)' == '**\\*.cs' or '%(Compile.Identity)' == '**/*.razor' or '%(Compile.Identity)' == '**\\*.razor' or '%(Compile.Identity)' == '**/*.cshtml' or '%(Compile.Identity)' == '**\\*.cshtml'" />
       <EmbeddedResource Remove="@(EmbeddedResource)" Condition="'%(EmbeddedResource.Identity)' == '**/*.resx' or '%(EmbeddedResource.Identity)' == '**\\*.resx'" />
     </ItemGroup>
   </Target>
