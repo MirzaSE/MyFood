@@ -7,6 +7,13 @@
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
 
+  <Target Name="RemoveInvalidLiteralWildcards" BeforeTargets="CoreCompile;PrepareResourceNames">
+    <ItemGroup>
+      <Compile Remove="@(Compile)" Condition="'%(Compile.Identity)' == '**/*.cs' or '%(Compile.Identity)' == '**\\*.cs'" />
+      <EmbeddedResource Remove="@(EmbeddedResource)" Condition="'%(EmbeddedResource.Identity)' == '**/*.resx' or '%(EmbeddedResource.Identity)' == '**\\*.resx'" />
+    </ItemGroup>
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
