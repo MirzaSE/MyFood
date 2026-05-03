@@ -1,21 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <!-- Pure Web API — no Razor views or components, disable their processing to avoid Linux glob edge-cases -->
-    <RazorCompileOnBuild>false</RazorCompileOnBuild>
-    <EnableDefaultRazorGenerateItems>false</EnableDefaultRazorGenerateItems>
-    <EnableDefaultRazorComponentItems>false</EnableDefaultRazorComponentItems>
-    <!-- Belt-and-suspenders: run our cleanup as the very last CoreCompile dependency -->
+    <!-- Run cleanup AFTER RazorComponentGenerate (which injects wildcard items) but before CSC.
+         No BeforeTargets on the target below — CoreCompileDependsOn guarantees correct ordering. -->
     <CoreCompileDependsOn>$(CoreCompileDependsOn);RemoveInvalidLiteralWildcards</CoreCompileDependsOn>
   </PropertyGroup>
 
-  <!-- Remove literal wildcard items injected by package targets (Linux CI glob edge-case) -->
-  <Target Name="RemoveInvalidLiteralWildcards"
-          BeforeTargets="PrepareForRazorGenerate;CoreCompile;PrepareResourceNames">
+  <Target Name="RemoveInvalidLiteralWildcards">
     <ItemGroup>
       <Compile Remove="@(Compile)" Condition="'%(Compile.Identity)' == '**/*.cs'    or '%(Compile.Identity)' == '**\*.cs'
                                            or '%(Compile.Identity)' == '**/*.razor'  or '%(Compile.Identity)' == '**\*.razor'
