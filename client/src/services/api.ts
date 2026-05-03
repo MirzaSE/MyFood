@@ -20,11 +20,11 @@ const createApiClient = (): AxiosInstance => {
     return config;
   });
 
-  // Handle 401 responses
+  // Handle 401 responses — only redirect if there was a stored token (session expired)
   client.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response?.status === 401) {
+      if (error.response?.status === 401 && localStorage.getItem('token')) {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
         window.location.href = '/login';
