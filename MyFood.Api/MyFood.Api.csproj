@@ -13,13 +13,14 @@
     <CoreCompileDependsOn>$(CoreCompileDependsOn);RemoveInvalidLiteralWildcards</CoreCompileDependsOn>
   </PropertyGroup>
 
-  <!-- Remove any wildcard literal items injected as Compile/EmbeddedResource by package targets -->
+  <!-- Remove literal wildcard items injected by package targets (Linux CI glob edge-case) -->
   <Target Name="RemoveInvalidLiteralWildcards"
           BeforeTargets="PrepareForRazorGenerate;CoreCompile;PrepareResourceNames">
     <ItemGroup>
-      <Content Remove="@(Content)" Condition="$([System.String]::Copy('%(Content.Identity)').Contains('*'))" />
-      <Compile Remove="@(Compile)" Condition="$([System.String]::Copy('%(Compile.Identity)').Contains('*'))" />
-      <EmbeddedResource Remove="@(EmbeddedResource)" Condition="$([System.String]::Copy('%(EmbeddedResource.Identity)').Contains('*'))" />
+      <Compile Remove="@(Compile)" Condition="'%(Compile.Identity)' == '**/*.cs'    or '%(Compile.Identity)' == '**\*.cs'
+                                           or '%(Compile.Identity)' == '**/*.razor'  or '%(Compile.Identity)' == '**\*.razor'
+                                           or '%(Compile.Identity)' == '**/*.cshtml' or '%(Compile.Identity)' == '**\*.cshtml'" />
+      <EmbeddedResource Remove="@(EmbeddedResource)" Condition="'%(EmbeddedResource.Identity)' == '**/*.resx' or '%(EmbeddedResource.Identity)' == '**\*.resx'" />
     </ItemGroup>
   </Target>
 
