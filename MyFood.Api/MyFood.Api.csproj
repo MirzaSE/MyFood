@@ -5,9 +5,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <!-- Run our wildcard cleanup as the very last CoreCompile dependency so it runs after all package targets inject items -->
+    <CoreCompileDependsOn>$(CoreCompileDependsOn);RemoveInvalidLiteralWildcards</CoreCompileDependsOn>
   </PropertyGroup>
 
-  <Target Name="RemoveInvalidLiteralWildcards" BeforeTargets="CoreCompile;PrepareResourceNames">
+  <Target Name="RemoveInvalidLiteralWildcards">
     <ItemGroup>
       <Compile Remove="@(Compile)" Condition="'%(Compile.Identity)' == '**/*.cs' or '%(Compile.Identity)' == '**\\*.cs' or '%(Compile.Identity)' == '**/*.razor' or '%(Compile.Identity)' == '**\\*.razor' or '%(Compile.Identity)' == '**/*.cshtml' or '%(Compile.Identity)' == '**\\*.cshtml'" />
       <EmbeddedResource Remove="@(EmbeddedResource)" Condition="'%(EmbeddedResource.Identity)' == '**/*.resx' or '%(EmbeddedResource.Identity)' == '**\\*.resx'" />
@@ -18,7 +20,7 @@
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5">
