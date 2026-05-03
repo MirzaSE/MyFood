@@ -5,14 +5,21 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <!-- Run our wildcard cleanup as the very last CoreCompile dependency so it runs after all package targets inject items -->
+    <!-- Pure Web API — no Razor views or components, disable their processing to avoid Linux glob edge-cases -->
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <EnableDefaultRazorGenerateItems>false</EnableDefaultRazorGenerateItems>
+    <EnableDefaultRazorComponentItems>false</EnableDefaultRazorComponentItems>
+    <!-- Belt-and-suspenders: run our cleanup as the very last CoreCompile dependency -->
     <CoreCompileDependsOn>$(CoreCompileDependsOn);RemoveInvalidLiteralWildcards</CoreCompileDependsOn>
   </PropertyGroup>
 
-  <Target Name="RemoveInvalidLiteralWildcards">
+  <!-- Remove any wildcard literal items injected as Compile/EmbeddedResource by package targets -->
+  <Target Name="RemoveInvalidLiteralWildcards"
+          BeforeTargets="PrepareForRazorGenerate;CoreCompile;PrepareResourceNames">
     <ItemGroup>
-      <Compile Remove="@(Compile)" Condition="'%(Compile.Identity)' == '**/*.cs' or '%(Compile.Identity)' == '**\\*.cs' or '%(Compile.Identity)' == '**/*.razor' or '%(Compile.Identity)' == '**\\*.razor' or '%(Compile.Identity)' == '**/*.cshtml' or '%(Compile.Identity)' == '**\\*.cshtml'" />
-      <EmbeddedResource Remove="@(EmbeddedResource)" Condition="'%(EmbeddedResource.Identity)' == '**/*.resx' or '%(EmbeddedResource.Identity)' == '**\\*.resx'" />
+      <Content Remove="@(Content)" Condition="$([System.String]::Copy('%(Content.Identity)').Contains('*'))" />
+      <Compile Remove="@(Compile)" Condition="$([System.String]::Copy('%(Compile.Identity)').Contains('*'))" />
+      <EmbeddedResource Remove="@(EmbeddedResource)" Condition="$([System.String]::Copy('%(EmbeddedResource.Identity)').Contains('*'))" />
     </ItemGroup>
   </Target>
 
