@@ -47,7 +47,7 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            Response.Headers["X-Pagination"] = JsonSerializer.Serialize(paginationMetadata);
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
             var toReturn = foodDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { AxiosInstance } from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://localhost:7124';
 
 const createApiClient = (): AxiosInstance => {
   const client = axios.create({
@@ -25,9 +25,13 @@ const createApiClient = (): AxiosInstance => {
     (response) => response,
     (error) => {
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        window.location.href = '/login';
+        const path = window.location.pathname.toLowerCase();
+        const isAuthPage = path === '/login' || path === '/';
+        if (!isAuthPage) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          window.location.href = '/login';
+        }
       }
       return Promise.reject(error);
     }
