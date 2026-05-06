@@ -22,6 +22,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string) => {
     const response = await authService.login(username, password);
+    if (!response.token || !response.username) {
+      throw new Error(response.message ?? 'Login failed.');
+    }
     setToken(response.token);
     setUsername(response.username);
     setIsAuthenticated(true);
@@ -29,6 +32,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const register = async (username: string, email: string, password: string) => {
     const response = await authService.register(username, email, password);
+    if (!response.token || !response.username) {
+      throw new Error(response.message ?? 'Registration failed.');
+    }
     setToken(response.token);
     setUsername(response.username);
     setIsAuthenticated(true);
