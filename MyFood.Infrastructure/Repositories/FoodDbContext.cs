@@ -22,7 +22,7 @@ namespace MyFood.Infrastructure.Repositories
                 .HasMany(f => f.Ingredients)
                 .WithOne(i => i.FoodEntity)
                 .HasForeignKey(i => i.FoodEntityId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
     
