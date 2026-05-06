@@ -31,7 +31,12 @@ export const LoginPage: React.FC = () => {
       await login(data.username, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      const msg =
+        err.response?.data?.message ||
+        err.response?.data ||
+        (err.response?.status === 401 ? 'Invalid username or password.' : null) ||
+        'Login failed. Please try again.';
+      setError(typeof msg === 'string' ? msg : 'Login failed. Please try again.');
     }
   };
 
@@ -45,7 +50,11 @@ export const LoginPage: React.FC = () => {
       await registerUser(data.username, data.email, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      const msg =
+        err.response?.data?.message ||
+        err.response?.data ||
+        'Registration failed. Please try again.';
+      setError(typeof msg === 'string' ? msg : 'Registration failed. Please try again.');
     }
   };
 
@@ -215,7 +224,7 @@ export const LoginPage: React.FC = () => {
                     <input
                       {...registerForm.register('password', {
                         required: 'Password is required',
-                        minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                        minLength: { value: 8, message: 'Password must be at least 8 characters' },
                       })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
