@@ -15,7 +15,6 @@ using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
 using Newtonsoft.Json.Serialization;
-using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
@@ -35,8 +34,9 @@ builder.Services.AddCustomCors("AllowAllOrigins");
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
-builder.Services.AddScoped<IFoodService, FoodService>();
+// builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
+
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -46,17 +46,19 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-//opt.UseInMemoryDatabase("FoodDatabase"));
-opt.UseSqlServer(
-           builder.Configuration.GetConnectionString("DefaultConnection"),
-           b => b.MigrationsAssembly("MyFood.Infrastructure")));
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        opt.UseInMemoryDatabase("FoodDatabase");
+    }
+    else
+    {
+        opt.UseSqlServer(
+                   builder.Configuration.GetConnectionString("DefaultConnection"),
+                   b => b.MigrationsAssembly("MyFood.Infrastructure"));
+    }
+});
 
-
-builder.Services.AddAutoMapper(typeof(FoodMappings));
-
-builder.Host.UseSerilog((context, configuration) =>
-    configuration.ReadFrom.Configuration(context.Configuration));
-    
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                .AddEntityFrameworkStores<FoodDbContext>()
                .AddDefaultTokenProviders();
@@ -74,9 +76,10 @@ builder.Services.AddAuthentication(options =>
         {
             ValidateIssuer = true,
             ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
             ValidAudience = builder.Configuration["JWT:ValidAudience"],
             ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]!))
         };
     });
 
@@ -108,11 +111,7 @@ else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
-//app.UseMiddleware<ExceptionHandlingMiddleware>();
-//app.UseMiddleware<RequestLoggingMiddleware>();
 
-//Add support to logging request with SERILOG
-app.UseSerilogRequestLogging();
 
 app.UseCors("AllowAllOrigins");
 //app.UseHttpsRedirection(); // can cause docker issue
