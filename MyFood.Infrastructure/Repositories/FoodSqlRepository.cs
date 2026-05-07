@@ -19,7 +19,9 @@ namespace MyFood.Infrastructure.Repositories
 
         public FoodEntity GetSingle(int id)
         {
-            return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
+            return _foodDbContext.FoodItems
+                .Include(x => x.Ingredients)
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public void Add(FoodEntity item)
@@ -42,6 +44,7 @@ namespace MyFood.Infrastructure.Repositories
         public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
         {
             IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
+            _allItems = _allItems.Include(x => x.Ingredients);
 
             if (queryParameters.HasQuery())
             {

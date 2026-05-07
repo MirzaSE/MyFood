@@ -38,6 +38,7 @@ namespace MyFood.Application.Services
         {
             var foodEntity = _mapper.Map<FoodEntity>(foodCreateDto);
             foodEntity.Created = DateTime.UtcNow;
+            foodEntity.Ingredients = BuildIngredientEntities(foodCreateDto.Ingredients);
             _foodRepository.Add(foodEntity);
 
             if (!_foodRepository.Save())
@@ -58,6 +59,11 @@ namespace MyFood.Application.Services
             }
 
             _mapper.Map(foodUpdateDto, existingEntity);
+            existingEntity.Ingredients.Clear();
+            foreach (var ingredient in BuildIngredientEntities(foodUpdateDto.Ingredients))
+            {
+                existingEntity.Ingredients.Add(ingredient);
+            }
             var updatedEntity = _foodRepository.Update(id, existingEntity);
 
             if (!_foodRepository.Save())
@@ -95,6 +101,21 @@ namespace MyFood.Application.Services
         public async Task<int> GetTotalFoodCountAsync()
         {
             return await Task.FromResult(_foodRepository.Count());
+        }
+
+        private static List<IngredientEntity> BuildIngredientEntities(IEnumerable<FoodIngredientDto>? ingredients)
+        {
+            return (ingredients ?? Enumerable.Empty<FoodIngredientDto>())
+                .Where(i => !string.IsNullOrWhiteSpace(i.Name) && i.Quantity.HasValue && i.Quantity.Value > 0)
+                .Select(i => new IngredientEntity
+                {
+                    Name = i.Name!.Trim(),
+                    Quantity = i.Quantity!.Value,
+                    Unit = i.Unit?.Trim() ?? string.Empty,
+                    CaloriesPerUnit = i.CaloriesPerUnit ?? 0,
+                    Created = DateTime.UtcNow
+                })
+                .ToList();
         }
     }
 }

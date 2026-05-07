@@ -14,5 +14,7 @@ namespace MyFood.Application.Dtos
         [Required]
         [MaxLength(50)]
         public string Type { get; set; } = string.Empty;
+
+        public ICollection<FoodIngredientDto>? Ingredients { get; set; }
     }
 }

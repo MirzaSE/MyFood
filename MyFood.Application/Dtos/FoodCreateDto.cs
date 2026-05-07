@@ -14,5 +14,7 @@ namespace MyFood.Application.Dtos
 
         [Range(1, int.MaxValue, ErrorMessage = "Calories must be greater than zero.")]
         public int Calories { get; set; }
+
+        public ICollection<FoodIngredientDto>? Ingredients { get; set; }
     }
 }

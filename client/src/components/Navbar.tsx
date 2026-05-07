@@ -29,6 +29,22 @@ export const Navbar: React.FC = () => {
 
           {/* User Info & Logout */}
           <div className="flex items-center space-x-6">
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                onClick={() => navigate('/foods')}
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-gray-200 hover:text-white hover:bg-white/10 transition-all"
+                type="button"
+              >
+                Foods
+              </button>
+              <button
+                onClick={() => navigate('/ingredients')}
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-gray-200 hover:text-white hover:bg-white/10 transition-all"
+                type="button"
+              >
+                Ingredients
+              </button>
+            </div>
             <div className="hidden sm:flex sm:flex-col sm:items-start sm:space-y-3">
               <p className="text-sm text-gray-300">Welcome back</p>
               <p className="text-lg font-semibold text-white">{username}</p>

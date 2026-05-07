@@ -72,6 +72,22 @@ export const FoodTable: React.FC<FoodTableProps> = ({
                 <span className="text-gray-400 text-sm">Added</span>
                 <span className="text-gray-300 text-sm">{new Date(food.created).toLocaleDateString()}</span>
               </div>
+              <div className="p-3 bg-white/5 rounded-lg border border-white/5">
+                <span className="text-gray-400 text-sm block mb-2">Ingredients</span>
+                <div className="flex flex-wrap gap-2">
+                  {food.ingredients?.length ? food.ingredients.map((ingredient, index) => (
+                    <span
+                      key={`${food.id}-${ingredient.id ?? index}`}
+                      className="px-2 py-1 text-xs rounded-full bg-blue-500/20 text-blue-200 border border-blue-500/40"
+                    >
+                      {ingredient.name}
+                      {ingredient.quantity ? ` x ${ingredient.quantity}${ingredient.unit ? ` ${ingredient.unit}` : ''}` : ''}
+                    </span>
+                  )) : (
+                    <span className="text-gray-500 text-xs">No ingredients</span>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Card Actions */}
@@ -127,4 +143,3 @@ export const FoodTable: React.FC<FoodTableProps> = ({
     </div>
   );
 };
-

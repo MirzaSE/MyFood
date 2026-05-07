@@ -50,11 +50,11 @@ export const FoodPage: React.FC = () => {
       if (selectedFood) {
         // Update existing food
         const updatedFood = await foodService.updateFood(selectedFood.id, data);
-        setFoods(foods.map(f => f.id === selectedFood.id ? updatedFood : f));
+        setFoods((currentFoods) => currentFoods.map(f => f.id === selectedFood.id ? updatedFood : f));
       } else {
         // Create new food
         const newFood = await foodService.createFood(data);
-        setFoods([...foods, newFood]);
+        setFoods((currentFoods) => [...currentFoods, newFood]);
       }
 
       setModalOpen(false);
@@ -70,7 +70,7 @@ export const FoodPage: React.FC = () => {
     try {
       setError(null);
       await foodService.deleteFood(id);
-      setFoods(foods.filter(f => f.id !== id));
+      setFoods((currentFoods) => currentFoods.filter(f => f.id !== id));
     } catch (error: unknown) {
       setError(getApiErrorMessage(error, 'Failed to delete food'));
       throw error;

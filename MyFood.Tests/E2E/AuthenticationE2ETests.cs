@@ -13,8 +13,10 @@ namespace MyFood.Tests.E2E
             // Arrange
             var model = new
             {
-                username = "test"+ Guid.NewGuid().ToString("N").Substring(0, 8), // Ensure unique username
-                password = "SecurePass@123"
+                username = "test" + Guid.NewGuid().ToString("N").Substring(0, 8), // Ensure unique username
+                email = $"test{Guid.NewGuid():N}@myfood.test",
+                password = "SecurePass@123",
+                fullName = "Test User"
             };
 
             var content = new StringContent(
@@ -28,17 +30,27 @@ namespace MyFood.Tests.E2E
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var responseBody = await response.Content.ReadAsStringAsync();
-            Assert.Contains("successfully", responseBody, StringComparison.OrdinalIgnoreCase);
+            using var jsonDoc = JsonDocument.Parse(responseBody);
+            var root = jsonDoc.RootElement;
+            Assert.True(root.TryGetProperty("token", out var tokenElement));
+            Assert.True(root.TryGetProperty("expiration", out _));
+            Assert.NotEmpty(tokenElement.GetString() ?? "");
         }
 
         [Fact]
         public async Task Register_WithDuplicateUsername_ReturnsBadRequest()
         {
             // Arrange
-            var username = "duplicateuser";
+            var username = "duplicate" + Guid.NewGuid().ToString("N").Substring(0, 8);
             var password = "Test@123";
             
-            var model = new { username, password };
+            var model = new
+            {
+                username,
+                email = $"{username}@myfood.test",
+                password,
+                fullName = "Duplicate User"
+            };
             var content = new StringContent(
                 JsonSerializer.Serialize(model),
                 Encoding.UTF8,
@@ -55,18 +67,24 @@ namespace MyFood.Tests.E2E
             var response = await Client.PostAsync("/api/authenticate/register", content);
 
             // Assert
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         }
 
         [Fact]
         public async Task Login_WithValidCredentials_ReturnsTokenAndExpiration()
         {
             // Arrange
-            var username = "loginuser";
+            var username = "login" + Guid.NewGuid().ToString("N").Substring(0, 8);
             var password = "Test@123";
             
             // Register first
-            var registerModel = new { username, password };
+            var registerModel = new
+            {
+                username,
+                email = $"{username}@myfood.test",
+                password,
+                fullName = "Login User"
+            };
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
                 Encoding.UTF8,
@@ -96,11 +114,17 @@ namespace MyFood.Tests.E2E
         public async Task Login_WithInvalidPassword_ReturnsUnauthorized()
         {
             // Arrange
-            var username = "validuser";
+            var username = "valid" + Guid.NewGuid().ToString("N").Substring(0, 8);
             var password = "ValidPass@123";
             
             // Register
-            var registerModel = new { username, password };
+            var registerModel = new
+            {
+                username,
+                email = $"{username}@myfood.test",
+                password,
+                fullName = "Valid User"
+            };
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
                 Encoding.UTF8,

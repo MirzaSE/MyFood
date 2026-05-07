@@ -29,6 +29,7 @@ public class LinkService<T> : ILinkService<T>
         // self 
         links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
         {
+            version = version.ToString(),
             pagecount = queryParameters.PageCount,
             page = queryParameters.Page,
             orderby = queryParameters.OrderBy
@@ -36,6 +37,7 @@ public class LinkService<T> : ILinkService<T>
 
         links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
         {
+            version = version.ToString(),
             pagecount = queryParameters.PageCount,
             page = 1,
             orderby = queryParameters.OrderBy
@@ -43,6 +45,7 @@ public class LinkService<T> : ILinkService<T>
 
         links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
         {
+            version = version.ToString(),
             pagecount = queryParameters.PageCount,
             page = queryParameters.GetTotalPages(totalCount),
             orderby = queryParameters.OrderBy
@@ -52,6 +55,7 @@ public class LinkService<T> : ILinkService<T>
         {
             links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
             {
+                version = version.ToString(),
                 pagecount = queryParameters.PageCount,
                 page = queryParameters.Page + 1,
                 orderby = queryParameters.OrderBy
@@ -62,6 +66,7 @@ public class LinkService<T> : ILinkService<T>
         {
             links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
             {
+                version = version.ToString(),
                 pagecount = queryParameters.PageCount,
                 page = queryParameters.Page - 1,
                 orderby = queryParameters.OrderBy
@@ -138,7 +143,7 @@ public class LinkService<T> : ILinkService<T>
 
         foreach (var method in filteredMethods)
         {
-            var routeAttribs = method.GetCustomAttributes(typeof(Microsoft.AspNetCore.Components.RouteAttribute));
+            var routeAttribs = method.GetCustomAttributes(typeof(Microsoft.AspNetCore.Mvc.RouteAttribute), false);
 
             if (routeAttribs.Count() == routeParamsLength)
             {

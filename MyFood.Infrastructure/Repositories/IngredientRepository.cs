@@ -1,4 +1,5 @@
 using MyFood.Domain.Entities;
+using MyFood.Application.Services;
 
 namespace MyFood.Infrastructure.Repositories;
 
@@ -13,7 +14,10 @@ public class IngredientSqlRepository : IIngredientRepository
 
     public IEnumerable<IngredientEntity> GetAll()
     {
-        return _context.Ingredients.ToList();
+        return _context.Ingredients
+            .Where(ingredient => ingredient.FoodEntityId == null)
+            .OrderBy(ingredient => ingredient.Name)
+            .ToList();
     }
 
     public IngredientEntity? GetById(int id)

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
+import { FoodIngredientsPicker } from './FoodIngredientsPicker';
 
 interface FoodModalProps {
   isOpen: boolean;
@@ -22,14 +23,18 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FoodCreateDto>({
     defaultValues: {
       name: '',
       type: '',
       calories: 0,
+      ingredients: [],
     },
   });
+  const selectedIngredients = watch('ingredients');
 
   useEffect(() => {
     if (!isOpen) {
@@ -40,10 +45,20 @@ export const FoodModal: React.FC<FoodModalProps> = ({
       name: initialData.name,
       type: initialData.type,
       calories: initialData.calories,
+      ingredients: initialData.ingredients?.length
+        ? initialData.ingredients.map((ingredient) => ({
+          id: ingredient.id,
+          name: ingredient.name,
+          quantity: ingredient.quantity ?? 1,
+          unit: ingredient.unit,
+          caloriesPerUnit: ingredient.caloriesPerUnit,
+        }))
+        : [],
     } : {
       name: '',
       type: '',
       calories: 0,
+      ingredients: [],
     });
   }, [initialData, isOpen, reset]);
 
@@ -52,6 +67,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
       name: '',
       type: '',
       calories: 0,
+      ingredients: [],
     });
     onClose();
   };
@@ -63,6 +79,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
         name: '',
         type: '',
         calories: 0,
+        ingredients: [],
       });
     } catch (error) {
       console.error('Form submission error:', error);
@@ -139,6 +156,14 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               disabled={isLoading}
             />
             {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
+          </div>
+
+          <div className="mt-8">
+            <FoodIngredientsPicker
+              disabled={isLoading}
+              onChange={(ingredients) => setValue('ingredients', ingredients, { shouldDirty: true, shouldValidate: true })}
+              value={selectedIngredients ?? []}
+            />
           </div>
 
           <div className="flex space-x-3 pt-6">

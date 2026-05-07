@@ -1,6 +1,6 @@
 using MyFood.Domain.Entities;
 
-namespace MyFood.Infrastructure.Repositories;
+namespace MyFood.Application.Services;
 
 public interface IIngredientRepository
 {
