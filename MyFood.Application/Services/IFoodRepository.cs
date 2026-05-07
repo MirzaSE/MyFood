@@ -11,7 +11,6 @@ namespace MyFood.Application.Services
         FoodEntity Update(int id, FoodEntity item);
         IQueryable<FoodEntity> GetAll(QueryParameters queryParameters);
         ICollection<FoodEntity> GetRandomMeal();
-
         IEnumerable<FoodEntity> SearchFoodsByName(string name);
         int Count();
         bool Save();
