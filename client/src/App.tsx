@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LoginPage } from './pages/LoginPage';
 import { FoodPage } from './pages/FoodPage';
+import CreateFoodPage from './pages/CreateFoodPage';
+import IngredientsPage from './pages/IngredientsPage';
 import './App.css';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -22,7 +24,23 @@ const AppRoutes: React.FC = () => {
     <Routes>
       <Route
         path="/login"
-        element={isAuthenticated ? <Navigate to="/foods" replace /> : <LoginPage />}
+        element={isAuthenticated ? <Navigate to="/ingredients" replace /> : <LoginPage />}
+      />
+      <Route
+        path="/ingredients"
+        element={
+          <ProtectedRoute>
+            <IngredientsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/foods/create"
+        element={
+          <ProtectedRoute>
+            <CreateFoodPage />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/foods"
@@ -32,8 +50,8 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="/" element={<Navigate to={isAuthenticated ? '/foods' : '/login'} replace />} />
-      <Route path="*" element={<Navigate to={isAuthenticated ? '/foods' : '/login'} replace />} />
+      <Route path="/" element={<Navigate to={isAuthenticated ? '/ingredients' : '/login'} replace />} />
+      <Route path="*" element={<Navigate to={isAuthenticated ? '/ingredients' : '/login'} replace />} />
     </Routes>
   );
 };

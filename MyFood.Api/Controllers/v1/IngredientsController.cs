@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyFood.Application.Entities;
-using MyFood.Application.Interfaces;
+using MyFood.Application.Services;
+using MyFood.Domain.Entities;
 
 namespace MyFood.Api.Controllers.v1
 {
@@ -11,25 +11,32 @@ namespace MyFood.Api.Controllers.v1
     [Route("api/v{version:apiVersion}/[controller]")]
     public class IngredientsController : ControllerBase
     {
-        private readonly IIngredientRepository _ingredientRepository;
+        private readonly IIngredientService _ingredientService;
 
-        public IngredientsController(IIngredientRepository ingredientRepository)
+        public IngredientsController(IIngredientService ingredientService)
         {
-            _ingredientRepository = ingredientRepository;
+            _ingredientService = ingredientService;
         }
 
         [HttpGet(Name = nameof(GetAllIngredients))]
-        public ActionResult GetAllIngredients()
+        public async Task<ActionResult> GetAllIngredients()
         {
-            var ingredients = _ingredientRepository.GetAllIngredients();
+            var ingredients = await _ingredientService.GetAllAsync();
             return Ok(ingredients);
+        }
+
+        [HttpGet("search", Name = nameof(SearchIngredients))]
+        public async Task<ActionResult> SearchIngredients([FromQuery] string? query)
+        {
+            var results = await _ingredientService.SearchAsync(query ?? string.Empty);
+            return Ok(results);
         }
 
         [HttpGet]
         [Route("{id:int}", Name = nameof(GetSingleIngredient))]
-        public ActionResult GetSingleIngredient(int id)
+        public async Task<ActionResult> GetSingleIngredient(int id)
         {
-            var ingredient = _ingredientRepository.GetIngredientById(id);
+            var ingredient = await _ingredientService.GetByIdAsync(id);
 
             if (ingredient == null)
             {
@@ -40,54 +47,70 @@ namespace MyFood.Api.Controllers.v1
         }
 
         [HttpPost(Name = nameof(AddIngredient))]
-        public ActionResult<IngredientEntity> AddIngredient([FromBody] IngredientEntity ingredient)
+        public async Task<ActionResult<IngredientEntity>> AddIngredient([FromBody] IngredientEntity ingredient)
         {
             if (ingredient == null)
             {
                 return BadRequest();
             }
 
-            _ingredientRepository.AddIngredient(ingredient);
-
-            return CreatedAtRoute(nameof(GetSingleIngredient),
-                new { id = ingredient.Id },
-                ingredient);
+            try
+            {
+                var created = await _ingredientService.CreateAsync(ingredient);
+                return CreatedAtRoute(nameof(GetSingleIngredient),
+                    new { id = created.Id },
+                    created);
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest();
+            }
+            catch (InvalidOperationException)
+            {
+                return Conflict();
+            }
         }
 
         [HttpPut]
         [Route("{id:int}", Name = nameof(UpdateIngredient))]
-        public ActionResult<IngredientEntity> UpdateIngredient(int id, [FromBody] IngredientEntity ingredient)
+        public async Task<ActionResult<IngredientEntity>> UpdateIngredient(int id, [FromBody] IngredientEntity ingredient)
         {
             if (ingredient == null)
             {
                 return BadRequest();
             }
 
-            var existing = _ingredientRepository.GetIngredientById(id);
-
-            if (existing == null)
+            try
             {
-                return NotFound();
+                IngredientEntity? updated = await _ingredientService.UpdateAsync(id, ingredient);
+
+                if (updated == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(updated);
             }
-
-            ingredient.Id = id;
-            _ingredientRepository.UpdateIngredient(ingredient);
-
-            return Ok(ingredient);
+            catch (ArgumentException)
+            {
+                return BadRequest();
+            }
+            catch (InvalidOperationException)
+            {
+                return Conflict();
+            }
         }
 
         [HttpDelete]
         [Route("{id:int}", Name = nameof(DeleteIngredient))]
-        public ActionResult DeleteIngredient(int id)
+        public async Task<ActionResult> DeleteIngredient(int id)
         {
-            var existing = _ingredientRepository.GetIngredientById(id);
+            var deleted = await _ingredientService.DeleteAsync(id);
 
-            if (existing == null)
+            if (!deleted)
             {
                 return NotFound();
             }
-
-            _ingredientRepository.DeleteIngredient(id);
 
             return NoContent();
         }

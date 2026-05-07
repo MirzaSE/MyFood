@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using MyFood.Application.Entities;
 using MyFood.Domain.Entities;
 
 namespace MyFood.Infrastructure.Repositories
@@ -23,6 +22,7 @@ namespace MyFood.Infrastructure.Repositories
                 .HasMany(f => f.Ingredients)
                 .WithOne(i => i.FoodEntity)
                 .HasForeignKey(i => i.FoodEntityId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

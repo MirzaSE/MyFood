@@ -17,7 +17,7 @@ namespace MyFood.Infrastructure.Repositories
             _foodDbContext = foodDbContext;
         }
 
-        public FoodEntity GetSingle(int id)
+        public FoodEntity? GetSingle(int id)
         {
             return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
         }
@@ -29,7 +29,12 @@ namespace MyFood.Infrastructure.Repositories
 
         public void Delete(int id)
         {
-            FoodEntity foodItem = GetSingle(id);
+            FoodEntity? foodItem = GetSingle(id);
+            if (foodItem is null)
+            {
+                return;
+            }
+
             _foodDbContext.FoodItems.Remove(foodItem);
         }
 
@@ -45,9 +50,10 @@ namespace MyFood.Infrastructure.Repositories
 
             if (queryParameters.HasQuery())
             {
+                var q = queryParameters.Query?.ToLowerInvariant() ?? string.Empty;
                 _allItems = _allItems
-                    .Where(x => x.Calories.ToString().Contains(queryParameters.Query.ToLowerInvariant())
-                    || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+                    .Where(x => x.Calories.ToString().Contains(q)
+                    || (x.Name != null && x.Name.ToLowerInvariant().Contains(q)));
             }
 
             return _allItems
@@ -69,9 +75,18 @@ namespace MyFood.Infrastructure.Repositories
         {
             List<FoodEntity> toReturn = new List<FoodEntity>();
 
-            toReturn.Add(GetRandomItem("Starter"));
-            toReturn.Add(GetRandomItem("Main"));
-            toReturn.Add(GetRandomItem("Dessert"));
+            void addIfFound(string type)
+            {
+                var item = GetRandomItem(type);
+                if (item is not null)
+                {
+                    toReturn.Add(item);
+                }
+            }
+
+            addIfFound("Starter");
+            addIfFound("Main");
+            addIfFound("Dessert");
 
             return toReturn;
         }
@@ -86,7 +101,7 @@ namespace MyFood.Infrastructure.Repositories
             // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
         }
 
-        private FoodEntity GetRandomItem(string type)
+        private FoodEntity? GetRandomItem(string type)
         {
             return _foodDbContext.FoodItems
                 .Where(x => x.Type == type)
