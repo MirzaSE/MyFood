@@ -1,9 +1,9 @@
 using MyFood.Application;
 using MyFood.Domain.Entities;
 
-namespace MyFood.Infrastructure.Repositories
+namespace MyFood.Application.Services
 {
-  public interface IIngredientRepository
+    public interface IIngredientRepository
     {
         IngredientEntity GetSingle(int id);
         void Add(IngredientEntity item);

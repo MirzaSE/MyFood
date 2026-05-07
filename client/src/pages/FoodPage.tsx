@@ -1,30 +1,42 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Plus, AlertCircle } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
 import { foodService } from '../services/foodService';
-import type { Food, FoodCreateDto } from '../types';
+import { ingredientService } from '../services/ingredientService';
+import type { Food, FoodCreateDto, Ingredient, SelectedIngredient } from '../types';
 
 export const FoodPage: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [foods, setFoods] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [availableIngredients, setAvailableIngredients] = useState<Ingredient[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<SelectedIngredient[]>([]);
+  const [isIngredientLoading, setIsIngredientLoading] = useState(false);
 
   // Load foods on component mount
   useEffect(() => {
     loadFoods();
-  }, []);
+  }, [location.key]);
 
   const loadFoods = async () => {
     try {
       setIsLoading(true);
       setError(null);
       const data = await foodService.getAllFoods();
-      setFoods(data);
+      const createdFood = (location.state as { createdFood?: Food } | null)?.createdFood;
+      if (createdFood && !data.some((f) => f.id === createdFood.id)) {
+        setFoods([createdFood, ...data]);
+      } else {
+        setFoods(data);
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to load foods');
     } finally {
@@ -33,16 +45,74 @@ export const FoodPage: React.FC = () => {
   };
 
   const handleCreateClick = () => {
-    setSelectedFood(null);
-    setModalOpen(true);
+    navigate('/foods/create');
   };
 
-  const handleEditClick = (food: Food) => {
+  const mapIngredientToSelected = (ingredient: Ingredient): SelectedIngredient => ({
+    ingredient,
+    quantity: Math.max(1, Math.floor(ingredient.caloriesPerUnit)),
+  });
+
+  const loadIngredientsForFood = async (foodId: number) => {
+    setIsIngredientLoading(true);
+    try {
+      const response = await ingredientService.getAllIngredients({ page: 1, pageCount: 500, query: '' });
+      setAvailableIngredients(response.items);
+      setSelectedIngredients(response.items.filter((item) => item.foodEntityId === foodId).map(mapIngredientToSelected));
+    } finally {
+      setIsIngredientLoading(false);
+    }
+  };
+
+  const handleEditClick = async (food: Food) => {
+    setError(null);
     setSelectedFood(food);
     setModalOpen(true);
+    try {
+      await loadIngredientsForFood(food.id);
+    } catch (err: any) {
+      setAvailableIngredients([]);
+      setSelectedIngredients([]);
+      setError(err.response?.data?.message || 'Failed to load food ingredients');
+    }
   };
 
-  const handleModalSubmit = async (data: FoodCreateDto) => {
+  const syncFoodIngredients = async (foodId: number, nextIngredients: SelectedIngredient[]) => {
+    const response = await ingredientService.getAllIngredients({ page: 1, pageCount: 500, query: '' });
+    const currentFoodIngredients = response.items.filter((item) => item.foodEntityId === foodId);
+    const currentIds = new Set(currentFoodIngredients.map((item) => item.id));
+    const keptIds = new Set<number>();
+
+    const updatePromises: Promise<unknown>[] = [];
+    const createPromises: Promise<unknown>[] = [];
+
+    for (const item of nextIngredients) {
+      const normalizedAmount = Math.max(1, Math.floor(item.quantity));
+      const payload = {
+        name: item.ingredient.name,
+        unit: item.ingredient.unit,
+        caloriesPerUnit: normalizedAmount,
+        protein: item.ingredient.protein,
+        carbs: item.ingredient.carbs,
+        fat: item.ingredient.fat,
+      };
+
+      if (item.ingredient.foodEntityId === foodId && currentIds.has(item.ingredient.id)) {
+        keptIds.add(item.ingredient.id);
+        updatePromises.push(ingredientService.updateIngredient(item.ingredient.id, payload, foodId));
+      } else {
+        createPromises.push(ingredientService.createIngredient(payload, foodId));
+      }
+    }
+
+    const deletePromises = currentFoodIngredients
+      .filter((item) => !keptIds.has(item.id))
+      .map((item) => ingredientService.deleteIngredient(item.id));
+
+    await Promise.all([...updatePromises, ...createPromises, ...deletePromises]);
+  };
+
+  const handleModalSubmit = async (data: FoodCreateDto, ingredientItems: SelectedIngredient[]) => {
     try {
       setIsSubmitting(true);
       setError(null);
@@ -50,10 +120,12 @@ export const FoodPage: React.FC = () => {
       if (selectedFood) {
         // Update existing food
         const updatedFood = await foodService.updateFood(selectedFood.id, data);
+        await syncFoodIngredients(selectedFood.id, ingredientItems);
         setFoods(foods.map(f => f.id === selectedFood.id ? updatedFood : f));
       } else {
         // Create new food
         const newFood = await foodService.createFood(data);
+        await syncFoodIngredients(newFood.id, ingredientItems);
         setFoods([...foods, newFood]);
       }
 
@@ -140,9 +212,14 @@ export const FoodPage: React.FC = () => {
         onClose={() => {
           setModalOpen(false);
           setSelectedFood(null);
+          setSelectedIngredients([]);
         }}
         onSubmit={handleModalSubmit}
         initialData={selectedFood}
+        availableIngredients={availableIngredients}
+        selectedIngredients={selectedIngredients}
+        onSelectedIngredientsChange={setSelectedIngredients}
+        isIngredientsLoading={isIngredientLoading}
         isLoading={isSubmitting}
       />
     </div>

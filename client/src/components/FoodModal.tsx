@@ -1,13 +1,18 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
-import type { Food, FoodCreateDto } from '../types';
+import { FoodIngredientsPicker } from './FoodIngredientsPicker';
+import type { Food, FoodCreateDto, Ingredient, SelectedIngredient } from '../types';
 
 interface FoodModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: FoodCreateDto) => Promise<void>;
+  onSubmit: (data: FoodCreateDto, ingredients: SelectedIngredient[]) => Promise<void>;
   initialData?: Food | null;
+  availableIngredients: Ingredient[];
+  selectedIngredients: SelectedIngredient[];
+  onSelectedIngredientsChange: (items: SelectedIngredient[]) => void;
+  isIngredientsLoading?: boolean;
   isLoading?: boolean;
 }
 
@@ -16,6 +21,10 @@ export const FoodModal: React.FC<FoodModalProps> = ({
   onClose,
   onSubmit,
   initialData,
+  availableIngredients,
+  selectedIngredients,
+  onSelectedIngredientsChange,
+  isIngredientsLoading = false,
   isLoading = false,
 }) => {
   const {
@@ -48,7 +57,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
 
   const onSubmitForm = async (data: FoodCreateDto) => {
     try {
-      await onSubmit(data);
+      await onSubmit(data, selectedIngredients);
       reset();
     } catch (error) {
       console.error('Form submission error:', error);
@@ -59,7 +68,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-3xl w-full overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center">
           <h2 className="text-xl font-bold text-white">
@@ -131,6 +140,18 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               disabled={isLoading}
             />
             {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
+          </div>
+
+          <div className="pt-6">
+            {isIngredientsLoading ? (
+              <p className="text-gray-300 text-sm">Loading ingredients...</p>
+            ) : (
+              <FoodIngredientsPicker
+                availableIngredients={availableIngredients}
+                selectedIngredients={selectedIngredients}
+                onChange={onSelectedIngredientsChange}
+              />
+            )}
           </div>
 
           <div className="flex space-x-3 pt-6">

@@ -1,12 +1,9 @@
-using AutoMapper;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
 using MyFood.Application.Dtos;
-using MyFood.Domain.Entities;
+using MyFood.Application.Services;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
-using MyFood.Infrastructure.Repositories;
 using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
@@ -17,27 +14,23 @@ namespace MyFood.Api.Controllers.v1
 
   public class IngredientsController : ControllerBase
   {
-    private readonly IIngredientRepository _ingredientRepository;
-    private readonly IMapper _mapper;
+    private readonly IIngredientService _ingredientService;
     private readonly ILinkService<IngredientsController> _linkService;
 
     public IngredientsController(
-            IIngredientRepository ingredientRepository,
-            IMapper mapper,
+            IIngredientService ingredientService,
             ILinkService<IngredientsController> linkService)
         {
-            _ingredientRepository = ingredientRepository;
-            _mapper = mapper;
+            _ingredientService = ingredientService;
             _linkService = linkService;
         }
 
     [HttpGet(Name = nameof(GetAllIngredients))]
 
-    public ActionResult GetAllIngredients(ApiVersion version, [FromQuery] QueryParameters queryParameters)
+    public async Task<ActionResult> GetAllIngredients(ApiVersion version, [FromQuery] QueryParameters queryParameters)
     {
-      List<IngredientEntity> ingredientItems = _ingredientRepository.GetAll(queryParameters).ToList();
-
-      var allItemCount = _ingredientRepository.Count();
+      var ingredientDtos = await _ingredientService.GetAllAsync(queryParameters);
+      var allItemCount = await _ingredientService.GetTotalIngredientCountAsync();
 
       var paginationMetadata = new
       {
@@ -50,7 +43,7 @@ namespace MyFood.Api.Controllers.v1
       Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata)); 
 
       var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
-      var toReturn = ingredientItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+      var toReturn = ingredientDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
 
       return Ok(new
       {
@@ -60,23 +53,14 @@ namespace MyFood.Api.Controllers.v1
     }
 
     [HttpPost(Name = nameof(AddIngredient))]
-    public ActionResult<IngredientDto> AddIngredient(ApiVersion version, [FromBody] IngredientCreateDto ingredientCreateDto)
+    public async Task<ActionResult<IngredientDto>> AddIngredient(ApiVersion version, [FromBody] IngredientCreateDto ingredientCreateDto)
     {
         if (ingredientCreateDto == null)
         {
             return BadRequest();
         }
 
-        var ingredientEntity = _mapper.Map<IngredientEntity>(ingredientCreateDto);
-
-        _ingredientRepository.Add(ingredientEntity);
-
-        if (!_ingredientRepository.Save())
-        {
-            throw new Exception("Igredient creation failed on save.");
-        }
-
-        var ingredientDto = _mapper.Map<IngredientDto>(ingredientEntity);
+        var ingredientDto = await _ingredientService.CreateAsync(ingredientCreateDto);
 
         return CreatedAtRoute(nameof(GetSingleIngredient), 
             new { version = version.ToString(), id = ingredientDto.Id }, 
@@ -86,37 +70,27 @@ namespace MyFood.Api.Controllers.v1
 
     [HttpGet]
     [Route("{id:int}", Name = nameof(GetSingleIngredient))]
-    public ActionResult GetSingleIngredient(ApiVersion version, int id)
+    public async Task<ActionResult> GetSingleIngredient(ApiVersion version, int id)
     {
-        var ingredientEntity = _ingredientRepository.GetSingle(id);
-        
-        if (ingredientEntity == null)
+        var ingredientDto = await _ingredientService.GetByIdAsync(id);
+
+        if (ingredientDto == null)
         {
             return NotFound();
         }
-        
-        var ingredientDto = _mapper.Map<IngredientDto>(ingredientEntity);
-        
+
         return Ok(_linkService.ExpandSingleFoodItem(ingredientDto, ingredientDto.Id, version));
     }
 
   
     [HttpDelete]
         [Route("{id:int}", Name = nameof(RemoveIngredient))]
-        public ActionResult RemoveIngredient(int id)
+        public async Task<ActionResult> RemoveIngredient(int id)
         {
-            IngredientEntity ingredientItem = _ingredientRepository.GetSingle(id);
-
-            if (ingredientItem == null)
+            var deleted = await _ingredientService.DeleteAsync(id);
+            if (!deleted)
             {
                 return NotFound();
-            }
-
-            _ingredientRepository.Delete(id);
-
-            if (!_ingredientRepository.Save())
-            {
-                throw new Exception("Deleting an ingredient failed on save.");
             }
 
             return NoContent();
@@ -125,29 +99,18 @@ namespace MyFood.Api.Controllers.v1
 
     [HttpPut]
     [Route("{id:int}", Name = nameof(UpdateIngredient))]
-    public ActionResult<IngredientDto> UpdateIngredient(ApiVersion version, int id, [FromBody] IngredientUpdateDto ingredientUpdateDto)
+    public async Task<ActionResult<IngredientDto>> UpdateIngredient(ApiVersion version, int id, [FromBody] IngredientUpdateDto ingredientUpdateDto)
     {
         if (ingredientUpdateDto == null)
         {
             return BadRequest();
         }
 
-        var existingIngredient = _ingredientRepository.GetSingle(id);
-        if (existingIngredient == null)
+        var resultDto = await _ingredientService.UpdateAsync(id, ingredientUpdateDto);
+        if (resultDto == null)
         {
             return NotFound();
         }
-
-        _mapper.Map(ingredientUpdateDto, existingIngredient);
-
-        _ingredientRepository.Update(id, existingIngredient);
-
-        if (!_ingredientRepository.Save())
-        {
-            throw new Exception("Ingredient update failed on save.");
-        }
-
-        var resultDto = _mapper.Map<IngredientDto>(existingIngredient);
 
         return Ok(_linkService.ExpandSingleFoodItem(resultDto, resultDto.Id, version));
     }

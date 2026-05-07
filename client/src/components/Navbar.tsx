@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, ChefHat } from 'lucide-react';
 
@@ -25,6 +25,12 @@ export const Navbar: React.FC = () => {
               <h1 className="text-2xl font-bold text-white">MyFood</h1>
               <p className="text-xs text-purple-300">Food Management</p>
             </div>
+          </div>
+
+          <div className="hidden md:flex items-center gap-2">
+            <NavItem to="/foods">Foods</NavItem>
+            <NavItem to="/foods/create">Create Food</NavItem>
+            <NavItem to="/ingredients">Ingredients</NavItem>
           </div>
 
           {/* User Info & Logout */}
@@ -56,4 +62,17 @@ export const Navbar: React.FC = () => {
     </nav>
   );
 };
+
+const NavItem: React.FC<{ to: string; children: React.ReactNode }> = ({ to, children }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) =>
+      `px-3 py-2 rounded-lg text-sm transition-colors ${
+        isActive ? 'bg-purple-500/30 text-white' : 'text-gray-300 hover:text-white hover:bg-white/10'
+      }`
+    }
+  >
+    {children}
+  </NavLink>
+);
 
