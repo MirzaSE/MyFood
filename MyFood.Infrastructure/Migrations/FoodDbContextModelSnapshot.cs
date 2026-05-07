@@ -17,7 +17,7 @@ namespace MyFood.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -235,12 +235,12 @@ namespace MyFood.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("Type")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
 
                     b.HasKey("Id");
 
@@ -255,13 +255,30 @@ namespace MyFood.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("FoodEntityId")
+                    b.Property<decimal>("CaloriesPerUnit")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Carbs")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Fat")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("FoodEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("Protein")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -326,8 +343,7 @@ namespace MyFood.Infrastructure.Migrations
                     b.HasOne("MyFood.Domain.Entities.FoodEntity", "FoodEntity")
                         .WithMany("Ingredients")
                         .HasForeignKey("FoodEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("FoodEntity");
                 });

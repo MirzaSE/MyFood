@@ -29,7 +29,7 @@ export const LoginPage: React.FC = () => {
     try {
       setError(null);
       await login(data.username, data.password);
-      navigate('/foods');
+      navigate('/ingredients');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     }
@@ -43,7 +43,7 @@ export const LoginPage: React.FC = () => {
         return;
       }
       await registerUser(data.username, data.email, data.password);
-      navigate('/foods');
+      navigate('/ingredients');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     }

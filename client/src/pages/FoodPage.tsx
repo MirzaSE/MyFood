@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, AlertCircle } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { FoodTable } from '../components/FoodTable';
@@ -7,6 +8,7 @@ import { foodService } from '../services/foodService';
 import type { Food, FoodCreateDto } from '../types';
 
 export const FoodPage: React.FC = () => {
+  const navigate = useNavigate();
   const [foods, setFoods] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,8 +35,7 @@ export const FoodPage: React.FC = () => {
   };
 
   const handleCreateClick = () => {
-    setSelectedFood(null);
-    setModalOpen(true);
+    navigate('/foods/create');
   };
 
   const handleEditClick = (food: Food) => {

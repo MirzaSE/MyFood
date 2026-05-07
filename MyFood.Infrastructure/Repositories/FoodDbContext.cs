@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyFood.Domain.Entities;
 
@@ -10,7 +10,7 @@ namespace MyFood.Infrastructure.Repositories
             : base(options)
         {
         }
-
+        
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
         public DbSet<IngredientEntity> Ingredients { get; set; } = null!; 
 
@@ -22,6 +22,7 @@ namespace MyFood.Infrastructure.Repositories
                 .HasMany(f => f.Ingredients)
                 .WithOne(i => i.FoodEntity)
                 .HasForeignKey(i => i.FoodEntityId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

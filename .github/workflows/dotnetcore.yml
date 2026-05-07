@@ -14,4 +14,4 @@ jobs:
       with:
         dotnet-version: '10.0.x'
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: dotnet build MyFood.sln --configuration Release

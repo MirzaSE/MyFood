@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using MyFood.Api.Services;
 using MyFood.Application;
 using MyFood.Infrastructure.Helpers;
@@ -11,11 +11,27 @@ namespace MyFood.Infrastructure
 {
     public class LinkService<T> : ILinkService<T>
     {
-        private readonly IUrlHelper _urlHelper;
+        private readonly LinkGenerator _linkGenerator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LinkService(IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor)
+        public LinkService(LinkGenerator linkGenerator, IHttpContextAccessor httpContextAccessor)
         {
-            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
+            _linkGenerator = linkGenerator;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        private string? LinkByRouteName(string routeName, object? values = null)
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext is null)
+            {
+                return null;
+            }
+
+            return _linkGenerator.GetUriByRouteValues(
+                httpContext,
+                routeName,
+                values is null ? null : new RouteValueDictionary(values));
         }
 
         public List<LinkDto> CreateLinksForCollection(QueryParameters queryParameters, int totalCount, ApiVersion version)
@@ -27,48 +43,48 @@ namespace MyFood.Infrastructure
             var getAllMethodName = GetMethod(methods, typeof(HttpGetAttribute), 0);
 
             // self 
-            links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
+            links.Add(new LinkDto(LinkByRouteName(getAllMethodName, new
             {
                 pagecount = queryParameters.PageCount,
                 page = queryParameters.Page,
                 orderby = queryParameters.OrderBy
-            }), "self", "GET"));
+            }) ?? string.Empty, "self", "GET"));
 
-            links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
+            links.Add(new LinkDto(LinkByRouteName(getAllMethodName, new
             {
                 pagecount = queryParameters.PageCount,
                 page = 1,
                 orderby = queryParameters.OrderBy
-            }), "first", "GET"));
+            }) ?? string.Empty, "first", "GET"));
 
-            links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
+            links.Add(new LinkDto(LinkByRouteName(getAllMethodName, new
             {
                 pagecount = queryParameters.PageCount,
                 page = queryParameters.GetTotalPages(totalCount),
                 orderby = queryParameters.OrderBy
-            }), "last", "GET"));
+            }) ?? string.Empty, "last", "GET"));
 
             if (queryParameters.HasNext(totalCount))
             {
-                links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
+                links.Add(new LinkDto(LinkByRouteName(getAllMethodName, new
                 {
                     pagecount = queryParameters.PageCount,
                     page = queryParameters.Page + 1,
                     orderby = queryParameters.OrderBy
-                }), "next", "GET"));
+                }) ?? string.Empty, "next", "GET"));
             }
 
             if (queryParameters.HasPrevious())
             {
-                links.Add(new LinkDto(_urlHelper.Link(getAllMethodName, new
+                links.Add(new LinkDto(LinkByRouteName(getAllMethodName, new
                 {
                     pagecount = queryParameters.PageCount,
                     page = queryParameters.Page - 1,
                     orderby = queryParameters.OrderBy
-                }), "previous", "GET"));
+                }) ?? string.Empty, "previous", "GET"));
             }
 
-            var posturl = _urlHelper.Link(GetMethod(methods, typeof(HttpPostAttribute)), new { version = version.ToString() });
+            var posturl = LinkByRouteName(GetMethod(methods, typeof(HttpPostAttribute)), new { version = version.ToString() }) ?? string.Empty;
 
             links.Add(
                new LinkDto(posturl,
@@ -80,11 +96,11 @@ namespace MyFood.Infrastructure
 
         public object ExpandSingleFoodItem(object resource, int identifier, ApiVersion version)
         {
-            var resourceToReturn = resource.ToDynamic() as IDictionary<string, object>;
+            var resourceToReturn = (IDictionary<string, object?>)resource.ToDynamic();
 
             var links = GetLinksForSingleItem(identifier, version);
 
-            resourceToReturn.Add("links", links);
+            resourceToReturn["links"] = links;
 
             return resourceToReturn;
         }
@@ -96,22 +112,22 @@ namespace MyFood.Infrastructure
             MethodInfo[] methods = myType.GetMethods();
             var links = new List<LinkDto>();
 
-            var getLink = _urlHelper.Link(GetMethod(methods, typeof(Microsoft.AspNetCore.Mvc.HttpGetAttribute), 1), new { version = version.ToString(), id = id });
+            var getLink = LinkByRouteName(GetMethod(methods, typeof(Microsoft.AspNetCore.Mvc.HttpGetAttribute), 1), new { version = version.ToString(), id = id }) ?? string.Empty;
             links.Add(new LinkDto(getLink, "self", "GET"));
 
-            var deleteLink = _urlHelper.Link(GetMethod(methods, typeof(Microsoft.AspNetCore.Mvc.HttpDeleteAttribute)), new { version = version.ToString(), id = id });
+            var deleteLink = LinkByRouteName(GetMethod(methods, typeof(Microsoft.AspNetCore.Mvc.HttpDeleteAttribute)), new { version = version.ToString(), id = id }) ?? string.Empty;
             links.Add(
               new LinkDto(deleteLink,
               "delete",
               "DELETE"));
 
-            var createLink = _urlHelper.Link(GetMethod(methods, typeof(HttpPostAttribute)), new { version = version.ToString() });
+            var createLink = LinkByRouteName(GetMethod(methods, typeof(HttpPostAttribute)), new { version = version.ToString() }) ?? string.Empty;
             links.Add(
               new LinkDto(createLink,
               "create_food",
               "POST"));
 
-            var updateLink = _urlHelper.Link(GetMethod(methods, typeof(Microsoft.AspNetCore.Mvc.HttpPutAttribute)), new { version = version.ToString(), id = id });
+            var updateLink = LinkByRouteName(GetMethod(methods, typeof(Microsoft.AspNetCore.Mvc.HttpPutAttribute)), new { version = version.ToString(), id = id }) ?? string.Empty;
             links.Add(
                new LinkDto(updateLink,
                "update_food",

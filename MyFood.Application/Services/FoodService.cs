@@ -45,6 +45,11 @@ namespace MyFood.Application.Services
             }
 
             var newFoodEntity = _foodRepository.GetSingle(foodEntity.Id);
+            if (newFoodEntity is null)
+            {
+                throw new InvalidOperationException("Could not load food after create.");
+            }
+
             return await Task.FromResult(_mapper.Map<FoodDto>(newFoodEntity));
         }
 
