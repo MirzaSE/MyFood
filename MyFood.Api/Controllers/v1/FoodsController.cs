@@ -32,6 +32,8 @@ namespace MyFood.Api.Controllers.v1
             _linkService = linkService;
         }
 
+        
+
        
         [HttpGet(Name = nameof(GetAllFoods))]
         public async Task<ActionResult> GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)

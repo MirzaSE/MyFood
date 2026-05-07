@@ -235,19 +235,23 @@ namespace MyFood.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("Type")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("Id");
 
                     b.ToTable("FoodItems");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
+=======
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
+>>>>>>> spring2026/assignment1/Haris.Suta/220302235
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -259,14 +263,23 @@ namespace MyFood.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+<<<<<<< HEAD
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+=======
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+>>>>>>> spring2026/assignment1/Haris.Suta/220302235
 
                     b.HasKey("Id");
 
                     b.HasIndex("FoodEntityId");
 
+<<<<<<< HEAD
                     b.ToTable("Ingredients");
                 });
 
@@ -324,15 +337,30 @@ namespace MyFood.Infrastructure.Migrations
             modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
                 {
                     b.HasOne("MyFood.Domain.Entities.FoodEntity", "FoodEntity")
+=======
+                    b.ToTable("IngredientItems");
+                });
+
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
+                {
+                    b.HasOne("MyFood.Application.Entities.FoodEntity", "Food")
+>>>>>>> spring2026/assignment1/Haris.Suta/220302235
                         .WithMany("Ingredients")
                         .HasForeignKey("FoodEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<< HEAD
                     b.Navigation("FoodEntity");
                 });
 
             modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>
+=======
+                    b.Navigation("Food");
+                });
+
+            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
+>>>>>>> spring2026/assignment1/Haris.Suta/220302235
                 {
                     b.Navigation("Ingredients");
                 });
