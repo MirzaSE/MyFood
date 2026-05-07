@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Api;
-using MyFood.Api.MappingProfiles;
 using MyFood.Api.Services;
 using MyFood.Application.Services;
 using MyFood.Domain.Entities;
@@ -18,6 +17,7 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
+using MyFood.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
