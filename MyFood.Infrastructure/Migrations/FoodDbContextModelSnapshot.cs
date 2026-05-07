@@ -247,11 +247,7 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("FoodItems");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
-=======
-            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
->>>>>>> spring2026/assignment1/Haris.Suta/220302235
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -263,24 +259,17 @@ namespace MyFood.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-<<<<<<< HEAD
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-=======
                         .HasMaxLength(260)
                         .HasColumnType("nvarchar(260)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
->>>>>>> spring2026/assignment1/Haris.Suta/220302235
 
                     b.HasKey("Id");
 
                     b.HasIndex("FoodEntityId");
 
-<<<<<<< HEAD
-                    b.ToTable("Ingredients");
+                    b.ToTable("IngredientItems");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -337,30 +326,15 @@ namespace MyFood.Infrastructure.Migrations
             modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
                 {
                     b.HasOne("MyFood.Domain.Entities.FoodEntity", "FoodEntity")
-=======
-                    b.ToTable("IngredientItems");
-                });
-
-            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
-                {
-                    b.HasOne("MyFood.Application.Entities.FoodEntity", "Food")
->>>>>>> spring2026/assignment1/Haris.Suta/220302235
                         .WithMany("Ingredients")
                         .HasForeignKey("FoodEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-<<<<<<< HEAD
                     b.Navigation("FoodEntity");
                 });
 
             modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>
-=======
-                    b.Navigation("Food");
-                });
-
-            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
->>>>>>> spring2026/assignment1/Haris.Suta/220302235
                 {
                     b.Navigation("Ingredients");
                 });

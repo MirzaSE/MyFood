@@ -12,8 +12,7 @@ namespace MyFood.Infrastructure.Repositories
         }
 
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
-<<<<<<< HEAD
-        public DbSet<IngredientEntity> Ingredients { get; set; } = null!; 
+        public DbSet<IngredientEntity> IngredientItems { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,9 +24,6 @@ namespace MyFood.Infrastructure.Repositories
                 .HasForeignKey(i => i.FoodEntityId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
-=======
-        public DbSet<IngredientEntity> IngredientItems{ get; set; } = null!;
->>>>>>> spring2026/assignment1/Haris.Suta/220302235
     }
     
 }

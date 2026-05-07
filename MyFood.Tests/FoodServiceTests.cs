@@ -55,7 +55,7 @@ public class FoodServiceTests
     [Fact]
     public async Task CreateFoodAsync_AddsAndReturnsDto()
     {
-        var createDto = new FoodCreateDto { Name = "Pear" };
+        var createDto = new FoodCreateDto { Name = "Pear", Type = "Fruit" };
         var entity = new FoodEntity { Id = 3, Name = "Pear" };
         var dto = new FoodDto { Id = 3, Name = "Pear" };
         _mapperMock.Setup(m => m.Map<FoodEntity>(createDto)).Returns(entity);
@@ -71,7 +71,7 @@ public class FoodServiceTests
     [Fact]
     public async Task UpdateFoodAsync_UpdatesAndReturnsDto()
     {
-        var updateDto = new FoodUpdateDto { Name = "Updated" };
+        var updateDto = new FoodUpdateDto { Name = "Updated", Type = "Fruit" };
         var entity = new FoodEntity { Id = 4, Name = "Old" };
         var updatedEntity = new FoodEntity { Id = 4, Name = "Updated" };
         var dto = new FoodDto { Id = 4, Name = "Updated" };
@@ -90,7 +90,7 @@ public class FoodServiceTests
     public async Task UpdateFoodAsync_ReturnsNull_WhenNotFound()
     {
         _repoMock.Setup(r => r.GetSingle(99)).Returns((FoodEntity)null);
-        var result = await _service.UpdateFoodAsync(99, new FoodUpdateDto());
+        var result = await _service.UpdateFoodAsync(99, new FoodUpdateDto { Name = "Any", Type = "Any" });
         Assert.Null(result);
     }
 
