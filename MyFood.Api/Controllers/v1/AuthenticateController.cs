@@ -12,13 +12,11 @@ using System.Text;
 public class AuthenticateController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> userManager;
-    private readonly RoleManager<IdentityRole> roleManager;
     private readonly IConfiguration _configuration;
 
-    public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    public AuthenticateController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
     {
         this.userManager = userManager;
-        this.roleManager = roleManager;
         _configuration = configuration;
     }
 
@@ -27,38 +25,18 @@ public class AuthenticateController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
         var user = await userManager.FindByNameAsync(model.Username);
-        if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+        if (user == null)
         {
-            var userRoles = await userManager.GetRolesAsync(user);
-
-            var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            });
+            return Unauthorized(new { message = "Invalid username." });
         }
-        return Unauthorized();
+
+        var passwordValid = await userManager.CheckPasswordAsync(user, model.Password);
+        if (!passwordValid)
+        {
+            return Unauthorized(new { message = "Invalid password." });
+        }
+
+        return Ok(await BuildAuthResponseAsync(user));
     }
 
     [HttpPost]
@@ -67,17 +45,59 @@ public class AuthenticateController : ControllerBase
     {
         var userExists = await userManager.FindByNameAsync(model.Username);
         if (userExists != null)
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User exists" });
+        {
+            return Conflict(new { message = "A user with this username already exists." });
+        }
 
         ApplicationUser user = new ApplicationUser()
-        {            
+        {
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = model.Username
+            UserName = model.Username,
+            Email = model.Email,
+            FullName = string.IsNullOrWhiteSpace(model.FullName) ? model.Username : model.FullName
         };
+
         var result = await userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User creation failed! Please check user details and try again." });
+        {
+            var errorMessage = string.Join(" ", result.Errors.Select(error => error.Description));
+            return BadRequest(new { message = errorMessage });
+        }
 
-        return Ok(new { message = "User created successfully!" });
+        return Ok(await BuildAuthResponseAsync(user));
+    }
+
+    private async Task<AuthResponseDto> BuildAuthResponseAsync(ApplicationUser user)
+    {
+        var userRoles = await userManager.GetRolesAsync(user);
+
+        var authClaims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
+
+        foreach (var userRole in userRoles)
+        {
+            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+        }
+
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!));
+
+        var token = new JwtSecurityToken(
+            issuer: _configuration["JWT:ValidIssuer"],
+            audience: _configuration["JWT:ValidAudience"],
+            expires: DateTime.UtcNow.AddHours(3),
+            claims: authClaims,
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+        );
+
+        return new AuthResponseDto
+        {
+            Token = new JwtSecurityTokenHandler().WriteToken(token),
+            Username = user.UserName ?? string.Empty,
+            Expiration = token.ValidTo
+        };
     }
 }

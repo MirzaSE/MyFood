@@ -1,17 +1,23 @@
 ﻿using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Repositories;
 
-namespace MyFood.Api.Services;
-
-public class SeedDataService : ISeedDataService
+namespace MyFood.Api.Services
 {
-    public void Initialize(FoodDbContext context)
+    public class SeedDataService : ISeedDataService
     {
-        context.FoodItems.Add(new FoodEntity() { Calories = 1000, Type = "Starter", Name = "Lasagne", Created = DateTime.Now });
-        context.FoodItems.Add(new FoodEntity() { Calories = 1100, Type = "Main", Name = "Hamburger", Created = DateTime.Now });
-        context.FoodItems.Add(new FoodEntity() { Calories = 1200, Type = "Dessert", Name = "Spaghetti", Created = DateTime.Now });
-        context.FoodItems.Add(new FoodEntity() { Calories = 1300, Type = "Starter", Name = "Pizza", Created = DateTime.Now });
+        public void Initialize(FoodDbContext context)
+        {
+            if (context.FoodItems.Any())
+            {
+                return;
+            }
 
-        context.SaveChanges();
+            context.FoodItems.Add(new FoodEntity() { Calories = 1000, Type = "Starter", Name = "Lasagne", Created = DateTime.Now });
+            context.FoodItems.Add(new FoodEntity() { Calories = 1100, Type = "Main", Name = "Hamburger", Created = DateTime.Now });
+            context.FoodItems.Add(new FoodEntity() { Calories = 1200, Type = "Dessert", Name = "Spaghetti", Created = DateTime.Now });
+            context.FoodItems.Add(new FoodEntity() { Calories = 1300, Type = "Starter", Name = "Pizza", Created = DateTime.Now });
+
+            context.SaveChanges();
+        }
     }
 }

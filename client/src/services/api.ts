@@ -24,7 +24,10 @@ const createApiClient = (): AxiosInstance => {
   client.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response?.status === 401) {
+      const requestUrl = error.config?.url ?? '';
+      const isAuthRequest = requestUrl.includes('/authenticate/login') || requestUrl.includes('/authenticate/register');
+
+      if (error.response?.status === 401 && !isAuthRequest) {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
         window.location.href = '/login';
@@ -37,5 +40,27 @@ const createApiClient = (): AxiosInstance => {
 };
 
 export const apiClient = createApiClient();
+
+export const getApiErrorMessage = (error: unknown, fallbackMessage: string): string => {
+  if (axios.isAxiosError(error)) {
+    const responseData = error.response?.data;
+
+    if (typeof responseData?.message === 'string' && responseData.message.length > 0) {
+      return responseData.message;
+    }
+
+    if (responseData?.errors && typeof responseData.errors === 'object') {
+      const validationMessages = Object.values(responseData.errors)
+        .flatMap((value) => Array.isArray(value) ? value : [])
+        .filter((value): value is string => typeof value === 'string' && value.length > 0);
+
+      if (validationMessages.length > 0) {
+        return validationMessages[0];
+      }
+    }
+  }
+
+  return fallbackMessage;
+};
 
 export default apiClient;
