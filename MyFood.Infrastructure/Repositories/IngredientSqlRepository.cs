@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MyFood.Application.Services;
 using MyFood.Domain.Entities;
 
 namespace MyFood.Infrastructure.Repositories
@@ -12,42 +13,40 @@ namespace MyFood.Infrastructure.Repositories
             _context = context;
         }
 
-        public void AddIngredient(IngredientEntity ingredient)
+        public IQueryable<IngredientEntity> GetAll()
+        {
+            return _context.Ingredients.AsNoTracking();
+        }
+
+        public IngredientEntity? GetById(int id)
+        {
+            return _context.Ingredients.FirstOrDefault(i => i.Id == id);
+        }
+
+        public IngredientEntity? GetByName(string name)
+        {
+            return _context.Ingredients
+                .FirstOrDefault(i => i.Name.ToLower() == name.ToLower());
+        }
+
+        public void Add(IngredientEntity ingredient)
         {
             _context.Ingredients.Add(ingredient);
         }
 
-        public IEnumerable<IngredientEntity> GetAllIngredients()
-        {
-            return _context.Ingredients
-                .Include(i => i.FoodEntity)
-                .ToList();
-        }
-
-        public IngredientEntity? GetIngredientById(int id)
-        {
-            return _context.Ingredients
-                .Include(i => i.FoodEntity)
-                .FirstOrDefault(i => i.Id == id);
-        }
-
-        public void UpdateIngredient(IngredientEntity ingredient)
+        public void Update(IngredientEntity ingredient)
         {
             _context.Ingredients.Update(ingredient);
         }
 
-        public void DeleteIngredient(int id)
+        public void Delete(IngredientEntity ingredient)
         {
-            var ingredient = _context.Ingredients.Find(id);
-            if (ingredient != null)
-            {
-                _context.Ingredients.Remove(ingredient);
-            }
+            _context.Ingredients.Remove(ingredient);
         }
 
         public bool Save()
         {
-            return (_context.SaveChanges() >= 0);
+            return _context.SaveChanges() >= 0;
         }
     }
 }
