@@ -62,7 +62,7 @@ namespace MyFood.Infrastructure.Repositories
 
         public bool Save()
         {
-            return (_foodDbContext.SaveChanges() >= 0);
+            return _foodDbContext.SaveChanges() > 0;
         }
 
         public ICollection<FoodEntity> GetRandomMeal()

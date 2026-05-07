@@ -32,6 +32,7 @@ export interface RegisterRequest {
 export interface AuthResponse {
   token: string;
   username: string;
+  expiration: string;
 }
 
 export interface AuthContextType {
