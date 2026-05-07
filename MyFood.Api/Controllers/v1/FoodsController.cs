@@ -32,6 +32,8 @@ namespace MyFood.Api.Controllers.v1
             _linkService = linkService;
         }
 
+        
+
        
         [HttpGet(Name = nameof(GetAllFoods))]
         public async Task<ActionResult> GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
@@ -111,7 +113,12 @@ namespace MyFood.Api.Controllers.v1
         {
             if (foodCreateDto == null)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Food payload is required." });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Validation failed.", errors = ModelState });
             }
 
             var foodDto = await _foodService.CreateFoodAsync(foodCreateDto);
@@ -171,7 +178,17 @@ namespace MyFood.Api.Controllers.v1
         {
             if (foodUpdateDto == null)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Food payload is required." });
+            }
+
+            if (id < 0)
+            {
+                return BadRequest(new { message = "ID must be non-negative." });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Validation failed.", errors = ModelState });
             }
 
             var updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);

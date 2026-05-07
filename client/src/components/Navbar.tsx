@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, ChefHat } from 'lucide-react';
 
@@ -27,21 +27,34 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
+          <div className="hidden md:flex items-center gap-2">
+            <NavItem to="/foods">Foods</NavItem>
+            <NavItem to="/foods/create">Create Food</NavItem>
+            <NavItem to="/ingredients">Ingredients</NavItem>
+          </div>
+
           {/* User Info & Logout */}
           <div className="flex items-center space-x-6">
-            <div className="hidden sm:block">
-              <p className="text-sm text-gray-300">Welcome back</p>
-              <p className="text-lg font-semibold text-white">{username}</p>
+            <div className="hidden sm:flex flex-col items-end">
+              <p className="text-sm text-gray-300 mb-4">
+                Welcome back, <span className="font-semibold text-white">{username}</span>
+              </p>
+              <button
+                onClick={handleLogout}
+                className="mt-2 flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
+              >
+                <LogOut size={18} />
+                <span className="font-medium">Logout</span>
+              </button>
             </div>
 
-            <div className="w-px h-8 bg-white/10"></div>
-
+            {/* Mobile: keep just the button */}
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
+              className="sm:hidden flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
             >
               <LogOut size={18} />
-              <span className="hidden sm:inline font-medium">Logout</span>
+              <span className="font-medium">Logout</span>
             </button>
           </div>
         </div>
@@ -49,4 +62,17 @@ export const Navbar: React.FC = () => {
     </nav>
   );
 };
+
+const NavItem: React.FC<{ to: string; children: React.ReactNode }> = ({ to, children }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) =>
+      `px-3 py-2 rounded-lg text-sm transition-colors ${
+        isActive ? 'bg-purple-500/30 text-white' : 'text-gray-300 hover:text-white hover:bg-white/10'
+      }`
+    }
+  >
+    {children}
+  </NavLink>
+);
 

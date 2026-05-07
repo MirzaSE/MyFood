@@ -1,13 +1,18 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
-import type { Food, FoodCreateDto } from '../types';
+import { FoodIngredientsPicker } from './FoodIngredientsPicker';
+import type { Food, FoodCreateDto, Ingredient, SelectedIngredient } from '../types';
 
 interface FoodModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: FoodCreateDto) => Promise<void>;
+  onSubmit: (data: FoodCreateDto, ingredients: SelectedIngredient[]) => Promise<void>;
   initialData?: Food | null;
+  availableIngredients: Ingredient[];
+  selectedIngredients: SelectedIngredient[];
+  onSelectedIngredientsChange: (items: SelectedIngredient[]) => void;
+  isIngredientsLoading?: boolean;
   isLoading?: boolean;
 }
 
@@ -16,6 +21,10 @@ export const FoodModal: React.FC<FoodModalProps> = ({
   onClose,
   onSubmit,
   initialData,
+  availableIngredients,
+  selectedIngredients,
+  onSelectedIngredientsChange,
+  isIngredientsLoading = false,
   isLoading = false,
 }) => {
   const {
@@ -31,6 +40,16 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     } : undefined,
   });
 
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    reset({
+      name: initialData?.name ?? '',
+      type: initialData?.type ?? '',
+      calories: initialData?.calories,
+    });
+  }, [initialData, isOpen, reset]);
+
   const handleClose = () => {
     reset();
     onClose();
@@ -38,7 +57,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
 
   const onSubmitForm = async (data: FoodCreateDto) => {
     try {
-      await onSubmit(data);
+      await onSubmit(data, selectedIngredients);
       reset();
     } catch (error) {
       console.error('Form submission error:', error);
@@ -49,7 +68,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-3xl w-full overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center">
           <h2 className="text-xl font-bold text-white">
@@ -70,7 +89,11 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Name
             </label>
             <input
-              {...register('name', { required: 'Name is required' })}
+              {...register('name', {
+                required: 'Name is required',
+                setValueAs: (v) => (typeof v === 'string' ? v.trim() : v),
+                validate: (v) => (v?.trim()?.length ? true : 'Name is required'),
+              })}
               type="text"
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 text-base transition-all"
               placeholder="e.g., Grilled Chicken"
@@ -84,7 +107,11 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Type
             </label>
             <input
-              {...register('type', { required: 'Type is required' })}
+              {...register('type', {
+                required: 'Type is required',
+                setValueAs: (v) => (typeof v === 'string' ? v.trim() : v),
+                validate: (v) => (v?.trim()?.length ? true : 'Type is required'),
+              })}
               type="text"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
               placeholder="e.g., Protein, Vegetable"
@@ -101,7 +128,11 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               {...register('calories', {
                 required: 'Calories is required',
                 valueAsNumber: true,
-                min: { value: 0, message: 'Calories must be positive' },
+                validate: (v) => {
+                  if (!Number.isFinite(v)) return 'Calories is required';
+                  if (v < 1) return 'Calories must be greater than 0';
+                  return true;
+                },
               })}
               type="number"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
@@ -109,6 +140,18 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               disabled={isLoading}
             />
             {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
+          </div>
+
+          <div className="pt-6">
+            {isIngredientsLoading ? (
+              <p className="text-gray-300 text-sm">Loading ingredients...</p>
+            ) : (
+              <FoodIngredientsPicker
+                availableIngredients={availableIngredients}
+                selectedIngredients={selectedIngredients}
+                onChange={onSelectedIngredientsChange}
+              />
+            )}
           </div>
 
           <div className="flex space-x-3 pt-6">
