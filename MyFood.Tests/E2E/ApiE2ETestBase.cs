@@ -1,6 +1,12 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using MyFood.Api;
+using MyFood.Infrastructure.Repositories;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 
 namespace MyFood.Tests.E2E
@@ -11,48 +17,90 @@ namespace MyFood.Tests.E2E
         protected HttpClient Client { get; private set; } = null!;
         protected string? AuthToken { get; set; }
 
-        public async Task InitializeAsync()
+        public Task InitializeAsync()
         {
-            Factory = new WebApplicationFactory<Program>();
+            var databaseName = $"MyFoodE2ETestDb_{Guid.NewGuid()}";
+
+            Factory = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.UseEnvironment("Testing");
+
+                    builder.ConfigureTestServices(services =>
+                    {
+                        var descriptorsToRemove = services
+                            .Where(d =>
+                                d.ServiceType == typeof(DbContextOptions<FoodDbContext>) ||
+                                d.ServiceType == typeof(DbContextOptions) ||
+                                (d.ServiceType.FullName != null &&
+                                 d.ServiceType.FullName.Contains("IDbContextOptionsConfiguration")))
+                            .ToList();
+
+                        foreach (var descriptor in descriptorsToRemove)
+                        {
+                            services.Remove(descriptor);
+                        }
+
+                        services.AddDbContext<FoodDbContext>(options =>
+                        {
+                            options.UseInMemoryDatabase(databaseName);
+                        });
+                    });
+                });
+
             Client = Factory.CreateClient();
-            
-            // Use localhost with port 8080 as configured in Program.cs
-            Client.BaseAddress = new Uri("http://localhost:8080");
+            Client.BaseAddress = new Uri("http://localhost");
+
+            return Task.CompletedTask;
         }
 
-        public async Task DisposeAsync()
+        public Task DisposeAsync()
         {
             Client?.Dispose();
             Factory?.Dispose();
+
+            return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Helper method to register a new test user and obtain JWT token
-        /// </summary>
-        protected async Task<string> RegisterAndLogin(string username = "testuser", string password = "Test@123")
+        protected async Task<string> RegisterAndLogin(
+            string username = "testuser",
+            string password = "Test@123")
         {
-            // Register
-            var registerModel = new { username, password };
+            var uniqueUsername = $"{username}_{Guid.NewGuid():N}";
+
+            var registerModel = new
+            {
+                username = uniqueUsername,
+                password
+            };
+
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
-                new MediaTypeHeaderValue("application/json"));
+                Encoding.UTF8,
+                "application/json");
 
             await Client.PostAsync("/api/authenticate/register", registerContent);
 
-            // Login
-            var loginModel = new { username, password };
+            var loginModel = new
+            {
+                username = uniqueUsername,
+                password
+            };
+
             var loginContent = new StringContent(
                 JsonSerializer.Serialize(loginModel),
-                new MediaTypeHeaderValue("application/json"));
+                Encoding.UTF8,
+                "application/json");
 
             var loginResponse = await Client.PostAsync("/api/authenticate/login", loginContent);
-            
+
             if (loginResponse.IsSuccessStatusCode)
             {
                 var responseBody = await loginResponse.Content.ReadAsStringAsync();
+
                 using var jsonDoc = JsonDocument.Parse(responseBody);
                 var root = jsonDoc.RootElement;
-                
+
                 if (root.TryGetProperty("token", out var tokenElement))
                 {
                     return tokenElement.GetString() ?? string.Empty;
@@ -62,18 +110,12 @@ namespace MyFood.Tests.E2E
             throw new Exception("Failed to obtain authentication token");
         }
 
-        /// <summary>
-        /// Sets the Authorization header with Bearer token
-        /// </summary>
         protected void SetAuthorizationToken(string token)
         {
             AuthToken = token;
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        /// <summary>
-        /// Clears the Authorization header
-        /// </summary>
         protected void ClearAuthorizationToken()
         {
             AuthToken = null;
