@@ -31,6 +31,16 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     } : undefined,
   });
 
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    reset({
+      name: initialData?.name ?? '',
+      type: initialData?.type ?? '',
+      calories: initialData?.calories,
+    });
+  }, [initialData, isOpen, reset]);
+
   const handleClose = () => {
     reset();
     onClose();
@@ -70,7 +80,11 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Name
             </label>
             <input
-              {...register('name', { required: 'Name is required' })}
+              {...register('name', {
+                required: 'Name is required',
+                setValueAs: (v) => (typeof v === 'string' ? v.trim() : v),
+                validate: (v) => (v?.trim()?.length ? true : 'Name is required'),
+              })}
               type="text"
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 text-base transition-all"
               placeholder="e.g., Grilled Chicken"
@@ -84,7 +98,11 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Type
             </label>
             <input
-              {...register('type', { required: 'Type is required' })}
+              {...register('type', {
+                required: 'Type is required',
+                setValueAs: (v) => (typeof v === 'string' ? v.trim() : v),
+                validate: (v) => (v?.trim()?.length ? true : 'Type is required'),
+              })}
               type="text"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
               placeholder="e.g., Protein, Vegetable"
@@ -101,7 +119,11 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               {...register('calories', {
                 required: 'Calories is required',
                 valueAsNumber: true,
-                min: { value: 0, message: 'Calories must be positive' },
+                validate: (v) => {
+                  if (!Number.isFinite(v)) return 'Calories is required';
+                  if (v < 1) return 'Calories must be greater than 0';
+                  return true;
+                },
               })}
               type="number"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
