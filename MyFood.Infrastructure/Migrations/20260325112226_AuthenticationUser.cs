@@ -50,25 +50,7 @@ namespace MyFood.Infrastructure.Migrations
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Ingredients",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    FoodEntityId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ingredients", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ingredients_FoodItems_FoodEntityId",
-                        column: x => x.FoodEntityId,
-                        principalTable: "FoodItems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
@@ -215,10 +197,7 @@ namespace MyFood.Infrastructure.Migrations
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Ingredients_FoodEntityId",
-                table: "Ingredients",
-                column: "FoodEntityId");
+            
         }
 
         /// <inheritdoc />
