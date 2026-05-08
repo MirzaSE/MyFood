@@ -7,5 +7,6 @@
         public string? Type { get; set; }
         public int Calories { get; set; }
         public DateTime Created { get; set; }
+        public ICollection<IngredientDto> Ingredients {get; set;} = new List<IngredientDto>();
     }
 }
