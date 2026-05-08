@@ -1,15 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-public class FoodUpdateDto
+namespace MyFood.Application.Dtos
 {
-    [Required]
-    public string? Name { get; set; }
+    public class FoodUpdateDto
+    {
+        [Required]
+        public string? Name { get; set; }
 
-    [Required]
-    public string? Type { get; set; }
+        [Required]
+        public string? Type { get; set; }
 
-    [Range(0, 5000)]
-    public int Calories { get; set; }
+        [Range(0, 5000)]
+        public int Calories { get; set; }
 
-    public DateTime Created { get; set; }
+        public DateTime Created { get; set; }
+    }
 }

@@ -174,6 +174,19 @@ namespace MyFood.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("EmailVerificationToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailVerificationTokenExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -235,8 +248,8 @@ namespace MyFood.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
@@ -255,17 +268,19 @@ namespace MyFood.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("FoodEntityId")
+                    b.Property<int>("FoodId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FoodEntityId");
+                    b.HasIndex("FoodId");
 
                     b.ToTable("Ingredients");
                 });
@@ -323,13 +338,13 @@ namespace MyFood.Infrastructure.Migrations
 
             modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
                 {
-                    b.HasOne("MyFood.Domain.Entities.FoodEntity", "FoodEntity")
+                    b.HasOne("MyFood.Domain.Entities.FoodEntity", "foodItem")
                         .WithMany("Ingredients")
-                        .HasForeignKey("FoodEntityId")
+                        .HasForeignKey("FoodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("FoodEntity");
+                    b.Navigation("foodItem");
                 });
 
             modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>

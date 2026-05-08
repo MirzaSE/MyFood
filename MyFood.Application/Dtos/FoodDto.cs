@@ -1,4 +1,4 @@
-﻿namespace MyFood.Application.Dtos
+namespace MyFood.Application.Dtos
 {
     public class FoodDto
     {
@@ -7,5 +7,8 @@
         public string? Type { get; set; }
         public int Calories { get; set; }
         public DateTime Created { get; set; }
+
+        // Add this
+        public List<IngredientDto>? Ingredients { get; set; } = new List<IngredientDto>();
     }
 }
