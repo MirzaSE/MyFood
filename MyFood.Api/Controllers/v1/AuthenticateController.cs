@@ -13,7 +13,7 @@ namespace MyFood.Api.Controllers
     public class AuthenticateController : ControllerBase
     {
         [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLoginDto userLogin)
+        public IActionResult Login([FromBody] LoginDto userLogin)
         {
             // Validate user credentials (this is just an example, use a proper validation method)
             if (userLogin.Username == "test" && userLogin.Password == "password")
