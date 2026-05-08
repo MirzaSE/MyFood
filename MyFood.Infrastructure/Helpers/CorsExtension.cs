@@ -14,7 +14,8 @@ namespace MyFood.Infrastructure.Helpers
                         builder
                             .AllowAnyOrigin()
                             .AllowAnyHeader()
-                            .AllowAnyMethod();
+                            .AllowAnyMethod()
+                            .WithExposedHeaders("X-Pagination");
                     });
             });
         }
