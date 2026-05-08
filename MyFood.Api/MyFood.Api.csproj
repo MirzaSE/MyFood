@@ -4,20 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <!-- Run cleanup AFTER RazorComponentGenerate (which injects wildcard items) but before CSC.
-         No BeforeTargets on the target below — CoreCompileDependsOn guarantees correct ordering. -->
-    <CoreCompileDependsOn>$(CoreCompileDependsOn);RemoveInvalidLiteralWildcards</CoreCompileDependsOn>
   </PropertyGroup>
-
-  <Target Name="RemoveInvalidLiteralWildcards">
-    <ItemGroup>
-      <Compile Remove="@(Compile)" Condition="'%(Compile.Identity)' == '**/*.cs'    or '%(Compile.Identity)' == '**\*.cs'
-                                           or '%(Compile.Identity)' == '**/*.razor'  or '%(Compile.Identity)' == '**\*.razor'
-                                           or '%(Compile.Identity)' == '**/*.cshtml' or '%(Compile.Identity)' == '**\*.cshtml'" />
-      <EmbeddedResource Remove="@(EmbeddedResource)" Condition="'%(EmbeddedResource.Identity)' == '**/*.resx' or '%(EmbeddedResource.Identity)' == '**\*.resx'" />
-    </ItemGroup>
-  </Target>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
