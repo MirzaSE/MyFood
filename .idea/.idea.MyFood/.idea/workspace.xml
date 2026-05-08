@@ -6,23 +6,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ebf8b86-e375-4155-8ce0-a985422d18bc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.MyFood/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.MyFood/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.MyFood/.idea/indexLayout.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.MyFood/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MyFood.Application/Dtos/Auth/LoginDto.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MyFood.Application/Dtos/Auth/RegisterUserDto.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MyFood.Domain/Entities/ApplicationUser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MyFood/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MyFood/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Api/Controllers/v1/AuthController.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/MyFood.Api/Controllers/v1/AuthenticateController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Api/Controllers/v1/AuthenticateController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyFood.Api/Controllers/v1/FoodsController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Api/Controllers/v1/FoodsController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyFood.Api/MyFood.Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Api/MyFood.Api.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MyFood.Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyFood.Api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Api/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyFood.Application/MyFood.Application.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Application/MyFood.Application.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyFood.Domain/MyFood.Domain.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Domain/MyFood.Domain.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Application/Dtos/Auth/LoginDto.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Application/Dtos/Auth/RegisterUserDto.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Application/Services/AuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Application/Services/AuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyFood.Application/Services/IAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Application/Services/IAuthService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MyFood.Infrastructure/Migrations/FoodDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Infrastructure/Migrations/FoodDbContextModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyFood.Infrastructure/MyFood.Infrastructure.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Infrastructure/MyFood.Infrastructure.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyFood.Infrastructure/Repositories/FoodDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MyFood.Infrastructure/Repositories/FoodDbContext.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +25,11 @@
     <option name="firstShow" value="false" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="spring2026/assignment3/ajsa.jusic/230302171" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -64,29 +61,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.MyFood.Api.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;spring2026/assignment2/ajsa.jusic/230302171&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.MyFood.Api.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "#38 on spring2026/assignment3/ajsa.jusic/230302171",
+    "ignore.virus.scanning.warn.message": "true",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;sqlserver&quot;,
-      &quot;postgresql&quot;,
-      &quot;sqlserver.localdb&quot;,
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlserver",
+      "postgresql",
+      "sqlserver.localdb",
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Launch Settings Profile.MyFood.Api">
     <configuration name="MyFood.Api" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/MyFood.Api/MyFood.Api.csproj" />
@@ -136,6 +133,7 @@
       <workItem from="1774455232297" duration="5026000" />
       <workItem from="1774460328446" duration="3460000" />
       <workItem from="1774466219073" duration="6171000" />
+      <workItem from="1775057319826" duration="6196000" />
     </task>
     <task id="LOCAL-00001" summary="Add IngredientEntity Dto">
       <option name="closed" value="true" />
