@@ -2,82 +2,50 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
-using MyFood.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-[Route("api/[controller]")]
-[ApiController]
-public class AuthenticateController : ControllerBase
+namespace MyFood.Api.Controllers
 {
-    private readonly UserManager<ApplicationUser> userManager;
-    private readonly RoleManager<IdentityRole> roleManager;
-    private readonly IConfiguration _configuration;
-
-    public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthenticateController : ControllerBase
     {
-        this.userManager = userManager;
-        this.roleManager = roleManager;
-        _configuration = configuration;
-    }
-
-    [HttpPost]
-    [Route("login")]
-    public async Task<IActionResult> Login([FromBody] LoginDto model)
-    {
-        var user = await userManager.FindByNameAsync(model.Username);
-        if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginDto userLogin)
         {
-            var userRoles = await userManager.GetRolesAsync(user);
-
-            var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-            foreach (var userRole in userRoles)
+            // Validate user credentials (this is just an example, use a proper validation method)
+            if (userLogin.Username == "test" && userLogin.Password == "password")
             {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                var token = GenerateJwtToken(userLogin.Username);
+                return Ok(new { Token = token });
             }
-
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            });
+            return Unauthorized();
         }
-        return Unauthorized();
+
+        private string GenerateJwtToken(string username)
+        {
+            var claims = new[]
+            { 
+                new Claim(JwtRegisteredClaimNames.UniqueName, username),
+                // Add more claims if needed
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("C23C21793C3C7B3AB67DCEB614FE8C7B3AB67DCEB614FE8"));  // TODO Get from appsettings
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            // TODO Get from appsettings
+            var token = new JwtSecurityToken(
+                issuer: "myfood.domain.com",
+                audience: "myfood.domain.com",
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(2),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
 
-    [HttpPost]
-    [Route("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
-    {
-        var userExists = await userManager.FindByNameAsync(model.Username);
-        if (userExists != null)
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User exists" });
-
-        ApplicationUser user = new ApplicationUser()
-        {            
-            SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = model.Username
-        };
-        var result = await userManager.CreateAsync(user, model.Password);
-        if (!result.Succeeded)
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User creation failed! Please check user details and try again." });
-
-        return Ok(new { message = "User created successfully!" });
-    }
 }

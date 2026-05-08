@@ -24,7 +24,8 @@ const createApiClient = (): AxiosInstance => {
   client.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response?.status === 401) {
+      const isAuthRoute = error.config?.url?.includes('/authenticate');
+      if (error.response?.status === 401 && !isAuthRoute) {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
         window.location.href = '/login';

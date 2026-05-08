@@ -38,10 +38,6 @@ export const LoginPage: React.FC = () => {
   const handleRegister = async (data: RegisterFormData) => {
     try {
       setError(null);
-      if (data.password !== data.confirmPassword) {
-        setError('Passwords do not match');
-        return;
-      }
       await registerUser(data.username, data.email, data.password);
       navigate('/foods');
     } catch (err: any) {
@@ -235,6 +231,7 @@ export const LoginPage: React.FC = () => {
                     <input
                       {...registerForm.register('confirmPassword', {
                         required: 'Please confirm your password',
+                        validate: (value) => value === registerForm.watch('password') || 'Passwords do not match',
                       })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"

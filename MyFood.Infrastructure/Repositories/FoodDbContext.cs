@@ -6,8 +6,7 @@ namespace MyFood.Infrastructure.Repositories
 {
     public class FoodDbContext : IdentityDbContext<ApplicationUser>
     {
-        public FoodDbContext(DbContextOptions<FoodDbContext> options)
-            : base(options)
+        public FoodDbContext(DbContextOptions<FoodDbContext> options) : base(options)
         {
         }
 
