@@ -4,6 +4,7 @@ import { Navbar } from '../components/Navbar';
 import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
 import { foodService } from '../services/foodService';
+import { getApiErrorMessage } from '../services/apiError';
 import type { Food, FoodCreateDto } from '../types';
 
 export const FoodPage: React.FC = () => {
@@ -26,7 +27,7 @@ export const FoodPage: React.FC = () => {
       const data = await foodService.getAllFoods();
       setFoods(data);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load foods');
+      setError(getApiErrorMessage(err, 'Failed to load foods'));
     } finally {
       setIsLoading(false);
     }
@@ -50,17 +51,17 @@ export const FoodPage: React.FC = () => {
       if (selectedFood) {
         // Update existing food
         const updatedFood = await foodService.updateFood(selectedFood.id, data);
-        setFoods(foods.map(f => f.id === selectedFood.id ? updatedFood : f));
+        setFoods(currentFoods => currentFoods.map(f => (f.id === selectedFood.id ? updatedFood : f)));
       } else {
         // Create new food
         const newFood = await foodService.createFood(data);
-        setFoods([...foods, newFood]);
+        setFoods(currentFoods => [...currentFoods, newFood]);
       }
 
       setModalOpen(false);
       setSelectedFood(null);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to save food');
+      setError(getApiErrorMessage(err, 'Failed to save food'));
     } finally {
       setIsSubmitting(false);
     }
@@ -70,9 +71,9 @@ export const FoodPage: React.FC = () => {
     try {
       setError(null);
       await foodService.deleteFood(id);
-      setFoods(foods.filter(f => f.id !== id));
+      setFoods(currentFoods => currentFoods.filter(f => f.id !== id));
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete food');
+      setError(getApiErrorMessage(err, 'Failed to delete food'));
       throw err;
     }
   };
