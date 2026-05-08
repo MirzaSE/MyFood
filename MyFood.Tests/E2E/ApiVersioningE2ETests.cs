@@ -28,6 +28,10 @@ namespace MyFood.Tests.E2E
         [Fact]
         public async Task V2_Foods_Endpoint_ReturnsVersionString()
         {
+            // Arrange
+            var token = await RegisterAndLogin("versionuser4", "Test@123");
+            SetAuthorizationToken(token);
+
             // Act
             var response = await Client.GetAsync("/api/v2/foods");
 

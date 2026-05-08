@@ -2,8 +2,12 @@ import apiClient from './api';
 import type { Food, FoodCreateDto, FoodUpdateDto } from '../types';
 
 export const foodService = {
-  async getAllFoods(): Promise<Food[]> {
-    const response = await apiClient.get('/v1/foods');
+  async getAllFoods(query?: string): Promise<Food[]> {
+    const params: Record<string, string> = {};
+    if (query && query.trim()) {
+      params['query'] = query.trim();
+    }
+    const response = await apiClient.get('/v1/foods', { params });
     return response.data.value;
   },
 

@@ -32,6 +32,7 @@ export interface RegisterRequest {
 export interface AuthResponse {
   token: string;
   username: string;
+  message?: string;
 }
 
 export interface AuthContextType {
@@ -42,3 +43,5 @@ export interface AuthContextType {
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
+
+export * from './ingredient';

@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using MyFood.Api;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -13,7 +15,25 @@ namespace MyFood.Tests.E2E
 
         public async Task InitializeAsync()
         {
-            Factory = new WebApplicationFactory<Program>();
+            Factory = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.UseEnvironment("Testing");
+
+                    builder.ConfigureAppConfiguration((_, config) =>
+                    {
+                        config.Sources.Clear();
+                        config.AddInMemoryCollection(new Dictionary<string, string?>
+                        {
+                            ["UseInMemoryDatabase"] = "true",
+                            ["ConnectionStrings:DefaultConnection"] = "DataSource=MyFoodTests",
+                            ["JWT:ValidAudience"] = "http://localhost:3000",
+                            ["JWT:ValidIssuer"] = "http://localhost:7124",
+                            ["JWT:Secret"] = "By777YM000OLlMQG6VVVp1OH7XzqvUC5dcGt3SNM"
+                        });
+                    });
+                });
+
             Client = Factory.CreateClient();
             
             // Use localhost with port 8080 as configured in Program.cs
@@ -32,7 +52,7 @@ namespace MyFood.Tests.E2E
         protected async Task<string> RegisterAndLogin(string username = "testuser", string password = "Test@123")
         {
             // Register
-            var registerModel = new { username, password };
+            var registerModel = new { username, email = $"{username}@example.com", password };
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
                 new MediaTypeHeaderValue("application/json"));
