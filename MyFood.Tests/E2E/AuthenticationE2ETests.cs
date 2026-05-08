@@ -10,10 +10,11 @@ namespace MyFood.Tests.E2E
         [Fact]
         public async Task Register_WithValidCredentials_ReturnsOk()
         {
-            // Arrange
+            var username = $"test_{Guid.NewGuid():N}";
+
             var model = new
             {
-                username = "test"+ Guid.NewGuid().ToString("N").Substring(0, 8), // Ensure unique username
+                username,
                 password = "SecurePass@123"
             };
 
@@ -22,117 +23,133 @@ namespace MyFood.Tests.E2E
                 Encoding.UTF8,
                 "application/json");
 
-            // Act
             var response = await Client.PostAsync("/api/authenticate/register", content);
-
-            // Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var responseBody = await response.Content.ReadAsStringAsync();
-            Assert.Contains("successfully", responseBody, StringComparison.OrdinalIgnoreCase);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            using var jsonDoc = JsonDocument.Parse(responseBody);
+            var root = jsonDoc.RootElement;
+
+            Assert.True(root.TryGetProperty("token", out var tokenElement));
+            Assert.True(root.TryGetProperty("expiration", out _));
+            Assert.True(root.TryGetProperty("username", out var usernameElement));
+
+            Assert.NotEmpty(tokenElement.GetString() ?? string.Empty);
+            Assert.Equal(username, usernameElement.GetString());
         }
 
         [Fact]
         public async Task Register_WithDuplicateUsername_ReturnsBadRequest()
         {
-            // Arrange
-            var username = "duplicateuser";
+            var username = $"duplicateuser_{Guid.NewGuid():N}";
             var password = "Test@123";
-            
+
             var model = new { username, password };
-            var content = new StringContent(
+
+            var firstContent = new StringContent(
                 JsonSerializer.Serialize(model),
                 Encoding.UTF8,
                 "application/json");
 
-            // Act - Register first time
-            await Client.PostAsync("/api/authenticate/register", content);
+            var firstResponse = await Client.PostAsync("/api/authenticate/register", firstContent);
 
-            // Act - Register again with same username
-            content = new StringContent(
+            var secondContent = new StringContent(
                 JsonSerializer.Serialize(model),
                 Encoding.UTF8,
                 "application/json");
-            var response = await Client.PostAsync("/api/authenticate/register", content);
 
-            // Assert
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            var secondResponse = await Client.PostAsync("/api/authenticate/register", secondContent);
+
+            Assert.Equal(HttpStatusCode.OK, firstResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, secondResponse.StatusCode);
         }
 
         [Fact]
         public async Task Login_WithValidCredentials_ReturnsTokenAndExpiration()
         {
-            // Arrange
-            var username = "loginuser";
+            var username = $"loginuser_{Guid.NewGuid():N}";
             var password = "Test@123";
-            
-            // Register first
+
             var registerModel = new { username, password };
+
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
                 Encoding.UTF8,
                 "application/json");
+
             await Client.PostAsync("/api/authenticate/register", registerContent);
 
-            // Act - Login
             var loginModel = new { username, password };
+
             var loginContent = new StringContent(
                 JsonSerializer.Serialize(loginModel),
                 Encoding.UTF8,
                 "application/json");
-            var response = await Client.PostAsync("/api/authenticate/login", loginContent);
 
-            // Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var response = await Client.PostAsync("/api/authenticate/login", loginContent);
             var responseBody = await response.Content.ReadAsStringAsync();
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
             using var jsonDoc = JsonDocument.Parse(responseBody);
             var root = jsonDoc.RootElement;
-            
+
             Assert.True(root.TryGetProperty("token", out var tokenElement));
-            Assert.True(root.TryGetProperty("expiration", out var expirationElement));
-            Assert.NotEmpty(tokenElement.GetString() ?? "");
+            Assert.True(root.TryGetProperty("expiration", out _));
+            Assert.True(root.TryGetProperty("username", out var usernameElement));
+
+            Assert.NotEmpty(tokenElement.GetString() ?? string.Empty);
+            Assert.Equal(username, usernameElement.GetString());
         }
 
         [Fact]
         public async Task Login_WithInvalidPassword_ReturnsUnauthorized()
         {
-            // Arrange
-            var username = "validuser";
+            var username = $"validuser_{Guid.NewGuid():N}";
             var password = "ValidPass@123";
-            
-            // Register
+
             var registerModel = new { username, password };
+
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
                 Encoding.UTF8,
                 "application/json");
+
             await Client.PostAsync("/api/authenticate/register", registerContent);
 
-            // Act - Login with wrong password
-            var loginModel = new { username, password = "WrongPass@123" };
+            var loginModel = new
+            {
+                username,
+                password = "WrongPass@123"
+            };
+
             var loginContent = new StringContent(
                 JsonSerializer.Serialize(loginModel),
                 Encoding.UTF8,
                 "application/json");
+
             var response = await Client.PostAsync("/api/authenticate/login", loginContent);
 
-            // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [Fact]
         public async Task Login_WithNonexistentUser_ReturnsUnauthorized()
         {
-            // Arrange
-            var loginModel = new { username = "nonexistent", password = "AnyPass@123" };
+            var loginModel = new
+            {
+                username = $"nonexistent_{Guid.NewGuid():N}",
+                password = "AnyPass@123"
+            };
+
             var loginContent = new StringContent(
                 JsonSerializer.Serialize(loginModel),
                 Encoding.UTF8,
                 "application/json");
 
-            // Act
             var response = await Client.PostAsync("/api/authenticate/login", loginContent);
 
-            // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }

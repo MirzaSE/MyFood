@@ -25,27 +25,45 @@ export const LoginPage: React.FC = () => {
   const loginForm = useForm<LoginFormData>();
   const registerForm = useForm<RegisterFormData>();
 
+  const getErrorMessage = (err: any, fallback: string) => {
+    const data = err.response?.data;
+
+    if (typeof data === 'string') return data;
+    if (data?.message) return data.message;
+    if (data?.title) return data.title;
+
+    if (data?.errors) {
+      return Object.values(data.errors).flat().join(' ');
+    }
+
+    if (err?.message) return err.message;
+
+    return fallback;
+  };
+
   const handleLogin = async (data: LoginFormData) => {
     try {
       setError(null);
       await login(data.username, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(getErrorMessage(err, 'Invalid username or password.'));
     }
   };
 
   const handleRegister = async (data: RegisterFormData) => {
     try {
       setError(null);
+
       if (data.password !== data.confirmPassword) {
         setError('Passwords do not match');
         return;
       }
+
       await registerUser(data.username, data.email, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(getErrorMessage(err, 'Registration failed. Please try again.'));
     }
   };
 
@@ -60,9 +78,6 @@ export const LoginPage: React.FC = () => {
         <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-8 py-14 text-center">
-            <div className="flex justify-center mb-4">
-          
-            </div>
             <h1 className="text-4xl font-bold text-white mb-2">MyFood</h1>
             <p className="text-white/80 text-sm">Manage your meals with ease</p>
           </div>
@@ -77,6 +92,7 @@ export const LoginPage: React.FC = () => {
           {/* Tabs */}
           <div className="flex border-b border-white/10 px-6 pt-6">
             <button
+              type="button"
               onClick={() => {
                 setActiveTab('login');
                 setError(null);
@@ -92,7 +108,9 @@ export const LoginPage: React.FC = () => {
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400"></div>
               )}
             </button>
+
             <button
+              type="button"
               onClick={() => {
                 setActiveTab('register');
                 setError(null);
@@ -113,20 +131,29 @@ export const LoginPage: React.FC = () => {
           {/* Form Content */}
           <div className="px-8 py-8">
             {activeTab === 'login' && (
-              <form onSubmit={loginForm.handleSubmit(handleLogin)} className="food-form">                <div>
+              <form onSubmit={loginForm.handleSubmit(handleLogin)} className="food-form">
+                <div>
                   <label className="block text-sm font-semibold text-gray-200 mb-2">
                     Username
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('username', { required: 'Username is required' })}
+                      {...loginForm.register('username', {
+                        required: 'Username is required',
+                        minLength: {
+                          value: 3,
+                          message: 'Username must be at least 3 characters',
+                        },
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your username"
                     />
                   </div>
                   {loginForm.formState.errors.username && (
-                    <span className="text-red-400 text-xs mt-1 block">{loginForm.formState.errors.username.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {loginForm.formState.errors.username.message}
+                    </span>
                   )}
                 </div>
 
@@ -136,14 +163,22 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('password', { required: 'Password is required' })}
+                      {...loginForm.register('password', {
+                        required: 'Password is required',
+                        minLength: {
+                          value: 6,
+                          message: 'Password must be at least 6 characters',
+                        },
+                      })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your password"
                     />
                   </div>
                   {loginForm.formState.errors.password && (
-                    <span className="text-red-400 text-xs mt-1 block">{loginForm.formState.errors.password.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {loginForm.formState.errors.password.message}
+                    </span>
                   )}
                 </div>
 
@@ -162,7 +197,7 @@ export const LoginPage: React.FC = () => {
                     'Sign In'
                   )}
                 </button>
-              </form> 
+              </form>
             )}
 
             {activeTab === 'register' && (
@@ -173,14 +208,22 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...registerForm.register('username', { required: 'Username is required' })}
+                      {...registerForm.register('username', {
+                        required: 'Username is required',
+                        minLength: {
+                          value: 3,
+                          message: 'Username must be at least 3 characters',
+                        },
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Choose a username"
                     />
                   </div>
                   {registerForm.formState.errors.username && (
-                    <span className="text-red-400 text-xs mt-1 block">{registerForm.formState.errors.username.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {registerForm.formState.errors.username.message}
+                    </span>
                   )}
                 </div>
 
@@ -203,7 +246,9 @@ export const LoginPage: React.FC = () => {
                     />
                   </div>
                   {registerForm.formState.errors.email && (
-                    <span className="text-red-400 text-xs mt-1 block">{registerForm.formState.errors.email.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {registerForm.formState.errors.email.message}
+                    </span>
                   )}
                 </div>
 
@@ -215,7 +260,10 @@ export const LoginPage: React.FC = () => {
                     <input
                       {...registerForm.register('password', {
                         required: 'Password is required',
-                        minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                        minLength: {
+                          value: 6,
+                          message: 'Password must be at least 6 characters',
+                        },
                       })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
@@ -223,7 +271,9 @@ export const LoginPage: React.FC = () => {
                     />
                   </div>
                   {registerForm.formState.errors.password && (
-                    <span className="text-red-400 text-xs mt-1 block">{registerForm.formState.errors.password.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {registerForm.formState.errors.password.message}
+                    </span>
                   )}
                 </div>
 
@@ -235,6 +285,9 @@ export const LoginPage: React.FC = () => {
                     <input
                       {...registerForm.register('confirmPassword', {
                         required: 'Please confirm your password',
+                        validate: (value) =>
+                          value === registerForm.watch('password') ||
+                          'Passwords do not match',
                       })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
@@ -242,7 +295,9 @@ export const LoginPage: React.FC = () => {
                     />
                   </div>
                   {registerForm.formState.errors.confirmPassword && (
-                    <span className="text-red-400 text-xs mt-1 block">{registerForm.formState.errors.confirmPassword.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {registerForm.formState.errors.confirmPassword.message}
+                    </span>
                   )}
                 </div>
 
@@ -274,4 +329,3 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
-

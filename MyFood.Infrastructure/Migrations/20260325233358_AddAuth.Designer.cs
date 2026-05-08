@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFood.Infrastructure.Repositories;
 
@@ -11,9 +12,11 @@ using MyFood.Infrastructure.Repositories;
 namespace MyFood.Infrastructure.Migrations
 {
     [DbContext(typeof(FoodDbContext))]
-    partial class FoodDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260325233358_AddAuth")]
+    partial class AddAuth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,16 +262,7 @@ namespace MyFood.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("CaloriesPerUnit")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Carbs")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Fat")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("FoodEntityId")
+                    b.Property<int>("FoodEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -276,16 +270,10 @@ namespace MyFood.Infrastructure.Migrations
                         .HasMaxLength(260)
                         .HasColumnType("nvarchar(260)");
 
-                    b.Property<decimal>("Protein")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Quantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Unit")
+                    b.Property<string>("Quantity")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -350,7 +338,8 @@ namespace MyFood.Infrastructure.Migrations
                     b.HasOne("MyFood.Domain.Entities.FoodEntity", "FoodEntity")
                         .WithMany("Ingredients")
                         .HasForeignKey("FoodEntityId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("FoodEntity");
                 });

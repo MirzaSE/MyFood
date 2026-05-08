@@ -1,12 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MyFood.Domain.Entities
+namespace MyFood.Application.Dtos
 {
-    public class IngredientEntity
+    public class CreateIngredientDto
     {
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(260)]
         public string Name { get; set; } = string.Empty;
@@ -15,19 +12,20 @@ namespace MyFood.Domain.Entities
         [MaxLength(50)]
         public string Unit { get; set; } = string.Empty;
 
+        [Range(0.01, double.MaxValue)]
         public decimal CaloriesPerUnit { get; set; }
 
+        [Range(0, double.MaxValue)]
         public decimal Protein { get; set; }
 
+        [Range(0, double.MaxValue)]
         public decimal Carbs { get; set; }
 
+        [Range(0, double.MaxValue)]
         public decimal Fat { get; set; }
 
         public decimal? Quantity { get; set; }
 
         public int? FoodEntityId { get; set; }
-
-        [ForeignKey(nameof(FoodEntityId))]
-        public FoodEntity? FoodEntity { get; set; }
     }
 }

@@ -1,7 +1,6 @@
-import React from 'react';
+import { Apple, ChefHat, LogOut, PlusCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, ChefHat } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -13,40 +12,60 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 border-b border-white/10 backdrop-blur-lg sticky top-0 z-50">
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg">
-              <ChefHat size={24} className="text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-white">MyFood</h1>
-              <p className="text-xs text-purple-300">Food Management</p>
-            </div>
+    <nav className="border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div
+          className="flex cursor-pointer items-center gap-3"
+          onClick={() => navigate('/foods')}
+        >
+          <ChefHat className="text-blue-600" size={28} />
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">MyFood</h1>
+            <p className="text-sm text-gray-500">Food Management</p>
           </div>
+        </div>
 
-          {/* User Info & Logout */}
-          <div className="flex items-center space-x-6">
-            <div className="hidden sm:block">
-              <p className="text-sm text-gray-300">Welcome back</p>
-              <p className="text-lg font-semibold text-white">{username}</p>
-            </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={() => navigate('/foods')}
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          >
+            Foods
+          </button>
 
-            <div className="w-px h-8 bg-white/10"></div>
+          <button
+            type="button"
+            onClick={() => navigate('/ingredients')}
+            className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          >
+            <Apple size={16} />
+            Ingredients
+          </button>
 
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
-            >
-              <LogOut size={18} />
-              <span className="hidden sm:inline font-medium">Logout</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => navigate('/foods/create')}
+            className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700"
+          >
+            <PlusCircle size={16} />
+            Create Food
+          </button>
+
+          <span className="text-sm text-gray-600">
+            Welcome back, {username}
+          </span>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          >
+            <LogOut size={16} />
+            Logout
+          </button>
         </div>
       </div>
     </nav>
   );
 };
-
