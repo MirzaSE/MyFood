@@ -43,9 +43,9 @@ namespace MyFood.Infrastructure.Repositories
 
             if (queryParameters.HasQuery())
             {
+                var q = queryParameters.Query!;
                 _allItems = _allItems
-                    .Where(x => x.Calories.ToString().Contains(queryParameters.Query.ToLowerInvariant())
-                    || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+                    .Where(x => EF.Functions.Like(x.Name, $"%{q}%"));
             }
 
             return _allItems

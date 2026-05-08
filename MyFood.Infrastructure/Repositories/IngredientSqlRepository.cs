@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using MyFood.Domain.Entities;
 
 namespace MyFood.Infrastructure.Repositories
@@ -43,6 +44,20 @@ namespace MyFood.Infrastructure.Repositories
             return _foodDbContext.Ingredients
                 .Where(x => x.FoodEntityId == foodEntityId)
                 .OrderBy(x => x.Name)
+                .ToList();
+        }
+
+        public IEnumerable<IngredientEntity> SearchIngredientsByName(string name)
+        {
+            IQueryable<IngredientEntity> ingredients = _foodDbContext.Ingredients.OrderBy(x => x.Name);
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return ingredients.ToList();
+            }
+
+            return ingredients
+                .Where(x => x.Name != null && EF.Functions.Like(x.Name, $"%{name}%"))
                 .ToList();
         }
 
