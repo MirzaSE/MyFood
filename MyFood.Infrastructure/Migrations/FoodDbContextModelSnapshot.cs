@@ -235,8 +235,8 @@ namespace MyFood.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
@@ -255,6 +255,15 @@ namespace MyFood.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CaloriesPerUnit")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Carbs")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Fat")
+                        .HasColumnType("float");
+
                     b.Property<int>("FoodEntityId")
                         .HasColumnType("int");
 
@@ -262,6 +271,13 @@ namespace MyFood.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<double>("Protein")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Unit")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
