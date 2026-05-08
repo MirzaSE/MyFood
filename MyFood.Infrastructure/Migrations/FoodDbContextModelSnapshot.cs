@@ -235,8 +235,8 @@ namespace MyFood.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
@@ -247,7 +247,11 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("FoodItems");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
+=======
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
+>>>>>>> origin/spring2026/assignment1/ammar.haljkovic/220302212
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -255,21 +259,39 @@ namespace MyFood.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+<<<<<<< HEAD
                     b.Property<int>("FoodEntityId")
+=======
+                    b.Property<int>("FoodId")
+>>>>>>> origin/spring2026/assignment1/ammar.haljkovic/220302212
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
+<<<<<<< HEAD
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FoodEntityId");
+=======
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Quantity")
+                        .IsRequired()
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodId");
+>>>>>>> origin/spring2026/assignment1/ammar.haljkovic/220302212
 
                     b.ToTable("Ingredients");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -333,6 +355,20 @@ namespace MyFood.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>
+=======
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
+                {
+                    b.HasOne("MyFood.Application.Entities.FoodEntity", "Food")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("FoodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Food");
+                });
+
+            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
+>>>>>>> origin/spring2026/assignment1/ammar.haljkovic/220302212
                 {
                     b.Navigation("Ingredients");
                 });
