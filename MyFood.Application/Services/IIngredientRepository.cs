@@ -1,15 +1,17 @@
 using MyFood.Domain.Entities;
 
-namespace MyFood.Infrastructure.Repositories
+namespace MyFood.Application.Services
 {
     public interface IIngredientRepository
     {
-        IngredientEntity GetSingle(int id);
-        IEnumerable<IngredientEntity> GetAll();
+        IngredientEntity? GetSingle(int id);
+        IEnumerable<IngredientEntity> GetAll(QueryParameters queryParameters);
+        IEnumerable<IngredientEntity> SearchByName(string name);
         IEnumerable<IngredientEntity> GetByFoodId(int foodId);
         void Add(IngredientEntity item);
         void Delete(int id);
         IngredientEntity Update(int id, IngredientEntity item);
+        int Count();
         bool Save();
     }
 }

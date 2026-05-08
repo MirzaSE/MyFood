@@ -1,9 +1,9 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application.Dtos;
-using MyFood.Domain.Entities;
-using MyFood.Infrastructure.Repositories;
+using MyFood.Application.Services;
+using MyFood.Application;
+using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
 {
@@ -13,94 +13,105 @@ namespace MyFood.Api.Controllers.v1
     [Route("api/v{version:apiVersion}/[controller]")]
     public class IngredientsController : ControllerBase
     {
-        private readonly IIngredientRepository _ingredientRepository;
-        private readonly IMapper _mapper;
+        private readonly IIngredientService _ingredientService;
 
         public IngredientsController(
-            IIngredientRepository ingredientRepository,
-            IMapper mapper)
+            IIngredientService ingredientService)
         {
-            _ingredientRepository = ingredientRepository;
-            _mapper = mapper;
+            _ingredientService = ingredientService;
         }
 
         [HttpGet(Name = nameof(GetAllIngredients))]
-        public ActionResult GetAllIngredients()
+        public async Task<ActionResult> GetAllIngredients([FromQuery] QueryParameters queryParameters)
         {
-            var ingredients = _ingredientRepository.GetAll();
-            var ingredientDtos = _mapper.Map<IEnumerable<IngredientDto>>(ingredients);
+            var ingredientDtos = await _ingredientService.GetAllAsync(queryParameters);
+            var totalCount = await _ingredientService.GetTotalCountAsync();
+
+            var paginationMetadata = new
+            {
+                totalCount = totalCount,
+                pageSize = queryParameters.PageCount,
+                currentPage = queryParameters.Page,
+                totalPages = (int)Math.Ceiling(totalCount / (double)queryParameters.PageCount)
+            };
+
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
             return Ok(ingredientDtos);
         }
 
         [HttpGet("{id:int}", Name = nameof(GetSingleIngredient))]
-        public ActionResult GetSingleIngredient(int id)
+        public async Task<ActionResult> GetSingleIngredient(int id)
         {
-            IngredientEntity ingredient = _ingredientRepository.GetSingle(id);
-            if (ingredient == null)
+            var dto = await _ingredientService.GetByIdAsync(id);
+            if (dto == null)
+            {
                 return NotFound();
+            }
 
-            IngredientDto dto = _mapper.Map<IngredientDto>(ingredient);
             return Ok(dto);
         }
 
-        [HttpGet("food/{foodId:int}", Name = nameof(GetIngredientsByFood))]
-        public ActionResult GetIngredientsByFood(int foodId)
+        [HttpGet("search", Name = nameof(SearchIngredients))]
+        public async Task<ActionResult> SearchIngredients([FromQuery] QueryParameters queryParameters, string name)
         {
-            var ingredients = _ingredientRepository.GetByFoodId(foodId);
-            var dtos = _mapper.Map<IEnumerable<IngredientDto>>(ingredients);
-            return Ok(dtos);
+            var results = await _ingredientService.SearchAsync(name);
+            var totalCount = results.Count();
+
+            var paginationMetadata = new
+            {
+                totalCount = totalCount,
+                pageSize = queryParameters.PageCount,
+                currentPage = queryParameters.Page,
+                totalPages = (int)Math.Ceiling(totalCount / (double)queryParameters.PageCount)
+            };
+
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+            return Ok(results
+                .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
+                .Take(queryParameters.PageCount));
         }
 
         [HttpPost(Name = nameof(AddIngredient))]
-        public ActionResult<IngredientDto> AddIngredient([FromBody] IngredientCreateDto createDto)
+        public async Task<ActionResult<IngredientDto>> AddIngredient([FromBody] IngredientCreateDto createDto)
         {
             if (createDto == null)
+            {
                 return BadRequest();
+            }
 
-            IngredientEntity toAdd = _mapper.Map<IngredientEntity>(createDto);
-            _ingredientRepository.Add(toAdd);
-
-            if (!_ingredientRepository.Save())
-                throw new Exception("Creating an ingredient failed on save.");
-
-            IngredientEntity newItem = _ingredientRepository.GetSingle(toAdd.Id);
-            IngredientDto dto = _mapper.Map<IngredientDto>(newItem);
+            var dto = await _ingredientService.CreateAsync(createDto);
 
             return CreatedAtRoute(nameof(GetSingleIngredient),
-                new { id = newItem.Id }, dto);
+                new { id = dto.Id }, dto);
         }
 
         [HttpPut("{id:int}", Name = nameof(UpdateIngredient))]
-        public ActionResult<IngredientDto> UpdateIngredient(int id, [FromBody] IngredientUpdateDto updateDto)
+        public async Task<ActionResult<IngredientDto>> UpdateIngredient(int id, [FromBody] IngredientUpdateDto updateDto)
         {
             if (updateDto == null)
+            {
                 return BadRequest();
+            }
 
-            IngredientEntity existing = _ingredientRepository.GetSingle(id);
-            if (existing == null)
+            var dto = await _ingredientService.UpdateAsync(id, updateDto);
+            if (dto == null)
+            {
                 return NotFound();
+            }
 
-            _mapper.Map(updateDto, existing);
-            IngredientEntity updated = _ingredientRepository.Update(id, existing);
-
-            if (!_ingredientRepository.Save())
-                throw new Exception("Updating an ingredient failed on save.");
-
-            IngredientDto dto = _mapper.Map<IngredientDto>(updated);
             return Ok(dto);
         }
 
         [HttpDelete("{id:int}", Name = nameof(RemoveIngredient))]
-        public ActionResult RemoveIngredient(int id)
+        public async Task<ActionResult> RemoveIngredient(int id)
         {
-            IngredientEntity ingredient = _ingredientRepository.GetSingle(id);
-            if (ingredient == null)
+            var result = await _ingredientService.DeleteAsync(id);
+            if (!result)
+            {
                 return NotFound();
-
-            _ingredientRepository.Delete(id);
-
-            if (!_ingredientRepository.Save())
-                throw new Exception("Deleting an ingredient failed on save.");
+            }
 
             return NoContent();
         }
