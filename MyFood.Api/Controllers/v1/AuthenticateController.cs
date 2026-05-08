@@ -1,5 +1,4 @@
-
- using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Application.Dtos;
@@ -7,85 +6,117 @@ using MyFood.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
 
 [Route("api/[controller]")]
 [ApiController]
 public class AuthenticateController : ControllerBase
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IConfiguration _config;
+    private readonly UserManager<ApplicationUser> userManager;
+    private readonly RoleManager<IdentityRole> roleManager;
+    private readonly IConfiguration _configuration;
 
-    public AuthenticateController(
-        UserManager<ApplicationUser> userManager,
-        IConfiguration config)
+    public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
+        IConfiguration configuration)
     {
-        _userManager = userManager;
-        _config = config;
+        this.userManager = userManager;
+        this.roleManager = roleManager;
+        _configuration = configuration;
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterUserDto dto)
+    [HttpPost]
+    [Route("login")]
+    public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
-        var user = new ApplicationUser
-        {
-            UserName = dto.Username,
-            FullName = dto.Username
-        };
-
-        var result = await _userManager.CreateAsync(user, dto.Password);
-
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
-
-        return Ok("User created");
-    }
-
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginDto dto)
-    {
-        var user = await _userManager.FindByNameAsync(dto.Username);
+        var user = await userManager.FindByNameAsync(model.Username);
 
         if (user == null)
-            return Unauthorized();
+            return BadRequest("User does not exist");
 
-        var valid = await _userManager.CheckPasswordAsync(user, dto.Password);
+        var validPassword = await userManager.CheckPasswordAsync(user, model.Password);
 
-        if (!valid)
-            return Unauthorized();
+        if (!validPassword)
+            return BadRequest("Invalid password");
 
-        var token = GenerateToken(user);
+        var userRoles = await userManager.GetRolesAsync(user);
 
-        return Ok(new { token });
-    }
-    [HttpGet("test")]
-    [Authorize]
-    public IActionResult Test()
-    {
-        return Ok("Authorized");
-    }
-
-    private string GenerateToken(ApplicationUser user)
-    {
-        var claims = new[]
+        var authClaims = new List<Claim>
         {
-            new Claim("UserId", user.Id),
-            new Claim("Username", user.UserName!)
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+        foreach (var userRole in userRoles)
+        {
+            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+        }
 
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var authSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])
+        );
 
         var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(
-                Convert.ToDouble(_config["Jwt:DurationInMinutes"])),
-            signingCredentials: creds);
+            issuer: _configuration["JWT:ValidIssuer"],
+            audience: _configuration["JWT:ValidAudience"],
+            expires: DateTime.Now.AddHours(3),
+            claims: authClaims,
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+        );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return Ok(new
+        {
+            token = new JwtSecurityTokenHandler().WriteToken(token),
+            expiration = token.ValidTo,
+            username = user.UserName
+        });
     }
-} 
+
+    [HttpPost]
+    [Route("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
+    {
+
+        var userExists = await userManager.FindByNameAsync(model.Username);
+        if (userExists != null)
+            return BadRequest("User already exists");
+
+
+        ApplicationUser user = new ApplicationUser()
+        {
+            SecurityStamp = Guid.NewGuid().ToString(),
+            UserName = model.Username,
+            FullName = model.Username 
+        };
+        var result = await userManager.CreateAsync(user, model.Password);
+
+        if (!result.Succeeded)
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "User creation failed! Please check user details and try again.");
+
+
+        var authClaims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
+
+        var authSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])
+        );
+
+        var token = new JwtSecurityToken(
+            issuer: _configuration["JWT:ValidIssuer"],
+            audience: _configuration["JWT:ValidAudience"],
+            expires: DateTime.Now.AddHours(3),
+            claims: authClaims,
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+        );
+
+
+        return Ok(new
+        {
+            token = new JwtSecurityTokenHandler().WriteToken(token),
+            expiration = token.ValidTo,
+            username = user.UserName
+        });
+    }
+}
