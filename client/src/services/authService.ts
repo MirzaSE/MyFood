@@ -19,7 +19,7 @@ export const authService = {
   async register(username: string, email: string, password: string): Promise<AuthResponse> {
     const response = await apiClient.post<AuthResponse>('/authenticate/register', {
       username,
-      //email,
+      email,
       password,
     } as RegisterRequest);
 
