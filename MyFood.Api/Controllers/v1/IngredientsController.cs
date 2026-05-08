@@ -4,6 +4,7 @@ using MyFood.Application.Dtos;
 using MyFood.Domain.Entities; // Change to MyFood.Domain.Entities if you did Option 2
 using MyFood.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using MyFood.Application.Services;
 
 namespace MyFood.Api.Controllers.v1
 {

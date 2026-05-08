@@ -1,5 +1,6 @@
 using MyFood.Domain.Entities;
 using System.Linq;
+using MyFood.Application.Services;
 
 namespace MyFood.Infrastructure.Repositories
 {
