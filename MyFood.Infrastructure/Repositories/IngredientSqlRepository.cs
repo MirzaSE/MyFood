@@ -57,9 +57,9 @@ public class IngredientSqlRepository : IIngredientRepository
 
     public IEnumerable<IngredientEntity> SearchByName(string name)
     {
-        string filter = name.ToLowerInvariant();
+        string filter = name.ToLower();
         return _foodDbContext.Ingredients
-            .Where(x => x.Name != null && x.Name.ToLowerInvariant().Contains(filter))
+            .Where(x => x.Name != null && x.Name.ToLower().Contains(filter))
             .OrderBy(x => x.Name)
             .ToList();
     }

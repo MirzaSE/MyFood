@@ -58,6 +58,7 @@ public class AuthenticateController : ControllerBase
         return Ok(new
         {
             token = tokenString,
+            expiration = DateTime.Now.AddHours(3),
             username = user.UserName
         });
     }
@@ -68,13 +69,13 @@ public class AuthenticateController : ControllerBase
     {
         var userExists = await userManager.FindByNameAsync(model.Username);
         if (userExists != null)
-            return Conflict(new { message = "Username already exists. Please choose a different username." });
+            return StatusCode(500, new { message = "Username already exists. Please choose a different username." });
 
         ApplicationUser user = new ApplicationUser()
         {
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = model.Username,
-            Email = model.Email
+            Email = model.Email ?? string.Empty
         };
         var result = await userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
@@ -88,6 +89,7 @@ public class AuthenticateController : ControllerBase
 
         return Ok(new
         {
+            message = "User registered successfully.",
             token = tokenString,
             username = user.UserName
         });
