@@ -8,10 +8,11 @@ using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using MyFood.Infrastructure.Repositories;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyFood.Api.Controllers.v1
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -50,7 +51,9 @@ namespace MyFood.Api.Controllers.v1
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
-            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+            var foodDtos = foodItems.Select(x => _mapper.Map<FoodDto>(x));
+
+            var toReturn = foodDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
 
             return Ok(new
             {
