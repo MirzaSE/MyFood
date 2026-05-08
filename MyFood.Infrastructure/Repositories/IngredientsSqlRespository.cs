@@ -1,3 +1,4 @@
+using MyFood.Application.Services;
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
 using MyFood.Domain.Entities;
@@ -5,8 +6,7 @@ using MyFood.Infrastructure.Helpers;
 
 namespace MyFood.Infrastructure.Repositories
 {
-    public class IngredientSqlRepository : IIngredientRepository
-    {
+    public class IngredientSqlRepository : IIngredientRepository{
         private readonly FoodDbContext _foodDbContext;
 
         public IngredientSqlRepository(FoodDbContext foodDbContext)
