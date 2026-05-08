@@ -38,6 +38,18 @@ namespace MyFood.Application.Services
         {
             var foodEntity = _mapper.Map<FoodEntity>(foodCreateDto);
             foodEntity.Created = DateTime.UtcNow;
+
+            if (foodCreateDto.Ingredients.Count > 0)
+            {
+                foodEntity.FoodIngredients = foodCreateDto.Ingredients
+                    .Select(i => new FoodIngredientEntity
+                    {
+                        IngredientEntityId = i.IngredientId,
+                        Quantity = i.Quantity,
+                    })
+                    .ToList();
+            }
+
             _foodRepository.Add(foodEntity);
 
             if (!_foodRepository.Save())

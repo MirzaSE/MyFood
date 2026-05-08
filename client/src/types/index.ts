@@ -6,16 +6,22 @@ export interface Food {
   created: string;
 }
 
-export interface FoodCreateDto {
+export interface FoodUpdateDto {
   name: string;
   type: string;
   calories: number;
 }
 
-export interface FoodUpdateDto {
+export interface FoodIngredientCreateDto {
+  ingredientId: number;
+  quantity: number;
+}
+
+export interface FoodCreateDto {
   name: string;
   type: string;
   calories: number;
+  ingredients?: FoodIngredientCreateDto[];
 }
 
 export interface LoginRequest {
@@ -42,3 +48,5 @@ export interface AuthContextType {
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
+
+export type { Ingredient, IngredientCreateDto, IngredientUpdateDto } from './ingredient';
