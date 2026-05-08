@@ -31,7 +31,10 @@ export const LoginPage: React.FC = () => {
       await login(data.username, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      const msg = err.response?.data?.message
+        || err.response?.data?.title
+        || 'Login failed. Please try again.';
+      setError(msg);
     }
   };
 
@@ -45,7 +48,10 @@ export const LoginPage: React.FC = () => {
       await registerUser(data.username, data.email, data.password);
       navigate('/foods');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      const msg = err.response?.data?.message
+        || err.response?.data?.title
+        || 'Registration failed. Please try again.';
+      setError(msg);
     }
   };
 
