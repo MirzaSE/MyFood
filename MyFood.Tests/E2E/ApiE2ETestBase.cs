@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Hosting;
 using MyFood.Api;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 
 namespace MyFood.Tests.E2E
@@ -13,7 +15,8 @@ namespace MyFood.Tests.E2E
 
         public async Task InitializeAsync()
         {
-            Factory = new WebApplicationFactory<Program>();
+            Factory = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder => builder.UseEnvironment("Testing"));
             Client = Factory.CreateClient();
             
             // Use localhost with port 8080 as configured in Program.cs
@@ -32,10 +35,11 @@ namespace MyFood.Tests.E2E
         protected async Task<string> RegisterAndLogin(string username = "testuser", string password = "Test@123")
         {
             // Register
-            var registerModel = new { username, password };
+            var registerModel = new { username, email = $"{username}@test.local", password };
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
-                new MediaTypeHeaderValue("application/json"));
+                Encoding.UTF8,
+                "application/json");
 
             await Client.PostAsync("/api/authenticate/register", registerContent);
 
@@ -43,7 +47,8 @@ namespace MyFood.Tests.E2E
             var loginModel = new { username, password };
             var loginContent = new StringContent(
                 JsonSerializer.Serialize(loginModel),
-                new MediaTypeHeaderValue("application/json"));
+                Encoding.UTF8,
+                "application/json");
 
             var loginResponse = await Client.PostAsync("/api/authenticate/login", loginContent);
             

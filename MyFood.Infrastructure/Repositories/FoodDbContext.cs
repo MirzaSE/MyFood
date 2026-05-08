@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyFood.Domain.Entities;
 
@@ -17,6 +17,9 @@ namespace MyFood.Infrastructure.Repositories
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Keep compatibility with existing database schema.
+            modelBuilder.Entity<IngredientEntity>().ToTable("IngredientItems");
 
             modelBuilder.Entity<FoodEntity>()
                 .HasMany(f => f.Ingredients)

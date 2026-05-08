@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, ChefHat } from 'lucide-react';
 
@@ -27,21 +27,44 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
+          <div className="flex items-center gap-3">
+            <NavLink
+              to="/foods"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-white/20 text-white' : 'text-gray-200 hover:bg-white/10'}`
+              }
+            >
+              Foods
+            </NavLink>
+            <NavLink
+              to="/ingredients"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-white/20 text-white' : 'text-gray-200 hover:bg-white/10'}`
+              }
+            >
+              Ingredients
+            </NavLink>
+            <NavLink
+              to="/foods/create"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-white/20 text-white' : 'text-gray-200 hover:bg-white/10'}`
+              }
+            >
+              Create Food
+            </NavLink>
+          </div>
+
           {/* User Info & Logout */}
-          <div className="flex items-center space-x-6">
-            <div className="hidden sm:block">
-              <p className="text-sm text-gray-300">Welcome back</p>
-              <p className="text-lg font-semibold text-white">{username}</p>
-            </div>
-
-            <div className="w-px h-8 bg-white/10"></div>
-
+          <div className="flex flex-col items-end gap-2">
+            <p className="text-sm text-gray-300 text-right">
+              Welcome back, <span className="font-semibold text-white">{username}</span>
+            </p>
             <button
               onClick={handleLogout}
               className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
             >
               <LogOut size={18} />
-              <span className="hidden sm:inline font-medium">Logout</span>
+              <span className="font-medium">Logout</span>
             </button>
           </div>
         </div>

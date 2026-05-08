@@ -3,10 +3,16 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LoginPage } from './pages/LoginPage';
 import { FoodPage } from './pages/FoodPage';
+import { IngredientsPage } from './pages/IngredientsPage';
+import { CreateFoodPage } from './pages/CreateFoodPage';
 import './App.css';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isInitializing } = useAuth();
+
+  if (isInitializing) {
+    return null;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -16,7 +22,11 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 const AppRoutes: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isInitializing } = useAuth();
+
+  if (isInitializing) {
+    return null;
+  }
 
   return (
     <Routes>
@@ -29,6 +39,22 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <FoodPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/foods/create"
+        element={
+          <ProtectedRoute>
+            <CreateFoodPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ingredients"
+        element={
+          <ProtectedRoute>
+            <IngredientsPage />
           </ProtectedRoute>
         }
       />

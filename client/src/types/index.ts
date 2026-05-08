@@ -18,6 +18,11 @@ export interface FoodUpdateDto {
   calories: number;
 }
 
+export interface FoodIngredientSelection {
+  ingredientId: number;
+  quantity: number;
+}
+
 export interface LoginRequest {
   username: string;
   password: string;
@@ -35,6 +40,7 @@ export interface AuthResponse {
 }
 
 export interface AuthContextType {
+  isInitializing: boolean;
   isAuthenticated: boolean;
   username: string | null;
   token: string | null;
@@ -42,3 +48,5 @@ export interface AuthContextType {
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
+
+export * from './ingredient';

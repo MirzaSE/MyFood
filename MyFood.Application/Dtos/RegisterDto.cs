@@ -10,10 +10,15 @@ namespace MyFood.Application.Dtos
     public class RegisterUserDto
     {
         [Required(ErrorMessage = "User Name is required")]
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "A valid email is required")]
+        public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Password is required")]
-        public string Password { get; set; }
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
+        public string Password { get; set; } = string.Empty;
 
     }
 }

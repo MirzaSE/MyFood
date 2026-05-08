@@ -37,6 +37,11 @@ namespace MyFood.Application.Services
         public async Task<FoodDto> CreateFoodAsync(FoodCreateDto foodCreateDto)
         {
             var foodEntity = _mapper.Map<FoodEntity>(foodCreateDto);
+            if (foodEntity.Created == default)
+            {
+                foodEntity.Created = DateTime.Now;
+            }
+
             _foodRepository.Add(foodEntity);
 
             if (!_foodRepository.Save())
@@ -56,7 +61,10 @@ namespace MyFood.Application.Services
                 return null;
             }
 
+            var originalCreated = existingEntity.Created;
             _mapper.Map(foodUpdateDto, existingEntity);
+            // Keep original created timestamp during edit operations.
+            existingEntity.Created = originalCreated;
             var updatedEntity = _foodRepository.Update(id, existingEntity);
 
             if (!_foodRepository.Save())
