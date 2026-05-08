@@ -23,6 +23,5 @@ public class IngredientCreateDto
     [Range(0, double.MaxValue)]
     public double Fat { get; set; }
 
-    [Required]
-    public int FoodEntityId { get; set; }
+    public int? FoodEntityId { get; set; }
 }

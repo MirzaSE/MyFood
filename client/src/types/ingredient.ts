@@ -6,7 +6,7 @@ export interface Ingredient {
   protein: number;
   carbs: number;
   fat: number;
-  foodEntityId: number;
+  foodEntityId?: number;
 }
 
 export interface IngredientCreateDto {
@@ -16,7 +16,7 @@ export interface IngredientCreateDto {
   protein: number;
   carbs: number;
   fat: number;
-  foodEntityId: number;
+  foodEntityId?: number;
 }
 
 export interface IngredientUpdateDto {
@@ -26,5 +26,5 @@ export interface IngredientUpdateDto {
   protein: number;
   carbs: number;
   fat: number;
-  foodEntityId: number;
+  foodEntityId?: number;
 }

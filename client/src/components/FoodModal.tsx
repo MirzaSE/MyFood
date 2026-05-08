@@ -1,7 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
+import type { Ingredient } from '../types/ingredient';
+import { FoodIngredientsPicker } from './FoodIngredientsPicker';
+import { ingredientService } from '../services/ingredientService';
+
+interface SelectedIngredient {
+  ingredient: Ingredient;
+  quantity: number;
+}
 
 interface FoodModalProps {
   isOpen: boolean;
@@ -22,8 +30,12 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FoodCreateDto>();
+
+  const [availableIngredients, setAvailableIngredients] = useState<Ingredient[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<SelectedIngredient[]>([]);
 
   useEffect(() => {
     if (isOpen) {
@@ -31,11 +43,45 @@ export const FoodModal: React.FC<FoodModalProps> = ({
         ? { name: initialData.name, type: initialData.type, calories: initialData.calories }
         : { name: '', type: '', calories: undefined }
       );
+      setSelectedIngredients([]);
+      ingredientService.getAllIngredients().then(setAvailableIngredients).catch(() => {});
     }
   }, [isOpen, initialData, reset]);
 
+  const totalCalories = selectedIngredients.reduce(
+    (sum, si) => sum + si.ingredient.caloriesPerUnit * si.quantity,
+    0
+  );
+  const totalProtein = selectedIngredients.reduce(
+    (sum, si) => sum + si.ingredient.protein * si.quantity,
+    0
+  );
+  const totalCarbs = selectedIngredients.reduce(
+    (sum, si) => sum + si.ingredient.carbs * si.quantity,
+    0
+  );
+  const totalFat = selectedIngredients.reduce(
+    (sum, si) => sum + si.ingredient.fat * si.quantity,
+    0
+  );
+
+  const handleAddIngredient = (ingredient: Ingredient, quantity: number) => {
+    const updated = [...selectedIngredients, { ingredient, quantity }];
+    setSelectedIngredients(updated);
+    const newTotal = updated.reduce((s, si) => s + si.ingredient.caloriesPerUnit * si.quantity, 0);
+    setValue('calories', newTotal);
+  };
+
+  const handleRemoveIngredient = (ingredientId: number) => {
+    const updated = selectedIngredients.filter(si => si.ingredient.id !== ingredientId);
+    setSelectedIngredients(updated);
+    const newTotal = updated.reduce((s, si) => s + si.ingredient.caloriesPerUnit * si.quantity, 0);
+    setValue('calories', newTotal);
+  };
+
   const handleClose = () => {
     reset();
+    setSelectedIngredients([]);
     onClose();
   };
 
@@ -43,6 +89,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     try {
       await onSubmit(data);
       reset();
+      setSelectedIngredients([]);
     } catch (error) {
       console.error('Form submission error:', error);
     }
@@ -52,9 +99,9 @@ export const FoodModal: React.FC<FoodModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center">
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center sticky top-0 z-10">
           <h2 className="text-xl font-bold text-white">
             {initialData ? 'Edit Food' : 'Add New Food'}
           </h2>
@@ -67,9 +114,9 @@ export const FoodModal: React.FC<FoodModalProps> = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8">
-          <div className="mt-8">
-            <label className="block text-sm font-semibold text-gray-300 mb-2" >
+        <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8 space-y-6">
+          <div>
+            <label className="block text-sm font-semibold text-gray-300 mb-2">
               Food Name
             </label>
             <input
@@ -86,7 +133,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
             {errors.name && <span className="text-red-400 text-xs mt-1 block">{errors.name.message}</span>}
           </div>
 
-          <div className="mt-8">
+          <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">
               Food Type
             </label>
@@ -119,7 +166,42 @@ export const FoodModal: React.FC<FoodModalProps> = ({
             {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
           </div>
 
-          <div className="flex space-x-3 pt-6">
+          {/* Ingredients Picker */}
+          <div className="border-t border-white/10 pt-6">
+            <FoodIngredientsPicker
+              availableIngredients={availableIngredients}
+              selectedIngredients={selectedIngredients}
+              onAdd={handleAddIngredient}
+              onRemove={handleRemoveIngredient}
+            />
+          </div>
+
+          {/* Calculated Nutrition Summary */}
+          {selectedIngredients.length > 0 && (
+            <div className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-2">
+              <h4 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Calculated Nutrition</h4>
+              <div className="grid grid-cols-4 gap-3 text-center">
+                <div>
+                  <p className="text-lg font-bold text-white">{totalCalories}</p>
+                  <p className="text-xs text-gray-400">Calories</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-blue-400">{totalProtein.toFixed(1)}g</p>
+                  <p className="text-xs text-gray-400">Protein</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-yellow-400">{totalCarbs.toFixed(1)}g</p>
+                  <p className="text-xs text-gray-400">Carbs</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-red-400">{totalFat.toFixed(1)}g</p>
+                  <p className="text-xs text-gray-400">Fat</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex space-x-3 pt-2">
             <button
               type="button"
               onClick={handleClose}

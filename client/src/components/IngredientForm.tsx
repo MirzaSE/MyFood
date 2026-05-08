@@ -123,7 +123,6 @@ export const IngredientForm: React.FC<IngredientFormProps> = ({
       protein: Number(form.protein),
       carbs: Number(form.carbs),
       fat: Number(form.fat),
-      foodEntityId: Number(form.foodEntityId),
     };
 
     onSubmit(data);

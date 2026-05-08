@@ -21,7 +21,7 @@ namespace MyFood.Domain.Entities
 
         public double Fat { get; set; }
 
-        public int FoodEntityId { get; set; }
+        public int? FoodEntityId { get; set; }
 
         [ForeignKey("FoodEntityId")]
         public FoodEntity? FoodEntity { get; set; }
