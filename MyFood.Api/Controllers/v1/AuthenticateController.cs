@@ -98,7 +98,8 @@ public class AuthenticateController : ControllerBase
         {
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = model.Username,
-            Email = model.Email
+            Email = model.Email,
+            FullName = model.Username
         };
 
         var result = await userManager.CreateAsync(user, model.Password);

@@ -1,9 +1,8 @@
-using MyFood.Application;
 using MyFood.Domain.Entities;
 
-namespace MyFood.Infrastructure.Repositories
+namespace MyFood.Application.Services
 {
-  public interface IIngredientRepository
+    public interface IIngredientRepository
     {
         IngredientEntity GetSingle(int id);
         void Add(IngredientEntity item);
@@ -12,8 +11,6 @@ namespace MyFood.Infrastructure.Repositories
         IQueryable<IngredientEntity> GetAll(QueryParameters queryParameters);
         int Count();
         bool Save();
-
-        // Async methods for v2
         Task<IEnumerable<IngredientEntity>> GetAllAsync();
         Task AddAsync(IngredientEntity ingredient);
         Task DeleteAsync(int id);

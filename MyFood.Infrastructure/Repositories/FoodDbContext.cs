@@ -18,6 +18,9 @@ namespace MyFood.Infrastructure.Repositories
         {
             base.OnModelCreating(modelBuilder);
 
+            // Keep compatibility with existing database schema.
+            modelBuilder.Entity<IngredientEntity>().ToTable("IngredientItems");
+
             modelBuilder.Entity<FoodEntity>()
                 .HasMany(f => f.Ingredients)
                 .WithOne(i => i.FoodEntity)

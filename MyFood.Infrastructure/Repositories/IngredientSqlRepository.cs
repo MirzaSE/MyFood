@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
+using MyFood.Application.Services;
 using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Helpers;
 
 namespace MyFood.Infrastructure.Repositories
 {
-    public class IngredientSqlRepository : IIngredientRepository
+    public class IngredientSqlRepository : MyFood.Application.Services.IIngredientRepository
   {
       private readonly FoodDbContext _foodDbContext;
 
@@ -16,12 +17,12 @@ namespace MyFood.Infrastructure.Repositories
 
       public IngredientEntity GetSingle(int id)
     {
-      return _foodDbContext.IngredientItems.FirstOrDefault(x => x.Id == id);
+      return _foodDbContext.Ingredients.FirstOrDefault(x => x.Id == id);
     }
 
       public void Add(IngredientEntity item)
     {
-      _foodDbContext.IngredientItems.Add(item);
+      _foodDbContext.Ingredients.Add(item);
     }
 
       public void Delete(int id)
@@ -29,19 +30,19 @@ namespace MyFood.Infrastructure.Repositories
       IngredientEntity ingredientItem = GetSingle(id);
       if (ingredientItem != null)
       {
-        _foodDbContext.IngredientItems.Remove(ingredientItem);
+        _foodDbContext.Ingredients.Remove(ingredientItem);
       }
     }
 
       public IngredientEntity Update(int id, IngredientEntity item)
     {
-      _foodDbContext.IngredientItems.Update(item);
+      _foodDbContext.Ingredients.Update(item);
       return item;
     }
 
       public IQueryable<IngredientEntity> GetAll(QueryParameters queryParameters)
     {
-      IQueryable<IngredientEntity> _allItems = _foodDbContext.IngredientItems.OrderBy(x => x.Name);
+      IQueryable<IngredientEntity> _allItems = _foodDbContext.Ingredients.OrderBy(x => x.Name);
 
       if (queryParameters.HasQuery())
       {
@@ -57,7 +58,7 @@ namespace MyFood.Infrastructure.Repositories
 
       public int Count()
     {
-      return _foodDbContext.IngredientItems.Count();
+      return _foodDbContext.Ingredients.Count();
     }
 
       public bool Save()
@@ -68,21 +69,21 @@ namespace MyFood.Infrastructure.Repositories
     // Async implementations for v2
     public async Task<IEnumerable<IngredientEntity>> GetAllAsync()
     {
-        return await _foodDbContext.IngredientItems.ToListAsync();
+        return await _foodDbContext.Ingredients.ToListAsync();
     }
 
     public async Task AddAsync(IngredientEntity ingredient)
     {
-        await _foodDbContext.IngredientItems.AddAsync(ingredient);
+        await _foodDbContext.Ingredients.AddAsync(ingredient);
         await _foodDbContext.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
     {
-        var ingredient = await _foodDbContext.IngredientItems.FindAsync(id);
+        var ingredient = await _foodDbContext.Ingredients.FindAsync(id);
         if (ingredient != null)
         {
-            _foodDbContext.IngredientItems.Remove(ingredient);
+            _foodDbContext.Ingredients.Remove(ingredient);
             await _foodDbContext.SaveChangesAsync();
         }
     }

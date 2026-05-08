@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, ChefHat } from 'lucide-react';
 
@@ -25,6 +25,33 @@ export const Navbar: React.FC = () => {
               <h1 className="text-2xl font-bold text-white">MyFood</h1>
               <p className="text-xs text-purple-300">Food Management</p>
             </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <NavLink
+              to="/foods"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-white/20 text-white' : 'text-gray-200 hover:bg-white/10'}`
+              }
+            >
+              Foods
+            </NavLink>
+            <NavLink
+              to="/ingredients"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-white/20 text-white' : 'text-gray-200 hover:bg-white/10'}`
+              }
+            >
+              Ingredients
+            </NavLink>
+            <NavLink
+              to="/foods/create"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-lg text-sm ${isActive ? 'bg-white/20 text-white' : 'text-gray-200 hover:bg-white/10'}`
+              }
+            >
+              Create Food
+            </NavLink>
           </div>
 
           {/* User Info & Logout */}
