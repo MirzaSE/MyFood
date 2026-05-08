@@ -14,6 +14,9 @@ namespace MyFood.Infrastructure.Helpers
                 var dbContext = scope.ServiceProvider.GetRequiredService<FoodDbContext>();
                 var seedDataService = scope.ServiceProvider.GetRequiredService<ISeedDataService>();
 
+                dbContext.Database.EnsureDeleted();
+                dbContext.Database.EnsureCreated();
+
                 seedDataService.Initialize(dbContext);
             }
         }

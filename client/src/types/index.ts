@@ -1,3 +1,5 @@
+import type { FoodIngredientCreateDto } from './ingredient';
+
 export interface Food {
   id: number;
   name: string;
@@ -6,22 +8,17 @@ export interface Food {
   created: string;
 }
 
-export interface FoodUpdateDto {
-  name: string;
-  type: string;
-  calories: number;
-}
-
-export interface FoodIngredientCreateDto {
-  ingredientId: number;
-  quantity: number;
-}
-
 export interface FoodCreateDto {
   name: string;
   type: string;
   calories: number;
   ingredients?: FoodIngredientCreateDto[];
+}
+
+export interface FoodUpdateDto {
+  name: string;
+  type: string;
+  calories: number;
 }
 
 export interface LoginRequest {
@@ -44,9 +41,17 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   username: string | null;
   token: string | null;
+  isBootstrapping?: boolean;
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
-export type { Ingredient, IngredientCreateDto, IngredientUpdateDto } from './ingredient';
+export type {
+  FoodIngredientCreateDto,
+  Ingredient,
+  IngredientCreateDto,
+  IngredientUpdateDto,
+  PaginationMeta,
+  PagedIngredientsResult,
+} from './ingredient';

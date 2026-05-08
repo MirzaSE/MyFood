@@ -17,6 +17,14 @@ export const IngredientList: React.FC<IngredientListProps> = ({
   onDelete,
   isLoading = false,
 }) => {
+  if (isLoading) {
+    return (
+      <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center text-gray-300">
+        Loading ingredients...
+      </div>
+    );
+  }
+
   if (ingredients.length === 0) {
     return (
       <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center">
@@ -33,9 +41,6 @@ export const IngredientList: React.FC<IngredientListProps> = ({
             <th className="px-6 py-4 font-semibold">Name</th>
             <th className="px-6 py-4 font-semibold">Unit</th>
             <th className="px-6 py-4 font-semibold">Calories</th>
-            <th className="px-6 py-4 font-semibold">Protein</th>
-            <th className="px-6 py-4 font-semibold">Carbs</th>
-            <th className="px-6 py-4 font-semibold">Fat</th>
             <th className="px-6 py-4 font-semibold text-right">Actions</th>
           </tr>
         </thead>
@@ -45,9 +50,6 @@ export const IngredientList: React.FC<IngredientListProps> = ({
               <td className="px-6 py-4 text-white font-medium">{ingredient.name}</td>
               <td className="px-6 py-4 text-gray-300">{ingredient.unit}</td>
               <td className="px-6 py-4 text-gray-300">{ingredient.caloriesPerUnit}</td>
-              <td className="px-6 py-4 text-gray-300">{ingredient.protein}</td>
-              <td className="px-6 py-4 text-gray-300">{ingredient.carbs}</td>
-              <td className="px-6 py-4 text-gray-300">{ingredient.fat}</td>
               <td className="px-6 py-4">
                 <div className="flex justify-end gap-2">
                   <button

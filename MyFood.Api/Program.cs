@@ -18,8 +18,14 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
+using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
+{
+    ["JWT:Secret"] = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64))
+});
 
 // Add services to the container.
 builder.WebHost.UseUrls("http://*:8080");

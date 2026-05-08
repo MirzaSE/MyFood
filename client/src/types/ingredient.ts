@@ -23,3 +23,15 @@ export interface FoodIngredientCreateDto {
   ingredientId: number;
   quantity: number;
 }
+
+export interface PaginationMeta {
+  totalCount: number;
+  pageSize: number;
+  currentPage: number;
+  totalPages: number;
+}
+
+export interface PagedIngredientsResult {
+  items: Ingredient[];
+  pagination: PaginationMeta;
+}

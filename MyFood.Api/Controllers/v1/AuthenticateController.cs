@@ -97,4 +97,15 @@ public class AuthenticateController : ControllerBase
             username = user.UserName
         });
     }
+
+    [Authorize]
+    [HttpGet]
+    [Route("me")]
+    public IActionResult Me()
+    {
+        return Ok(new
+        {
+            username = User.Identity?.Name ?? string.Empty
+        });
+    }
 }

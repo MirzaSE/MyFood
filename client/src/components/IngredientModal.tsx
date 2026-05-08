@@ -11,6 +11,8 @@ interface IngredientModalProps {
   title: string;
   isLoading?: boolean;
   readOnly?: boolean;
+  statusMessage?: string | null;
+  statusType?: 'success' | 'error' | null;
 }
 
 export const IngredientModal: React.FC<IngredientModalProps> = ({
@@ -21,6 +23,8 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
   title,
   isLoading = false,
   readOnly = false,
+  statusMessage = null,
+  statusType = null,
 }) => {
   if (!isOpen) {
     return null;
@@ -41,6 +45,18 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
             <h2 className="text-2xl font-bold text-white">{title}</h2>
             <p className="text-gray-400">{readOnly ? 'Ingredient details' : 'Enter ingredient information.'}</p>
           </div>
+
+          {statusMessage && (
+            <div
+              className={`mb-4 rounded-lg border px-4 py-3 text-sm ${
+                statusType === 'error'
+                  ? 'border-red-500/40 bg-red-500/10 text-red-200'
+                  : 'border-emerald-500/40 bg-emerald-500/10 text-emerald-200'
+              }`}
+            >
+              {statusMessage}
+            </div>
+          )}
 
           <IngredientForm
             initialData={initialData}

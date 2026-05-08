@@ -102,7 +102,7 @@ export const IngredientForm: React.FC<IngredientFormProps> = ({
             {...register('caloriesPerUnit', {
               required: 'Calories are required',
               valueAsNumber: true,
-              min: { value: 0, message: 'Must be zero or greater' },
+              validate: (value) => value > 0 || 'Must be greater than 0',
             })}
             type="number"
             step="0.01"
@@ -120,7 +120,7 @@ export const IngredientForm: React.FC<IngredientFormProps> = ({
             {...register('protein', {
               required: 'Protein is required',
               valueAsNumber: true,
-              min: { value: 0, message: 'Must be zero or greater' },
+              validate: (value) => value > 0 || 'Must be greater than 0',
             })}
             type="number"
             step="0.01"
@@ -138,7 +138,7 @@ export const IngredientForm: React.FC<IngredientFormProps> = ({
             {...register('carbs', {
               required: 'Carbs are required',
               valueAsNumber: true,
-              min: { value: 0, message: 'Must be zero or greater' },
+              validate: (value) => value > 0 || 'Must be greater than 0',
             })}
             type="number"
             step="0.01"
@@ -156,7 +156,7 @@ export const IngredientForm: React.FC<IngredientFormProps> = ({
             {...register('fat', {
               required: 'Fat is required',
               valueAsNumber: true,
-              min: { value: 0, message: 'Must be zero or greater' },
+              validate: (value) => value > 0 || 'Must be greater than 0',
             })}
             type="number"
             step="0.01"

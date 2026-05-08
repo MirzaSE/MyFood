@@ -81,10 +81,24 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
-            var dto = await _ingredientService.CreateAsync(createDto);
-
-            return CreatedAtRoute(nameof(GetSingleIngredient),
-                new { id = dto.Id }, dto);
+            try
+            {
+                var dto = await _ingredientService.CreateAsync(createDto);
+                return CreatedAtRoute(nameof(GetSingleIngredient),
+                    new { id = dto.Id }, dto);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id:int}", Name = nameof(UpdateIngredient))]
@@ -95,13 +109,28 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
-            var dto = await _ingredientService.UpdateAsync(id, updateDto);
-            if (dto == null)
+            try
             {
-                return NotFound();
-            }
+                var dto = await _ingredientService.UpdateAsync(id, updateDto);
+                if (dto == null)
+                {
+                    return NotFound();
+                }
 
-            return Ok(dto);
+                return Ok(dto);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpDelete("{id:int}", Name = nameof(RemoveIngredient))]
