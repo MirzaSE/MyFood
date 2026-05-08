@@ -1,64 +1,65 @@
-using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
 using MyFood.Application.Dtos;
-using MyFood.Application.Entities;
-using MyFood.Infrastructure.Repositories;
+using MyFood.Application.Services;
 
 namespace MyFood.Api.Controllers.v1
 {
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class IngredientsController : ControllerBase
     {
-        private readonly IIngredientRepository _ingredientRepository;
-        private readonly IMapper _mapper;
+        private readonly IIngredientService _ingredientService;
 
-        public IngredientsController(IIngredientRepository ingredientRepository, IMapper mapper)
+        public IngredientsController(IIngredientService ingredientService)
         {
-            _ingredientRepository = ingredientRepository;
-            _mapper = mapper;
+            _ingredientService = ingredientService;
         }
 
         [HttpGet(Name = nameof(GetAllIngredients))]
-        public ActionResult<IEnumerable<IngredientDto>> GetAllIngredients([FromQuery] QueryParameters queryParameters)
+        public async Task<ActionResult<IEnumerable<IngredientDto>>> GetAllIngredients([FromQuery] QueryParameters queryParameters)
         {
-            var ingredients = _ingredientRepository.GetAll(queryParameters).ToList();
-            var ingredientDtos = ingredients.Select(x => _mapper.Map<IngredientDto>(x));
-            return Ok(ingredientDtos);
+            var ingredients = await _ingredientService.GetAllAsync(queryParameters);
+            return Ok(ingredients);
         }
 
         [HttpGet("{id:int}", Name = nameof(GetSingleIngredient))]
-        public ActionResult<IngredientDto> GetSingleIngredient(int id)
+        public async Task<ActionResult<IngredientDto>> GetSingleIngredient(int id)
         {
-            IngredientEntity? ingredientEntity = _ingredientRepository.GetSingle(id);
+            var ingredientDto = await _ingredientService.GetByIdAsync(id);
 
-            if (ingredientEntity == null)
+            if (ingredientDto == null)
             {
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<IngredientDto>(ingredientEntity));
+            return Ok(ingredientDto);
+        }
+
+        [HttpGet("search", Name = nameof(SearchIngredients))]
+        public async Task<ActionResult<IEnumerable<IngredientDto>>> SearchIngredients([FromQuery] string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return BadRequest("Query parameter is required.");
+            }
+
+            var results = await _ingredientService.SearchAsync(query);
+            return Ok(results);
         }
 
         [HttpPost(Name = nameof(AddIngredient))]
-        public ActionResult<IngredientDto> AddIngredient(ApiVersion version, [FromBody] IngredientCreateDto ingredientCreateDto)
+        public async Task<ActionResult<IngredientDto>> AddIngredient(ApiVersion version, [FromBody] IngredientCreateDto ingredientCreateDto)
         {
             if (ingredientCreateDto == null)
             {
                 return BadRequest();
             }
 
-            IngredientEntity ingredientEntity = _mapper.Map<IngredientEntity>(ingredientCreateDto);
-            _ingredientRepository.Add(ingredientEntity);
-
-            if (!_ingredientRepository.Save())
-            {
-                throw new Exception("Creating an ingredient failed on save.");
-            }
-
-            IngredientDto ingredientDto = _mapper.Map<IngredientDto>(ingredientEntity);
+            var ingredientDto = await _ingredientService.CreateAsync(ingredientCreateDto);
 
             return CreatedAtRoute(
                 nameof(GetSingleIngredient),
@@ -67,46 +68,31 @@ namespace MyFood.Api.Controllers.v1
         }
 
         [HttpPut("{id:int}", Name = nameof(UpdateIngredient))]
-        public ActionResult<IngredientDto> UpdateIngredient(int id, [FromBody] IngredientUpdateDto ingredientUpdateDto)
+        public async Task<ActionResult<IngredientDto>> UpdateIngredient(int id, [FromBody] IngredientUpdateDto ingredientUpdateDto)
         {
             if (ingredientUpdateDto == null)
             {
                 return BadRequest();
             }
 
-            IngredientEntity? existingIngredient = _ingredientRepository.GetSingle(id);
+            var updatedDto = await _ingredientService.UpdateAsync(id, ingredientUpdateDto);
 
-            if (existingIngredient == null)
+            if (updatedDto == null)
             {
                 return NotFound();
             }
 
-            _mapper.Map(ingredientUpdateDto, existingIngredient);
-            IngredientEntity updated = _ingredientRepository.Update(id, existingIngredient);
-
-            if (!_ingredientRepository.Save())
-            {
-                throw new Exception("Updating an ingredient failed on save.");
-            }
-
-            return Ok(_mapper.Map<IngredientDto>(updated));
+            return Ok(updatedDto);
         }
 
         [HttpDelete("{id:int}", Name = nameof(RemoveIngredient))]
-        public ActionResult RemoveIngredient(int id)
+        public async Task<ActionResult> RemoveIngredient(int id)
         {
-            IngredientEntity? existingIngredient = _ingredientRepository.GetSingle(id);
+            var deleted = await _ingredientService.DeleteAsync(id);
 
-            if (existingIngredient == null)
+            if (!deleted)
             {
                 return NotFound();
-            }
-
-            _ingredientRepository.Delete(id);
-
-            if (!_ingredientRepository.Save())
-            {
-                throw new Exception("Deleting an ingredient failed on save.");
             }
 
             return NoContent();

@@ -1,15 +1,3 @@
-using MyFood.Application;
-using MyFood.Application.Entities;
-
-namespace MyFood.Infrastructure.Repositories;
-
-public interface IIngredientRepository
-{
-        IngredientEntity? GetSingle(int id);
-        void Add(IngredientEntity item);
-        void Delete(int id);
-        IngredientEntity Update(int id, IngredientEntity item);
-        IQueryable<IngredientEntity> GetAll(QueryParameters queryParameters);
-        int Count();
-        bool Save();
-}
+// This file is intentionally left as a re-export for backward compatibility.
+// The canonical interface definition lives in MyFood.Application.Services.IIngredientRepository.
+// IngredientSqlRepository implements MyFood.Application.Services.IIngredientRepository.
