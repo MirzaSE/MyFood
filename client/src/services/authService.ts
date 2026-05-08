@@ -19,7 +19,7 @@ export const authService = {
   async register(username: string, email: string, password: string): Promise<AuthResponse> {
     const response = await apiClient.post<AuthResponse>('/authenticate/register', {
       username,
-      //email,
+      email,
       password,
     } as RegisterRequest);
 
@@ -28,6 +28,11 @@ export const authService = {
       localStorage.setItem('username', response.data.username);
     }
 
+    return response.data;
+  },
+
+  async getCurrentUser(): Promise<{ username: string }> {
+    const response = await apiClient.get<{ username: string }>('/authenticate/me');
     return response.data;
   },
 

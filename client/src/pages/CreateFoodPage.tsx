@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, AlertCircle } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { AlertCircle, Plus } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
@@ -7,7 +7,7 @@ import { foodService } from '../services/foodService';
 import { getApiErrorMessage } from '../services/apiError';
 import type { Food, FoodCreateDto } from '../types';
 
-export const FoodPage: React.FC = () => {
+export const CreateFoodPage: React.FC = () => {
   const [foods, setFoods] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +15,6 @@ export const FoodPage: React.FC = () => {
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load foods on component mount
   useEffect(() => {
     loadFoods();
   }, []);
@@ -49,13 +48,11 @@ export const FoodPage: React.FC = () => {
       setError(null);
 
       if (selectedFood) {
-        // Update existing food
         const updatedFood = await foodService.updateFood(selectedFood.id, data);
-        setFoods(currentFoods => currentFoods.map(f => (f.id === selectedFood.id ? updatedFood : f)));
+        setFoods((currentFoods) => currentFoods.map((f) => (f.id === selectedFood.id ? updatedFood : f)));
       } else {
-        // Create new food
         const newFood = await foodService.createFood(data);
-        setFoods(currentFoods => [...currentFoods, newFood]);
+        setFoods((currentFoods) => [...currentFoods, newFood]);
       }
 
       setModalOpen(false);
@@ -71,7 +68,7 @@ export const FoodPage: React.FC = () => {
     try {
       setError(null);
       await foodService.deleteFood(id);
-      setFoods(currentFoods => currentFoods.filter(f => f.id !== id));
+      setFoods((currentFoods) => currentFoods.filter((f) => f.id !== id));
     } catch (err: any) {
       setError(getApiErrorMessage(err, 'Failed to delete food'));
       throw err;
@@ -83,7 +80,6 @@ export const FoodPage: React.FC = () => {
       <Navbar />
 
       <div className="container mx-auto px-6 py-16">
-        {/* Error Banner */}
         {error && (
           <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start space-x-3 backdrop-blur">
             <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
@@ -91,13 +87,10 @@ export const FoodPage: React.FC = () => {
           </div>
         )}
 
-        {/* Page Header */}
         <div className="mb-16">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-10">
             <div>
-              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-                Food Management
-              </h1>
+              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">Food Management</h1>
               <p className="text-gray-400">
                 {foods.length} {foods.length === 1 ? 'item' : 'items'} in your collection
               </p>
@@ -113,7 +106,6 @@ export const FoodPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Loading State */}
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="relative w-16 h-16 mb-4">
@@ -123,19 +115,10 @@ export const FoodPage: React.FC = () => {
             <p className="text-gray-300 font-medium">Loading your foods...</p>
           </div>
         ) : (
-          /* Content */
-          <div>
-            <FoodTable
-              foods={foods}
-              onEdit={handleEditClick}
-              onDelete={handleDelete}
-              isLoading={isSubmitting}
-            />
-          </div>
+          <FoodTable foods={foods} onEdit={handleEditClick} onDelete={handleDelete} isLoading={isSubmitting} />
         )}
       </div>
 
-      {/* Modal */}
       <FoodModal
         isOpen={modalOpen}
         onClose={() => {

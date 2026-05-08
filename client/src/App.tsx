@@ -2,11 +2,16 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LoginPage } from './pages/LoginPage';
-import { FoodPage } from './pages/FoodPage';
+import { CreateFoodPage } from './pages/CreateFoodPage';
+import { IngredientsPage } from './pages/IngredientsPage';
 import './App.css';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isBootstrapping } = useAuth();
+
+  if (isBootstrapping) {
+    return <div className="min-h-screen bg-slate-950" />;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -28,7 +33,15 @@ const AppRoutes: React.FC = () => {
         path="/foods"
         element={
           <ProtectedRoute>
-            <FoodPage />
+            <CreateFoodPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ingredients"
+        element={
+          <ProtectedRoute>
+            <IngredientsPage />
           </ProtectedRoute>
         }
       />

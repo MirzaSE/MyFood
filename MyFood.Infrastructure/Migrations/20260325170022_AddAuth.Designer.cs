@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFood.Infrastructure.Repositories;
 
@@ -11,13 +12,15 @@ using MyFood.Infrastructure.Repositories;
 namespace MyFood.Infrastructure.Migrations
 {
     [DbContext(typeof(FoodDbContext))]
-    partial class FoodDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260325170022_AddAuth")]
+    partial class AddAuth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.5")
+                .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -155,7 +158,7 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("MyFood.Application.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -173,6 +176,9 @@ namespace MyFood.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -220,7 +226,7 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>
+            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -247,26 +253,7 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("FoodItems");
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.FoodIngredientEntity", b =>
-                {
-                    b.Property<int>("FoodEntityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IngredientEntityId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Quantity")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("FoodEntityId", "IngredientEntityId");
-
-                    b.HasIndex("IngredientEntityId");
-
-                    b.ToTable("FoodIngredients");
-                });
-
-            modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -274,33 +261,19 @@ namespace MyFood.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("CaloriesPerUnit")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Carbs")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Fat")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("FoodEntityId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
 
-                    b.Property<decimal>("Protein")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Quantity")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FoodEntityId");
 
                     b.ToTable("Ingredients");
                 });
@@ -316,7 +289,7 @@ namespace MyFood.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MyFood.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MyFood.Application.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -325,7 +298,7 @@ namespace MyFood.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MyFood.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MyFood.Application.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -340,7 +313,7 @@ namespace MyFood.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyFood.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MyFood.Application.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -349,40 +322,27 @@ namespace MyFood.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MyFood.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MyFood.Application.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.FoodIngredientEntity", b =>
+            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
                 {
-                    b.HasOne("MyFood.Domain.Entities.FoodEntity", "FoodEntity")
-                        .WithMany("FoodIngredients")
+                    b.HasOne("MyFood.Application.Entities.FoodEntity", "FoodEntity")
+                        .WithMany("Ingredients")
                         .HasForeignKey("FoodEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyFood.Domain.Entities.IngredientEntity", "IngredientEntity")
-                        .WithMany("FoodIngredients")
-                        .HasForeignKey("IngredientEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("FoodEntity");
-
-                    b.Navigation("IngredientEntity");
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>
+            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
                 {
-                    b.Navigation("FoodIngredients");
-                });
-
-            modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
-                {
-                    b.Navigation("FoodIngredients");
+                    b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618
         }

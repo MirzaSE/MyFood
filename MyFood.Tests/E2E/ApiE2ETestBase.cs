@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using MyFood.Api;
+using MyFood.Infrastructure.Repositories;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -13,11 +17,19 @@ namespace MyFood.Tests.E2E
 
         public async Task InitializeAsync()
         {
-            Factory = new WebApplicationFactory<Program>();
+            Factory = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.UseEnvironment("Testing");
+                });
             Client = Factory.CreateClient();
             
             // Use localhost with port 8080 as configured in Program.cs
             Client.BaseAddress = new Uri("http://localhost:8080");
+
+            using var scope = Factory.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<FoodDbContext>();
+            db.Database.EnsureCreated();
         }
 
         public async Task DisposeAsync()
@@ -32,7 +44,8 @@ namespace MyFood.Tests.E2E
         protected async Task<string> RegisterAndLogin(string username = "testuser", string password = "Test@123")
         {
             // Register
-            var registerModel = new { username, password };
+            var email = $"{username}@example.com";
+            var registerModel = new { username, email, password };
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
                 new MediaTypeHeaderValue("application/json"));

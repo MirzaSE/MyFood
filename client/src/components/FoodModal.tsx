@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
-import type { Food, FoodCreateDto } from '../types';
+import type { Food, FoodCreateDto, Ingredient } from '../types';
+import { ingredientService } from '../services/ingredientService';
+import { FoodIngredientsPicker } from './FoodIngredientsPicker';
+import type { SelectedFoodIngredient } from './FoodIngredientsPicker';
 
 interface FoodModalProps {
   isOpen: boolean;
@@ -18,27 +21,93 @@ export const FoodModal: React.FC<FoodModalProps> = ({
   initialData,
   isLoading = false,
 }) => {
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<SelectedFoodIngredient[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FoodCreateDto>({
-    defaultValues: initialData ? {
-      name: initialData.name,
-      type: initialData.type,
-      calories: initialData.calories,
-    } : undefined,
+    defaultValues: {
+      name: '',
+      type: '',
+      calories: 0,
+      ingredients: [],
+    },
   });
+
+  useEffect(() => {
+    const loadIngredients = async () => {
+      try {
+        setLoadError(null);
+        const result = await ingredientService.getAllIngredients({ page: 1, pageCount: 50 });
+        setIngredients(result.items);
+      } catch (error) {
+        setLoadError('Unable to load ingredients for the picker.');
+      }
+    };
+
+    if (isOpen) {
+      void loadIngredients();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedIngredients([]);
+      return;
+    }
+
+    reset(
+      initialData
+        ? {
+            name: initialData.name,
+            type: initialData.type,
+            calories: initialData.calories,
+          }
+        : {
+            name: '',
+            type: '',
+            calories: 0,
+            ingredients: [],
+          }
+    );
+  }, [initialData, isOpen, reset]);
+
+  const calculatedIngredientCalories = useMemo(
+    () =>
+      selectedIngredients.reduce((total, entry) => {
+        const ingredient = ingredients.find((item) => item.id === entry.ingredientId);
+        return total + (ingredient?.caloriesPerUnit ?? 0) * entry.quantity;
+      }, 0),
+    [ingredients, selectedIngredients]
+  );
+
+  useEffect(() => {
+    if (selectedIngredients.length > 0) {
+      setValue('calories', Math.round(calculatedIngredientCalories));
+    }
+  }, [calculatedIngredientCalories, selectedIngredients.length, setValue]);
 
   const handleClose = () => {
     reset();
+    setSelectedIngredients([]);
     onClose();
   };
 
   const onSubmitForm = async (data: FoodCreateDto) => {
     try {
-      await onSubmit(data);
+      await onSubmit({
+        ...data,
+        ingredients: selectedIngredients.map((entry) => ({
+          ingredientId: entry.ingredientId,
+          quantity: entry.quantity,
+        })),
+      });
       reset();
     } catch (error) {
       console.error('Form submission error:', error);
@@ -65,12 +134,21 @@ export const FoodModal: React.FC<FoodModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8">
+          {loadError && (
+            <div className="mb-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+              {loadError}
+            </div>
+          )}
+
           <div className="mt-8">
             <label className="block text-sm font-semibold text-gray-300 mb-2" >
               Food Name
             </label>
             <input
-              {...register('name', { required: 'Name is required' })}
+              {...register('name', { 
+                required: 'Name is required',
+                maxLength: { value: 250, message: 'Name cannot be longer than 250 characters' }
+              })}
               type="text"
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 text-base transition-all"
               placeholder="e.g., Grilled Chicken"
@@ -84,7 +162,10 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Type
             </label>
             <input
-              {...register('type', { required: 'Type is required' })}
+              {...register('type', { 
+                required: 'Type is required',
+                maxLength: { value: 50, message: 'Type cannot be longer than 50 characters' }
+              })}
               type="text"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
               placeholder="e.g., Protein, Vegetable"
@@ -101,7 +182,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               {...register('calories', {
                 required: 'Calories is required',
                 valueAsNumber: true,
-                min: { value: 0, message: 'Calories must be positive' },
+                min: { value: 0, message: 'Calories must be zero or greater' },
               })}
               type="number"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
@@ -109,6 +190,22 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               disabled={isLoading}
             />
             {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
+          </div>
+
+          <div className="mt-8">
+            <FoodIngredientsPicker
+              ingredients={ingredients}
+              value={selectedIngredients}
+              onChange={setSelectedIngredients}
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="mt-6 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-gray-200">
+            <div className="flex items-center justify-between">
+              <span>Calculated ingredient calories</span>
+              <span className="font-semibold text-white">{calculatedIngredientCalories.toFixed(2)} kcal</span>
+            </div>
           </div>
 
           <div className="flex space-x-3 pt-6">

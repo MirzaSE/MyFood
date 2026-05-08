@@ -13,7 +13,8 @@ namespace MyFood.Tests.E2E
             // Arrange
             var model = new
             {
-                username = "test"+ Guid.NewGuid().ToString("N").Substring(0, 8), // Ensure unique username
+                username = "test" + Guid.NewGuid().ToString("N").Substring(0, 8), // Ensure unique username
+                email = $"test{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com",
                 password = "SecurePass@123"
             };
 
@@ -28,7 +29,12 @@ namespace MyFood.Tests.E2E
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var responseBody = await response.Content.ReadAsStringAsync();
-            Assert.Contains("successfully", responseBody, StringComparison.OrdinalIgnoreCase);
+            using var jsonDoc = JsonDocument.Parse(responseBody);
+            var root = jsonDoc.RootElement;
+            Assert.True(root.TryGetProperty("token", out var tokenElement));
+            Assert.True(root.TryGetProperty("username", out var usernameElement));
+            Assert.NotEmpty(tokenElement.GetString() ?? "");
+            Assert.False(string.IsNullOrWhiteSpace(usernameElement.GetString()));
         }
 
         [Fact]
@@ -37,8 +43,9 @@ namespace MyFood.Tests.E2E
             // Arrange
             var username = "duplicateuser";
             var password = "Test@123";
-            
-            var model = new { username, password };
+            var email = "duplicateuser@example.com";
+
+            var model = new { username, email, password };
             var content = new StringContent(
                 JsonSerializer.Serialize(model),
                 Encoding.UTF8,
@@ -55,18 +62,19 @@ namespace MyFood.Tests.E2E
             var response = await Client.PostAsync("/api/authenticate/register", content);
 
             // Assert
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         }
 
         [Fact]
-        public async Task Login_WithValidCredentials_ReturnsTokenAndExpiration()
+        public async Task Login_WithValidCredentials_ReturnsTokenAndUsername()
         {
             // Arrange
             var username = "loginuser";
             var password = "Test@123";
+            var email = "loginuser@example.com";
             
             // Register first
-            var registerModel = new { username, password };
+            var registerModel = new { username, email, password };
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
                 Encoding.UTF8,
@@ -88,8 +96,9 @@ namespace MyFood.Tests.E2E
             var root = jsonDoc.RootElement;
             
             Assert.True(root.TryGetProperty("token", out var tokenElement));
-            Assert.True(root.TryGetProperty("expiration", out var expirationElement));
+            Assert.True(root.TryGetProperty("username", out var usernameElement));
             Assert.NotEmpty(tokenElement.GetString() ?? "");
+            Assert.False(string.IsNullOrWhiteSpace(usernameElement.GetString()));
         }
 
         [Fact]
@@ -98,9 +107,10 @@ namespace MyFood.Tests.E2E
             // Arrange
             var username = "validuser";
             var password = "ValidPass@123";
+            var email = "validuser@example.com";
             
             // Register
-            var registerModel = new { username, password };
+            var registerModel = new { username, email, password };
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
                 Encoding.UTF8,

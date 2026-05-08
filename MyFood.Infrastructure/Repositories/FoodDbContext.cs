@@ -13,16 +13,46 @@ namespace MyFood.Infrastructure.Repositories
 
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
         public DbSet<IngredientEntity> Ingredients { get; set; } = null!; 
+        public DbSet<FoodIngredientEntity> FoodIngredients { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<FoodEntity>()
-                .HasMany(f => f.Ingredients)
-                .WithOne(i => i.FoodEntity)
-                .HasForeignKey(i => i.FoodEntityId)
+            modelBuilder.Entity<FoodIngredientEntity>()
+                .HasKey(x => new { x.FoodEntityId, x.IngredientEntityId });
+
+            modelBuilder.Entity<FoodIngredientEntity>()
+                .HasOne(x => x.FoodEntity)
+                .WithMany(f => f.FoodIngredients)
+                .HasForeignKey(x => x.FoodEntityId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FoodIngredientEntity>()
+                .HasOne(x => x.IngredientEntity)
+                .WithMany(i => i.FoodIngredients)
+                .HasForeignKey(x => x.IngredientEntityId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FoodIngredientEntity>()
+                .Property(x => x.Quantity)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<IngredientEntity>()
+                .Property(x => x.CaloriesPerUnit)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<IngredientEntity>()
+                .Property(x => x.Protein)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<IngredientEntity>()
+                .Property(x => x.Carbs)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<IngredientEntity>()
+                .Property(x => x.Fat)
+                .HasPrecision(18, 2);
         }
     }
     
