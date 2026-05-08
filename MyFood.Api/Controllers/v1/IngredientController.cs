@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
 using MyFood.Application.Dtos;
+using MyFood.Application.Services;
 using MyFood.Domain.Entities;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
@@ -51,7 +52,7 @@ namespace MyFood.Api.Controllers.v1
             return Ok(result);
         }
 
-        // GET SINGLE
+        
         // GET SINGLE
         [HttpGet("{id:int}", Name = nameof(GetSingleIngredient))]
         public ActionResult GetSingleIngredient(ApiVersion version, int id)

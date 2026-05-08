@@ -15,7 +15,9 @@ public class AuthenticateController : ControllerBase
     private readonly RoleManager<IdentityRole> roleManager;
     private readonly IConfiguration _configuration;
 
-    public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
+    public AuthenticateController(
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
         IConfiguration configuration)
     {
         this.userManager = userManager;
@@ -51,15 +53,18 @@ public class AuthenticateController : ControllerBase
         }
 
         var authSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])
+            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
         );
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["JWT:ValidIssuer"],
-            audience: _configuration["JWT:ValidAudience"],
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
             expires: DateTime.Now.AddHours(3),
             claims: authClaims,
-            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            signingCredentials: new SigningCredentials(
+                authSigningKey,
+                SecurityAlgorithms.HmacSha256
+            )
         );
 
         return Ok(new
@@ -74,24 +79,27 @@ public class AuthenticateController : ControllerBase
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
     {
-
         var userExists = await userManager.FindByNameAsync(model.Username);
+
         if (userExists != null)
             return BadRequest("User already exists");
-
 
         ApplicationUser user = new ApplicationUser()
         {
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = model.Username,
-            FullName = model.Username 
+            FullName = model.Username
         };
+
         var result = await userManager.CreateAsync(user, model.Password);
 
         if (!result.Succeeded)
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "User creation failed! Please check user details and try again.");
-
+        {
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                "User creation failed! Please check user details and try again."
+            );
+        }
 
         var authClaims = new List<Claim>
         {
@@ -100,17 +108,19 @@ public class AuthenticateController : ControllerBase
         };
 
         var authSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])
+            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
         );
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["JWT:ValidIssuer"],
-            audience: _configuration["JWT:ValidAudience"],
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
             expires: DateTime.Now.AddHours(3),
             claims: authClaims,
-            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            signingCredentials: new SigningCredentials(
+                authSigningKey,
+                SecurityAlgorithms.HmacSha256
+            )
         );
-
 
         return Ok(new
         {

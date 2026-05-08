@@ -8,6 +8,10 @@ const mockRegister = jest.fn();
 jest.spyOn(AuthContext, 'useAuth').mockReturnValue({
   login: mockLogin,
   register: mockRegister,
+    logout: jest.fn(),
+    isAuthenticated: false,
+    username: null,
+    token: null
 });
 
 describe('LoginPage', () => {
