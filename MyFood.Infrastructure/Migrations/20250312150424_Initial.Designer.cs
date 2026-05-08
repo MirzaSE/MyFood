@@ -25,7 +25,7 @@ namespace MyFood.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
+            modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

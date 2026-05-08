@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using MyFood.Api;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 
 namespace MyFood.Tests.E2E
@@ -14,52 +15,82 @@ namespace MyFood.Tests.E2E
         public async Task InitializeAsync()
         {
             Factory = new WebApplicationFactory<Program>();
+
             Client = Factory.CreateClient();
-            
-            // Use localhost with port 8080 as configured in Program.cs
+
             Client.BaseAddress = new Uri("http://localhost:8080");
+
+            await Task.CompletedTask;
         }
 
         public async Task DisposeAsync()
         {
             Client?.Dispose();
             Factory?.Dispose();
+
+            await Task.CompletedTask;
         }
 
         /// <summary>
         /// Helper method to register a new test user and obtain JWT token
         /// </summary>
-        protected async Task<string> RegisterAndLogin(string username = "testuser", string password = "Test@123")
+        protected async Task<string> RegisterAndLogin(
+            string username = "testuser",
+            string password = "Test@123")
         {
-            // Register
-            var registerModel = new { username, password };
+            // REGISTER
+
+            var registerModel = new
+            {
+                username,
+                password
+            };
+
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
-                new MediaTypeHeaderValue("application/json"));
+                Encoding.UTF8,
+                "application/json");
 
-            await Client.PostAsync("/api/authenticate/register", registerContent);
+            await Client.PostAsync(
+                "/api/authenticate/register",
+                registerContent);
 
-            // Login
-            var loginModel = new { username, password };
+            // LOGIN
+
+            var loginModel = new
+            {
+                username,
+                password
+            };
+
             var loginContent = new StringContent(
                 JsonSerializer.Serialize(loginModel),
-                new MediaTypeHeaderValue("application/json"));
+                Encoding.UTF8,
+                "application/json");
 
-            var loginResponse = await Client.PostAsync("/api/authenticate/login", loginContent);
-            
+            var loginResponse = await Client.PostAsync(
+                "/api/authenticate/login",
+                loginContent);
+
             if (loginResponse.IsSuccessStatusCode)
             {
-                var responseBody = await loginResponse.Content.ReadAsStringAsync();
-                using var jsonDoc = JsonDocument.Parse(responseBody);
+                var responseBody =
+                    await loginResponse.Content.ReadAsStringAsync();
+
+                using var jsonDoc =
+                    JsonDocument.Parse(responseBody);
+
                 var root = jsonDoc.RootElement;
-                
+
                 if (root.TryGetProperty("token", out var tokenElement))
                 {
-                    return tokenElement.GetString() ?? string.Empty;
+                    return tokenElement.GetString()
+                           ?? string.Empty;
                 }
             }
 
-            throw new Exception("Failed to obtain authentication token");
+            throw new Exception(
+                "Failed to obtain authentication token");
         }
 
         /// <summary>
@@ -68,7 +99,11 @@ namespace MyFood.Tests.E2E
         protected void SetAuthorizationToken(string token)
         {
             AuthToken = token;
-            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            Client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue(
+                    "Bearer",
+                    token);
         }
 
         /// <summary>
@@ -77,6 +112,7 @@ namespace MyFood.Tests.E2E
         protected void ClearAuthorizationToken()
         {
             AuthToken = null;
+
             Client.DefaultRequestHeaders.Authorization = null;
         }
     }
