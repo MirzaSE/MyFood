@@ -1,9 +1,10 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application.Dtos;
-using MyFood.Application.Entities;
-using MyFood.Infrastructure.Repositories;
+using MyFood.Domain.Entities;
+using MyFood.Application.Services;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyFood.Api.Controllers.v1
 {
@@ -21,6 +22,7 @@ namespace MyFood.Api.Controllers.v1
             _mapper = mapper;
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<IngredientDto>> GetAllIngredients()
         {
@@ -44,6 +46,12 @@ namespace MyFood.Api.Controllers.v1
         [HttpPost]
         public ActionResult<IngredientDto> AddIngredient([FromBody] IngredientCreateDto ingredientCreateDto)
         {
+            // Normalize FoodId: 0 means "no food attached" - convert to null to avoid FK violation
+            if (ingredientCreateDto.FoodId == 0)
+            {
+                ingredientCreateDto.FoodId = null;
+            }
+
             var ingredientEntity = _mapper.Map<IngredientEntity>(ingredientCreateDto);
             
             _ingredientRepository.Add(ingredientEntity);
@@ -99,6 +107,12 @@ public ActionResult PartiallyUpdateIngredient(int id, [FromBody] JsonPatchDocume
         [HttpPut("{id}")]
         public ActionResult UpdateIngredient(int id, [FromBody] IngredientUpdateDto ingredientUpdateDto)
         {
+            // Normalize FoodId: 0 means "no food attached" - convert to null to avoid FK violation
+            if (ingredientUpdateDto.FoodId == 0)
+            {
+                ingredientUpdateDto.FoodId = null;
+            }
+
             var ingredientEntity = _ingredientRepository.GetSingle(id);
 
             if (ingredientEntity == null)
