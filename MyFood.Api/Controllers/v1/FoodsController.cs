@@ -47,7 +47,7 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            Response.Headers["X-Pagination"] = JsonSerializer.Serialize(paginationMetadata);
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
             var toReturn = foodDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
@@ -94,7 +94,7 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            Response.Headers["X-Pagination"] = JsonSerializer.Serialize(paginationMetadata);
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
             var toReturn = foodDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
@@ -114,7 +114,20 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
-            var foodDto = await _foodService.CreateFoodAsync(foodCreateDto);
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            FoodDto foodDto;
+            try
+            {
+                foodDto = await _foodService.CreateFoodAsync(foodCreateDto);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
 
             return CreatedAtRoute(nameof(GetSingleFood),
                 new { version = version.ToString(), id = foodDto.Id },
@@ -146,7 +159,15 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            var updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
+            FoodDto? updatedDto;
+            try
+            {
+                updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
 
             return Ok(_linkService.ExpandSingleFoodItem(updatedDto, updatedDto.Id, version));
         }
@@ -174,7 +195,20 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
-            var updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            FoodDto? updatedDto;
+            try
+            {
+                updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
 
             if (updatedDto == null)
             {

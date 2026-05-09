@@ -16,13 +16,11 @@ export const FoodTable: React.FC<FoodTableProps> = ({
   isLoading = false,
 }) => {
   const [deletingId, setDeletingId] = React.useState<number | null>(null);
-  const [showConfirm, setShowConfirm] = React.useState<number | null>(null);
 
   const handleDelete = async (id: number) => {
     try {
       setDeletingId(id);
       await onDelete(id);
-      setShowConfirm(null);
     } finally {
       setDeletingId(null);
     }
@@ -30,101 +28,84 @@ export const FoodTable: React.FC<FoodTableProps> = ({
 
   if (foods.length === 0) {
     return (
-      <div className="text-center py-16">
-        <div className="flex justify-center mb-4">
-          <div className="p-4 bg-purple-500/20 rounded-full">
-            <UtensilsCrossed size={32} className="text-purple-400" />
+      <div className="py-16 text-center">
+        <div className="mb-4 flex justify-center">
+          <div className="rounded-full bg-amber-500/20 p-4">
+            <UtensilsCrossed size={32} className="text-amber-300" />
           </div>
         </div>
-        <p className="text-gray-300 text-lg font-medium">No foods found</p>
-        <p className="text-gray-400 text-sm mt-1">Create one to get started!</p>
+        <p className="text-lg font-medium text-gray-300">No foods found</p>
+        <p className="mt-1 text-sm text-gray-400">Create one to get started.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {foods.map((food) => (
-          <div
-            key={food.id}
-            className="group bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 hover:border-purple-500/50 rounded-xl p-4 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20"
-          >
-            {/* Card Header */}
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 transition-all">
-                  {food.name}
-                </h3>
-                <span className="inline-block mt-2 px-3 py-1 bg-purple-500/30 text-purple-300 text-xs font-medium rounded-full border border-purple-500/50">
-                  {food.type}
-                </span>
-              </div>
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+      {foods.map((food) => (
+        <div
+          key={food.id}
+          className="rounded-[1.75rem] border border-white/10 bg-gradient-to-br from-slate-900/90 to-stone-900/80 p-6 shadow-xl"
+        >
+          <div className="mb-5 flex items-start justify-between gap-3">
+            <div>
+              <h3 className="text-2xl font-bold text-white">{food.name}</h3>
+              <span className="mt-2 inline-block rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-amber-200">
+                {food.type}
+              </span>
             </div>
-
-            {/* Card Content */}
-            <div className="space-y-3 mb-4">
-              <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5">
-                <span className="text-gray-400 text-sm">Calories</span>
-                <span className="text-white font-semibold">{food.calories} kcal</span>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5">
-                <span className="text-gray-400 text-sm">Added</span>
-                <span className="text-gray-300 text-sm">{new Date(food.created).toLocaleDateString()}</span>
-              </div>
-            </div>
-
-            {/* Card Actions */}
-            <div className="flex space-x-2 gap-2">
-              <button
-                onClick={() => onEdit(food)}
-                className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 hover:text-blue-200 rounded-lg transition-all duration-200 border border-blue-500/30 hover:border-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={isLoading || deletingId === food.id}
-                title="Edit"
-              >
-                <Edit size={16} />
-                <span className="text-sm font-medium">Edit</span>
-              </button>
-
-              <div className="relative flex-1">
-                <button
-                  onClick={() => setShowConfirm(food.id)}
-                  className="w-full flex items-center justify-center space-x-2 px-3 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={isLoading || deletingId !== null}
-                  title="Delete"
-                >
-                  <Trash2 size={16} />
-                  <span className="text-sm font-medium">Delete</span>
-                </button>
-
-                {showConfirm === food.id && (
-                  <div className="absolute right-0 top-full mt-2 bg-slate-900 border border-red-500/50 rounded-lg p-4 z-10 w-56 shadow-xl">
-                    <p className="text-sm text-gray-200 mb-3 font-medium">Delete this item?</p>
-                    <p className="text-xs text-gray-400 mb-4">This action cannot be undone.</p>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => setShowConfirm(null)}
-                        className="flex-1 px-3 py-2 bg-slate-700 hover:bg-slate-600 text-gray-300 rounded-lg text-sm font-medium transition-all disabled:opacity-50"
-                        disabled={deletingId === food.id}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={() => handleDelete(food.id)}
-                        className="flex-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-all disabled:opacity-50"
-                        disabled={deletingId === food.id}
-                      >
-                        {deletingId === food.id ? 'Deleting...' : 'Delete'}
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+            <div className="rounded-2xl bg-white/5 px-4 py-3 text-right">
+              <p className="text-xs uppercase tracking-[0.2em] text-gray-400">Ingredients</p>
+              <p className="text-2xl font-black text-white">{food.ingredients?.length ?? 0}</p>
             </div>
           </div>
-        ))}
-      </div>
+
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+              <p className="text-xs uppercase tracking-[0.18em] text-gray-400">Calories</p>
+              <p className="mt-2 text-2xl font-bold text-white">{food.nutritionTotals?.calories?.toFixed?.(0) ?? food.calories} kcal</p>
+            </div>
+            <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+              <p className="text-xs uppercase tracking-[0.18em] text-gray-400">Macros</p>
+              <p className="mt-2 text-sm text-gray-200">
+                P {food.nutritionTotals?.protein?.toFixed?.(1) ?? 0} / C {food.nutritionTotals?.carbs?.toFixed?.(1) ?? 0} / F {food.nutritionTotals?.fat?.toFixed?.(1) ?? 0}
+              </p>
+            </div>
+          </div>
+
+          {food.ingredients?.length > 0 && (
+            <div className="mt-5 rounded-2xl border border-white/5 bg-black/20 p-4">
+              <p className="mb-3 text-xs uppercase tracking-[0.2em] text-gray-400">Selected Ingredients</p>
+              <div className="flex flex-wrap gap-2">
+                {food.ingredients.map((ingredient) => (
+                  <span key={`${food.id}-${ingredient.ingredientId}`} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-200">
+                    {ingredient.name} x {ingredient.quantity}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="mt-6 flex gap-3">
+            <button
+              onClick={() => onEdit(food)}
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-blue-500/30 bg-blue-500/10 px-4 py-3 text-blue-100 transition hover:bg-blue-500/20"
+              disabled={isLoading || deletingId === food.id}
+            >
+              <Edit size={16} />
+              Edit
+            </button>
+            <button
+              onClick={() => handleDelete(food.id)}
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-100 transition hover:bg-red-500/20 disabled:opacity-50"
+              disabled={isLoading || deletingId === food.id}
+            >
+              <Trash2 size={16} />
+              {deletingId === food.id ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
-

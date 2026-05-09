@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
-import type { Food, FoodCreateDto } from '../types';
+import { ingredientService } from '../services/ingredientService';
+import type { Food, FoodCreateDto, FoodIngredientInput, Ingredient } from '../types';
+import { FoodIngredientsPicker, calculateNutritionTotals } from './FoodIngredientsPicker';
 
 interface FoodModalProps {
   isOpen: boolean;
@@ -18,121 +20,147 @@ export const FoodModal: React.FC<FoodModalProps> = ({
   initialData,
   isLoading = false,
 }) => {
+  const [availableIngredients, setAvailableIngredients] = useState<Ingredient[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<FoodIngredientInput[]>([]);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<FoodCreateDto>({
-    defaultValues: initialData ? {
+    defaultValues: {
+      name: '',
+      type: '',
+      calories: 0,
+      ingredients: [],
+    },
+  });
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    void ingredientService.getAllIngredients({ page: 1, pageCount: 100 })
+      .then((result) => setAvailableIngredients(result.items))
+      .catch(() => setAvailableIngredients([]));
+
+    const modalIngredients = initialData?.ingredients?.map((item) => ({
+      ingredientId: item.ingredientId,
+      quantity: item.quantity,
+    })) ?? [];
+
+    setSelectedIngredients(modalIngredients);
+
+    reset(initialData ? {
       name: initialData.name,
       type: initialData.type,
       calories: initialData.calories,
-    } : undefined,
-  });
+      ingredients: modalIngredients,
+    } : {
+      name: '',
+      type: '',
+      calories: 0,
+      ingredients: [],
+    });
+  }, [initialData, isOpen, reset]);
 
   const handleClose = () => {
     reset();
+    setSelectedIngredients([]);
     onClose();
   };
 
+  const nutritionTotals = calculateNutritionTotals(availableIngredients, selectedIngredients);
+
   const onSubmitForm = async (data: FoodCreateDto) => {
-    try {
-      await onSubmit(data);
-      reset();
-    } catch (error) {
-      console.error('Form submission error:', error);
-    }
+    await onSubmit({
+      ...data,
+      calories: Math.round(nutritionTotals.calories || data.calories),
+      ingredients: selectedIngredients,
+    });
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+      <div className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-white/20 bg-gradient-to-br from-slate-800 to-slate-950 shadow-2xl">
+        <div className="flex items-center justify-between bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-6">
+          <h2 className="text-xl font-bold text-slate-950">
             {initialData ? 'Edit Food' : 'Add New Food'}
           </h2>
           <button
             onClick={handleClose}
-            className="text-white/80 hover:text-white transition-colors disabled:opacity-50"
+            className="text-slate-900/80 hover:text-slate-950 transition-colors disabled:opacity-50"
             disabled={isLoading}
           >
             <X size={24} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8">
-          <div className="mt-8">
-            <label className="block text-sm font-semibold text-gray-300 mb-2" >
-              Food Name
-            </label>
+        <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-8 p-8">
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-300">Food Name</label>
             <input
               {...register('name', { required: 'Name is required' })}
               type="text"
-              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 text-base transition-all"
-              placeholder="e.g., Grilled Chicken"
+              className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-3 text-white"
               disabled={isLoading}
             />
-            {errors.name && <span className="text-red-400 text-xs mt-1 block">{errors.name.message}</span>}
-          </div>
-
-          <div className="mt-8">
-            <label className="block text-sm font-semibold text-gray-300 mb-2">
-              Food Type
-            </label>
-            <input
-              {...register('type', { required: 'Type is required' })}
-              type="text"
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
-              placeholder="e.g., Protein, Vegetable"
-              disabled={isLoading}
-            />
-            {errors.type && <span className="text-red-400 text-xs mt-1 block">{errors.type.message}</span>}
+            {errors.name && <span className="mt-1 block text-xs text-red-400">{errors.name.message}</span>}
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-2">
-              Calories
-            </label>
+            <label className="mb-2 block text-sm font-semibold text-gray-300">Food Type</label>
             <input
-              {...register('calories', {
-                required: 'Calories is required',
-                valueAsNumber: true,
-                min: { value: 0, message: 'Calories must be positive' },
-              })}
-              type="number"
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
-              placeholder="e.g., 250"
+              {...register('type', { required: 'Type is required' })}
+              type="text"
+              className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-white"
               disabled={isLoading}
             />
-            {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
+            {errors.type && <span className="mt-1 block text-xs text-red-400">{errors.type.message}</span>}
           </div>
 
-          <div className="flex space-x-3 pt-6">
+          <section className="space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-white">Ingredients</h3>
+              <p className="text-sm text-gray-400">Pick ingredients and quantities to update the nutrition summary.</p>
+            </div>
+            <FoodIngredientsPicker
+              availableIngredients={availableIngredients}
+              selectedIngredients={selectedIngredients}
+              onChange={setSelectedIngredients}
+              disabled={isLoading}
+            />
+          </section>
+
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-300">Calculated Calories</label>
+            <input
+              {...register('calories', { valueAsNumber: true })}
+              type="number"
+              readOnly
+              value={Math.round(nutritionTotals.calories)}
+              className="w-full rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-50"
+            />
+          </div>
+
+          <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 px-4 py-3 border border-white/20 hover:border-white/40 text-gray-300 hover:text-white rounded-lg transition-all duration-200 disabled:opacity-50 font-medium"
+              className="flex-1 rounded-lg border border-white/20 px-4 py-3 text-gray-300 transition"
               disabled={isLoading}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50 font-medium shadow-lg hover:shadow-purple-500/50"
+              className="flex-1 rounded-lg bg-amber-500 px-4 py-3 font-medium text-slate-900 transition disabled:opacity-50"
               disabled={isLoading}
             >
-              {isLoading ? (
-                <span className="flex items-center justify-center">
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></span>
-                  Saving...
-                </span>
-              ) : (
-                initialData ? 'Update Food' : 'Create Food'
-              )}
+              {isLoading ? 'Saving...' : initialData ? 'Update Food' : 'Create Food'}
             </button>
           </div>
         </form>

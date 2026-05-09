@@ -1,21 +1,34 @@
+import type { FoodIngredient, FoodIngredientInput, NutritionTotals } from './ingredient';
+
+export * from './ingredient';
+
 export interface Food {
   id: number;
   name: string;
   type: string;
   calories: number;
   created: string;
+  ingredients: FoodIngredient[];
+  nutritionTotals: NutritionTotals;
+  links?: Array<{
+    href: string;
+    rel: string;
+    method: string;
+  }>;
 }
 
 export interface FoodCreateDto {
   name: string;
   type: string;
   calories: number;
+  ingredients: FoodIngredientInput[];
 }
 
 export interface FoodUpdateDto {
   name: string;
   type: string;
   calories: number;
+  ingredients: FoodIngredientInput[];
 }
 
 export interface LoginRequest {
@@ -32,6 +45,12 @@ export interface RegisterRequest {
 export interface AuthResponse {
   token: string;
   username: string;
+}
+
+export interface ApiValidationProblem {
+  message?: string;
+  title?: string;
+  errors?: Record<string, string[]>;
 }
 
 export interface AuthContextType {

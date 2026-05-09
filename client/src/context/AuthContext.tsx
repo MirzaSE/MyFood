@@ -41,6 +41,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAuthenticated(false);
   };
 
+  useEffect(() => {
+    const syncAuthState = () => {
+      const storedToken = authService.getToken();
+      const storedUsername = authService.getUsername();
+
+      setToken(storedToken);
+      setUsername(storedUsername);
+      setIsAuthenticated(Boolean(storedToken && storedUsername));
+    };
+
+    window.addEventListener('storage', syncAuthState);
+    return () => window.removeEventListener('storage', syncAuthState);
+  }, []);
+
   return (
     <AuthContext.Provider value={{ isAuthenticated, username, token, login, register, logout }}>
       {children}
