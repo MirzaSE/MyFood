@@ -27,8 +27,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAuthenticated(true);
   };
 
-  const register = async (username: string, email: string, password: string) => {
-    const response = await authService.register(username, email, password);
+  const register = async (username: string, password: string) => {
+    const response = await authService.register(username, password);
     setToken(response.token);
     setUsername(response.username);
     setIsAuthenticated(true);

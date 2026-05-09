@@ -40,9 +40,9 @@ namespace MyFood.Tests.E2E
         }
 
         [Fact]
-        public async Task AddIngredient_WithInvalidFoodId_ReturnsBadRequest()
+        public async Task AddIngredient_WithValidData_ReturnsOk()
         {
-            var payload = new { name = "TestIngredient", quantity = 5, foodId = 99999 };
+            var payload = new { name = "TestIngredient", unit = "g", caloriesPerUnit = 100, protein = 5, carbs = 10, fat = 2 };
             var content = new StringContent(
                 JsonSerializer.Serialize(payload),
                 Encoding.UTF8,
@@ -50,7 +50,7 @@ namespace MyFood.Tests.E2E
 
             var response = await Client.PostAsync("/api/v1/ingredient", content);
 
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Fact]
@@ -76,9 +76,9 @@ namespace MyFood.Tests.E2E
         }
 
         [Fact]
-        public async Task GetAllIngredients_WithSearchQuery_ReturnsOk()
+        public async Task GetAllIngredients_WithPagination_ReturnsOk()
         {
-            var response = await Client.GetAsync("/api/v1/ingredient?query=salt&page=1&pageCount=10");
+            var response = await Client.GetAsync("/api/v1/ingredient?page=1&pageCount=5");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }

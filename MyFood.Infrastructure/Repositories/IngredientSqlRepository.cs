@@ -46,8 +46,9 @@ namespace MyFood.Infrastructure.Repositories
 
             if (queryParameters.HasQuery())
             {
+                var query = queryParameters.Query.ToLowerInvariant();
                 allItems = allItems
-                    .Where(x => x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+                    .Where(x => x.Name != null && x.Name.ToLowerInvariant().Contains(query));
             }
 
             return allItems
@@ -68,7 +69,7 @@ namespace MyFood.Infrastructure.Repositories
         public IEnumerable<IngredientEntity> SearchFoodsByName(string name)
         {
             return _foodDbContext.Ingredients
-                .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
+                .Where(f => f.Name != null && EF.Functions.Like(f.Name, $"%{name}%"))
                 .ToList();
         }
     }

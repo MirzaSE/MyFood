@@ -4,8 +4,8 @@ import { Navbar } from '../components/Navbar';
 import { FoodIngredientsPicker } from '../components/FoodIngredientsPicker';
 import { foodService } from '../services/foodService';
 import { ingredientService } from '../services/ingredientService';
-import type { Ingredient, IngredientPickerItem, FoodCreateDto } from '../types';
-import type { IngredientCreateDto } from '../types/ingredient';
+import type { FoodCreateDto } from '../types';
+import type { Ingredient, IngredientPickerItem } from '../types/ingredient';
 
 export const CreateFoodPage: React.FC = () => {
   const navigate = useNavigate();

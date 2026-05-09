@@ -99,7 +99,7 @@ public class IngredientServiceTests
     [Fact]
     public async Task CreateAsync_ReturnsDto_OnSuccess()
     {
-        var createDto = new IngridientCreateDto { Name = "Basil", Quantity = 5, FoodId = 1 };
+        var createDto = new IngridientCreateDto { Name = "Basil", Unit = "g", CaloriesPerUnit = 100, Protein = 5, Carbs = 10, Fat = 2 };
         var entity = new IngredientEntity { Id = 3, Name = "Basil" };
         var dto = new IngridientDto { Id = 3, Name = "Basil" };
 
@@ -118,7 +118,7 @@ public class IngredientServiceTests
     [Fact]
     public async Task CreateAsync_ThrowsException_WhenNameIsNull()
     {
-        var createDto = new IngridientCreateDto { Name = "", Quantity = 1, FoodId = 1 };
+        var createDto = new IngridientCreateDto { Name = "", Unit = "g", CaloriesPerUnit = 0, Protein = 0, Carbs = 0, Fat = 0 };
 
         await Assert.ThrowsAsync<ArgumentException>(() => _service.CreateAsync(createDto));
     }
@@ -126,7 +126,7 @@ public class IngredientServiceTests
     [Fact]
     public async Task CreateAsync_ThrowsException_WhenDuplicate()
     {
-        var createDto = new IngridientCreateDto { Name = "Salt", Quantity = 1, FoodId = 1 };
+        var createDto = new IngridientCreateDto { Name = "Salt", Unit = "g", CaloriesPerUnit = 0, Protein = 0, Carbs = 0, Fat = 0 };
         var existing = new List<IngredientEntity> { new() { Id = 1, Name = "Salt" } };
         _repoMock.Setup(r => r.SearchFoodsByName("Salt")).Returns(existing);
 
@@ -136,7 +136,7 @@ public class IngredientServiceTests
     [Fact]
     public async Task CreateAsync_MapsCorrectly()
     {
-        var createDto = new IngridientCreateDto { Name = "Thyme", Quantity = 2, FoodId = 1 };
+        var createDto = new IngridientCreateDto { Name = "Thyme", Unit = "g", CaloriesPerUnit = 50, Protein = 3, Carbs = 5, Fat = 1 };
         var entity = new IngredientEntity { Id = 5, Name = "Thyme" };
         var dto = new IngridientDto { Id = 5, Name = "Thyme" };
 
