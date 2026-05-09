@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, AlertCircle } from 'lucide-react';
-import { Navbar } from '../components/Navbar';
-import { FoodTable } from '../components/FoodTable';
-import { FoodModal } from '../components/FoodModal';
-import { foodService } from '../services/foodService';
-import type { Food, FoodCreateDto } from '../types';
+import React, { useState, useEffect } from "react";
+import { Plus, AlertCircle } from "lucide-react";
+import { Navbar } from "../components/Navbar";
+import { FoodTable } from "../components/FoodTable";
+import { FoodModal } from "../components/FoodModal";
+import { foodService } from "../services/foodService";
+import type { Food, FoodCreateDto } from "../types";
 
 export const FoodPage: React.FC = () => {
   const [foods, setFoods] = useState<Food[]>([]);
@@ -13,6 +13,34 @@ export const FoodPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const formatApiError = (err: any, fallback: string) => {
+    const data = err?.response?.data;
+    if (!data) {
+      return fallback;
+    }
+
+    if (typeof data === "string") {
+      return data;
+    }
+
+    if (data.message && Array.isArray(data.errors) && data.errors.length > 0) {
+      return `${data.message} ${data.errors.join(" ")}`;
+    }
+
+    if (data.message) {
+      return data.message;
+    }
+
+    if (data.errors) {
+      const flatErrors = Object.values(data.errors).flat();
+      if (flatErrors.length > 0) {
+        return flatErrors.join(" ");
+      }
+    }
+
+    return fallback;
+  };
 
   // Load foods on component mount
   useEffect(() => {
@@ -26,7 +54,7 @@ export const FoodPage: React.FC = () => {
       const data = await foodService.getAllFoods();
       setFoods(data);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load foods');
+      setError(formatApiError(err, "Failed to load foods"));
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +78,9 @@ export const FoodPage: React.FC = () => {
       if (selectedFood) {
         // Update existing food
         const updatedFood = await foodService.updateFood(selectedFood.id, data);
-        setFoods(foods.map(f => f.id === selectedFood.id ? updatedFood : f));
+        setFoods(
+          foods.map((f) => (f.id === selectedFood.id ? updatedFood : f)),
+        );
       } else {
         // Create new food
         const newFood = await foodService.createFood(data);
@@ -60,7 +90,7 @@ export const FoodPage: React.FC = () => {
       setModalOpen(false);
       setSelectedFood(null);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to save food');
+      setError(formatApiError(err, "Failed to save food"));
     } finally {
       setIsSubmitting(false);
     }
@@ -70,9 +100,9 @@ export const FoodPage: React.FC = () => {
     try {
       setError(null);
       await foodService.deleteFood(id);
-      setFoods(foods.filter(f => f.id !== id));
+      setFoods(foods.filter((f) => f.id !== id));
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete food');
+      setError(formatApiError(err, "Failed to delete food"));
       throw err;
     }
   };
@@ -85,7 +115,10 @@ export const FoodPage: React.FC = () => {
         {/* Error Banner */}
         {error && (
           <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start space-x-3 backdrop-blur">
-            <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
+            <AlertCircle
+              size={20}
+              className="text-red-400 flex-shrink-0 mt-0.5"
+            />
             <p className="text-red-200">{error}</p>
           </div>
         )}
@@ -98,7 +131,8 @@ export const FoodPage: React.FC = () => {
                 Food Management
               </h1>
               <p className="text-gray-400">
-                {foods.length} {foods.length === 1 ? 'item' : 'items'} in your collection
+                {foods.length} {foods.length === 1 ? "item" : "items"} in your
+                collection
               </p>
             </div>
             <button

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { useAuth } from '../context/AuthContext';
-import { AlertCircle } from 'lucide-react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useAuth } from "../context/AuthContext";
+import { AlertCircle } from "lucide-react";
 
 type LoginFormData = {
   username: string;
@@ -17,7 +17,7 @@ type RegisterFormData = {
 };
 
 export const LoginPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
+  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { login, register: registerUser } = useAuth();
@@ -25,13 +25,41 @@ export const LoginPage: React.FC = () => {
   const loginForm = useForm<LoginFormData>();
   const registerForm = useForm<RegisterFormData>();
 
+  const formatApiError = (err: any, fallback: string) => {
+    const data = err?.response?.data;
+    if (!data) {
+      return fallback;
+    }
+
+    if (typeof data === "string") {
+      return data;
+    }
+
+    if (data.message && Array.isArray(data.errors) && data.errors.length > 0) {
+      return `${data.message} ${data.errors.join(" ")}`;
+    }
+
+    if (data.message) {
+      return data.message;
+    }
+
+    if (data.errors) {
+      const flatErrors = Object.values(data.errors).flat();
+      if (flatErrors.length > 0) {
+        return flatErrors.join(" ");
+      }
+    }
+
+    return fallback;
+  };
+
   const handleLogin = async (data: LoginFormData) => {
     try {
       setError(null);
       await login(data.username, data.password);
-      navigate('/foods');
+      navigate("/foods");
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(formatApiError(err, "Login failed. Please try again."));
     }
   };
 
@@ -39,13 +67,13 @@ export const LoginPage: React.FC = () => {
     try {
       setError(null);
       if (data.password !== data.confirmPassword) {
-        setError('Passwords do not match');
+        setError("Passwords do not match");
         return;
       }
       await registerUser(data.username, data.email, data.password);
-      navigate('/foods');
+      navigate("/foods");
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(formatApiError(err, "Registration failed. Please try again."));
     }
   };
 
@@ -60,16 +88,17 @@ export const LoginPage: React.FC = () => {
         <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-8 py-14 text-center">
-            <div className="flex justify-center mb-4">
-          
-            </div>
+            <div className="flex justify-center mb-4"></div>
             <h1 className="text-4xl font-bold text-white mb-2">MyFood</h1>
             <p className="text-white/80 text-sm">Manage your meals with ease</p>
           </div>
 
           {error && (
             <div className="mx-6 mt-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start space-x-3">
-              <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
+              <AlertCircle
+                size={20}
+                className="text-red-400 flex-shrink-0 mt-0.5"
+              />
               <p className="text-red-200 text-sm">{error}</p>
             </div>
           )}
@@ -78,33 +107,33 @@ export const LoginPage: React.FC = () => {
           <div className="flex border-b border-white/10 px-6 pt-6">
             <button
               onClick={() => {
-                setActiveTab('login');
+                setActiveTab("login");
                 setError(null);
               }}
               className={`px-4 py-3 font-semibold text-sm transition-all relative ${
-                activeTab === 'login'
-                  ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400'
-                  : 'text-gray-400 hover:text-gray-300'
+                activeTab === "login"
+                  ? "text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400"
+                  : "text-gray-400 hover:text-gray-300"
               }`}
             >
               Login
-              {activeTab === 'login' && (
+              {activeTab === "login" && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400"></div>
               )}
             </button>
             <button
               onClick={() => {
-                setActiveTab('register');
+                setActiveTab("register");
                 setError(null);
               }}
               className={`px-4 py-3 font-semibold text-sm transition-all relative ${
-                activeTab === 'register'
-                  ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400'
-                  : 'text-gray-400 hover:text-gray-300'
+                activeTab === "register"
+                  ? "text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400"
+                  : "text-gray-400 hover:text-gray-300"
               }`}
             >
               Register
-              {activeTab === 'register' && (
+              {activeTab === "register" && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400"></div>
               )}
             </button>
@@ -112,44 +141,55 @@ export const LoginPage: React.FC = () => {
 
           {/* Form Content */}
           <div className="px-8 py-8">
-            {activeTab === 'login' && (
-              <form onSubmit={loginForm.handleSubmit(handleLogin)} className="food-form">                <div>
+            {activeTab === "login" && (
+              <form
+                onSubmit={loginForm.handleSubmit(handleLogin)}
+                className="food-form"
+              >
+                {" "}
+                <div>
                   <label className="block text-sm font-semibold text-gray-200 mb-2">
                     Username
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('username', { required: 'Username is required' })}
+                      {...loginForm.register("username", {
+                        required: "Username is required",
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your username"
                     />
                   </div>
                   {loginForm.formState.errors.username && (
-                    <span className="text-red-400 text-xs mt-1 block">{loginForm.formState.errors.username.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {loginForm.formState.errors.username.message}
+                    </span>
                   )}
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold text-gray-200 mb-2">
                     Password
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('password', { required: 'Password is required' })}
+                      {...loginForm.register("password", {
+                        required: "Password is required",
+                      })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your password"
                     />
                   </div>
                   {loginForm.formState.errors.password && (
-                    <span className="text-red-400 text-xs mt-1 block">{loginForm.formState.errors.password.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {loginForm.formState.errors.password.message}
+                    </span>
                   )}
                 </div>
-
                 <button
                   type="submit"
-                  style={{ marginTop: '2rem' }}
+                  style={{ marginTop: "2rem" }}
                   disabled={loginForm.formState.isSubmitting}
                   className="w-full mt-8 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50"
                 >
@@ -159,28 +199,35 @@ export const LoginPage: React.FC = () => {
                       Logging in...
                     </span>
                   ) : (
-                    'Sign In'
+                    "Sign In"
                   )}
                 </button>
-              </form> 
+              </form>
             )}
 
-            {activeTab === 'register' && (
-              <form onSubmit={registerForm.handleSubmit(handleRegister)} className="food-form">
+            {activeTab === "register" && (
+              <form
+                onSubmit={registerForm.handleSubmit(handleRegister)}
+                className="food-form"
+              >
                 <div>
                   <label className="block text-sm font-semibold text-gray-200 mb-2">
                     Username
                   </label>
                   <div className="relative">
                     <input
-                      {...registerForm.register('username', { required: 'Username is required' })}
+                      {...registerForm.register("username", {
+                        required: "Username is required",
+                      })}
                       type="text"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Choose a username"
                     />
                   </div>
                   {registerForm.formState.errors.username && (
-                    <span className="text-red-400 text-xs mt-1 block">{registerForm.formState.errors.username.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {registerForm.formState.errors.username.message}
+                    </span>
                   )}
                 </div>
 
@@ -190,11 +237,11 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...registerForm.register('email', {
-                        required: 'Email is required',
+                      {...registerForm.register("email", {
+                        required: "Email is required",
                         pattern: {
                           value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                          message: 'Please enter a valid email',
+                          message: "Please enter a valid email",
                         },
                       })}
                       type="email"
@@ -203,7 +250,9 @@ export const LoginPage: React.FC = () => {
                     />
                   </div>
                   {registerForm.formState.errors.email && (
-                    <span className="text-red-400 text-xs mt-1 block">{registerForm.formState.errors.email.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {registerForm.formState.errors.email.message}
+                    </span>
                   )}
                 </div>
 
@@ -213,9 +262,12 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...registerForm.register('password', {
-                        required: 'Password is required',
-                        minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                      {...registerForm.register("password", {
+                        required: "Password is required",
+                        minLength: {
+                          value: 6,
+                          message: "Password must be at least 6 characters",
+                        },
                       })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
@@ -223,7 +275,9 @@ export const LoginPage: React.FC = () => {
                     />
                   </div>
                   {registerForm.formState.errors.password && (
-                    <span className="text-red-400 text-xs mt-1 block">{registerForm.formState.errors.password.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {registerForm.formState.errors.password.message}
+                    </span>
                   )}
                 </div>
 
@@ -233,8 +287,8 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...registerForm.register('confirmPassword', {
-                        required: 'Please confirm your password',
+                      {...registerForm.register("confirmPassword", {
+                        required: "Please confirm your password",
                       })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
@@ -242,13 +296,15 @@ export const LoginPage: React.FC = () => {
                     />
                   </div>
                   {registerForm.formState.errors.confirmPassword && (
-                    <span className="text-red-400 text-xs mt-1 block">{registerForm.formState.errors.confirmPassword.message}</span>
+                    <span className="text-red-400 text-xs mt-1 block">
+                      {registerForm.formState.errors.confirmPassword.message}
+                    </span>
                   )}
                 </div>
 
                 <button
                   type="submit"
-                  style={{ marginTop: '2rem' }}
+                  style={{ marginTop: "2rem" }}
                   disabled={registerForm.formState.isSubmitting}
                   className="w-full mt-8 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50"
                 >
@@ -258,7 +314,7 @@ export const LoginPage: React.FC = () => {
                       Creating account...
                     </span>
                   ) : (
-                    'Create Account'
+                    "Create Account"
                   )}
                 </button>
               </form>
@@ -274,4 +330,3 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
-
