@@ -19,7 +19,9 @@ namespace MyFood.Infrastructure.Repositories
 
         public FoodEntity GetSingle(int id)
         {
-            return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
+            return _foodDbContext.FoodItems
+            .Include(f => f.Ingredients)
+            .FirstOrDefault(x => x.Id == id);
         }
 
         public void Add(FoodEntity item)
@@ -40,20 +42,22 @@ namespace MyFood.Infrastructure.Repositories
         }
 
         public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
-        {
-            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
+{
+    IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems
+        .Include(f => f.Ingredients)
+        .OrderBy(x => x.Name);
 
-            if (queryParameters.HasQuery())
-            {
-                _allItems = _allItems
-                    .Where(x => x.Calories.ToString().Contains(queryParameters.Query.ToLowerInvariant())
-                    || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
-            }
+    if (queryParameters.HasQuery())
+    {
+        _allItems = _allItems
+            .Where(x => x.Calories.ToString().Contains(queryParameters.Query.ToLowerInvariant())
+            || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+    }
 
-            return _allItems
-                .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
-                .Take(queryParameters.PageCount);
-        }
+    return _allItems
+        .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
+        .Take(queryParameters.PageCount);
+}
 
         public int Count()
         {
@@ -79,9 +83,10 @@ namespace MyFood.Infrastructure.Repositories
 
         public IEnumerable<FoodEntity> SearchFoodsByName(string name)
         {
-            return _foodDbContext.FoodItems
-                .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
-                .ToList();
+           return _foodDbContext.FoodItems
+        .Include(f => f.Ingredients)
+        .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
+        .ToList();
 
             // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
         }

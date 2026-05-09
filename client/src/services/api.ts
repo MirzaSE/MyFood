@@ -11,7 +11,6 @@ const createApiClient = (): AxiosInstance => {
     },
   });
 
-  // Add auth token to all requests
   client.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -20,14 +19,18 @@ const createApiClient = (): AxiosInstance => {
     return config;
   });
 
-  // Handle 401 responses
   client.interceptors.response.use(
     (response) => response,
     (error) => {
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        window.location.href = '/login';
+        const token = localStorage.getItem('token');
+        // Only redirect if user was previously logged in (expired session)
+        // Don't redirect if it's a login attempt failure
+        if (token) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          window.location.href = '/login';
+        }
       }
       return Promise.reject(error);
     }
@@ -37,5 +40,4 @@ const createApiClient = (): AxiosInstance => {
 };
 
 export const apiClient = createApiClient();
-
 export default apiClient;
