@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, ChefHat } from 'lucide-react';
+import { LogOut, ChefHat, UtensilsCrossed, Carrot, PlusCircle } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -27,15 +27,36 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
+          {/* Navigation Links */}
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => navigate('/foods')}
+              className="flex items-center space-x-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+            >
+              <UtensilsCrossed size={18} />
+              <span className="hidden sm:inline font-medium">Foods</span>
+            </button>
+            <button
+              onClick={() => navigate('/ingredients')}
+              className="flex items-center space-x-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+            >
+              <Carrot size={18} />
+              <span className="hidden sm:inline font-medium">Ingredients</span>
+            </button>
+            <button
+              onClick={() => navigate('/foods/new')}
+              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all"
+            >
+              <PlusCircle size={18} />
+              <span className="hidden sm:inline font-medium">Create Food</span>
+            </button>
+          </div>
+
           {/* User Info & Logout */}
-          <div className="flex items-center space-x-6">
-            <div className="hidden sm:block">
-              <p className="text-sm text-gray-300">Welcome back</p>
-              <p className="text-lg font-semibold text-white">{username}</p>
-            </div>
-
-            <div className="w-px h-8 bg-white/10"></div>
-
+          <div className="flex flex-col items-end space-y-1">
+            <p className="text-sm font-semibold text-white hidden sm:block">
+              Welcome back, {username}
+            </p>
             <button
               onClick={handleLogout}
               className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFood.Infrastructure.Repositories;
 
@@ -11,9 +12,11 @@ using MyFood.Infrastructure.Repositories;
 namespace MyFood.Infrastructure.Migrations
 {
     [DbContext(typeof(FoodDbContext))]
-    partial class FoodDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260429154814_NewMigration")]
+    partial class NewMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -247,7 +250,7 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("FoodItems");
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.FoodIngredientEntity", b =>
+            modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -258,52 +261,14 @@ namespace MyFood.Infrastructure.Migrations
                     b.Property<int>("FoodEntityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("IngredientEntityId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FoodEntityId");
-
-                    b.HasIndex("IngredientEntityId");
-
-                    b.ToTable("FoodIngredients");
-                });
-
-            modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<double>("CaloriesPerUnit")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Carbs")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Fat")
-                        .HasColumnType("float");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<double>("Protein")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("FoodEntityId");
 
                     b.ToTable("Ingredients");
                 });
@@ -359,33 +324,20 @@ namespace MyFood.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyFood.Domain.Entities.FoodIngredientEntity", b =>
+            modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
                 {
                     b.HasOne("MyFood.Domain.Entities.FoodEntity", "FoodEntity")
-                        .WithMany("FoodIngredients")
+                        .WithMany("Ingredients")
                         .HasForeignKey("FoodEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyFood.Domain.Entities.IngredientEntity", "Ingredient")
-                        .WithMany("FoodIngredients")
-                        .HasForeignKey("IngredientEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("FoodEntity");
-
-                    b.Navigation("Ingredient");
                 });
 
             modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>
                 {
-                    b.Navigation("FoodIngredients");
-                });
-
-            modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
-                {
-                    b.Navigation("FoodIngredients");
+                    b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618
         }
