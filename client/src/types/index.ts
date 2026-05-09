@@ -43,3 +43,12 @@ export interface AuthContextType {
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
+
+export type {
+  Ingredient,
+  IngredientCreateDto,
+  IngredientUpdateDto,
+  FoodIngredientCreateDto,
+  PaginationMeta,
+  PagedIngredientsResult,
+} from './ingredient';
