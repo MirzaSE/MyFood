@@ -29,30 +29,18 @@ public class AuthenticateController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
         var user = await _userManager.FindByNameAsync(model.Username);
-        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+
+        if (user == null)
         {
-            var authClaims = new List<Claim>
-            {
-                new(ClaimTypes.Name, user.UserName ?? string.Empty),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
-
-            var userRoles = await _userManager.GetRolesAsync(user);
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            var token = GenerateJwtToken(authClaims);
-
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            });
+            return Unauthorized(new { message = "Invalid username or password." });
         }
 
-        return Unauthorized();
+        if (!await _userManager.CheckPasswordAsync(user, model.Password))
+        {
+            return Unauthorized(new { message = "Invalid username or password." });
+        }
+
+        return Ok(await CreateAuthResponse(user));
     }
 
     [HttpPost("register")]
@@ -61,34 +49,56 @@ public class AuthenticateController : ControllerBase
         var userExists = await _userManager.FindByNameAsync(model.Username);
         if (userExists != null)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User exists" });
+            return Conflict(new { message = "Username is already taken." });
         }
 
         var user = new ApplicationUser
         {
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = model.Username
+            UserName = model.Username,
+            Email = model.Email
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "User creation failed! Please check user details and try again." });
+            var message = result.Errors.FirstOrDefault()?.Description ?? "User creation failed! Please check user details and try again.";
+            return BadRequest(new { message });
         }
 
-        return Ok(new { message = "User created successfully!" });
+        return Ok(await CreateAuthResponse(user));
     }
 
-    private JwtSecurityToken GenerateJwtToken(IEnumerable<Claim> claims)
+    private async Task<object> CreateAuthResponse(ApplicationUser user)
     {
-        var secret = _configuration["JWT:Secret"] ?? throw new InvalidOperationException("JWT secret is not configured.");
-        var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+        var userRoles = await _userManager.GetRolesAsync(user);
 
-        return new JwtSecurityToken(
+        var authClaims = new List<Claim>
+        {
+            new(ClaimTypes.Name, user.UserName ?? string.Empty),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
+
+        foreach (var userRole in userRoles)
+        {
+            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+        }
+
+        var secret = _configuration["JWT:Secret"] ?? throw new InvalidOperationException("JWT secret is not configured.");
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+
+        var token = new JwtSecurityToken(
             issuer: _configuration["JWT:ValidIssuer"],
             audience: _configuration["JWT:ValidAudience"],
             expires: DateTime.Now.AddHours(3),
-            claims: claims,
-            signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256));
+            claims: authClaims,
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+        return new
+        {
+            token = new JwtSecurityTokenHandler().WriteToken(token),
+            username = user.UserName,
+            expiration = token.ValidTo
+        };
     }
 }
