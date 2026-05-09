@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-using MyFood.Application.Entities;
-using MyFood.Application.Interfaces;
-using MyFood.Infrastructure;
+using MyFood.Application;
+using MyFood.Application.Services;
+using MyFood.Domain.Entities;
+using MyFood.Infrastructure.Helpers;
 
 namespace MyFood.Infrastructure.Repositories
 {
@@ -14,54 +14,87 @@ namespace MyFood.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<IngredientEntity>> GetAllAsync()
+        public IQueryable<IngredientEntity> GetAll(QueryParameters queryParameters)
         {
-            return await _context.Ingredients.ToListAsync();
+            IQueryable<IngredientEntity> query = _context.Ingredients.OrderBy(i => i.Name);
+
+            if (queryParameters.HasQuery())
+            {
+                var needle = queryParameters.Query!.ToLower();
+                query = query.Where(i => i.Name.ToLower().Contains(needle));
+            }
+
+            return query
+                .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
+                .Take(queryParameters.PageCount);
         }
 
-        public async Task<IngredientEntity?> GetByIdAsync(int id)
+        public IngredientEntity? GetSingle(int id)
         {
-            return await _context.Ingredients
-                .FirstOrDefaultAsync(x => x.Id == id);
+            return _context.Ingredients.FirstOrDefault(i => i.Id == id);
         }
 
-        public async Task<IngredientEntity> AddAsync(IngredientEntity ingredient)
+        public IEnumerable<IngredientEntity> SearchByName(string name)
         {
-            await _context.Ingredients.AddAsync(ingredient);
-            await _context.SaveChangesAsync();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return _context.Ingredients.ToList();
+            }
 
-            return ingredient;
+            // SQL Server collation is case-insensitive by default. ToLower keeps
+            // the intent explicit and works for in-memory providers too.
+            var needle = name.ToLower();
+            return _context.Ingredients
+                .Where(i => i.Name.ToLower().Contains(needle))
+                .ToList();
         }
 
-        public async Task<IngredientEntity?> UpdateAsync(int id, IngredientEntity ingredient)
+        public bool ExistsByName(string name, int? excludingId = null)
         {
-            var existingIngredient = await _context.Ingredients
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            if (existingIngredient == null)
-                return null;
-
-            existingIngredient.Name = ingredient.Name;
-            existingIngredient.Quantity = ingredient.Quantity;
-            existingIngredient.FoodId = ingredient.FoodId;
-
-            await _context.SaveChangesAsync();
-
-            return existingIngredient;
-        }
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var ingredient = await _context.Ingredients
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            if (ingredient == null)
+            if (string.IsNullOrWhiteSpace(name))
+            {
                 return false;
+            }
 
-            _context.Ingredients.Remove(ingredient);
-            await _context.SaveChangesAsync();
+            var needle = name.ToLower();
+            var query = _context.Ingredients.Where(i => i.Name.ToLower() == needle);
 
-            return true;
+            if (excludingId.HasValue)
+            {
+                query = query.Where(i => i.Id != excludingId.Value);
+            }
+
+            return query.Any();
+        }
+
+        public void Add(IngredientEntity item)
+        {
+            _context.Ingredients.Add(item);
+        }
+
+        public IngredientEntity Update(int id, IngredientEntity item)
+        {
+            // Caller has already loaded a tracked entity; EF picks up the changes.
+            return item;
+        }
+
+        public void Delete(int id)
+        {
+            var entity = _context.Ingredients.FirstOrDefault(i => i.Id == id);
+            if (entity != null)
+            {
+                _context.Ingredients.Remove(entity);
+            }
+        }
+
+        public int Count()
+        {
+            return _context.Ingredients.Count();
+        }
+
+        public bool Save()
+        {
+            return _context.SaveChanges() >= 0;
         }
     }
 }

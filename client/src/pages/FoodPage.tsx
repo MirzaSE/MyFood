@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, AlertCircle, ChefHat } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
@@ -7,6 +8,7 @@ import { foodService } from '../services/foodService';
 import type { Food, FoodCreateDto } from '../types';
 
 export const FoodPage: React.FC = () => {
+  const navigate = useNavigate();
   const [foods, setFoods] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -101,14 +103,24 @@ export const FoodPage: React.FC = () => {
                 {foods.length} {foods.length === 1 ? 'item' : 'items'} in your collection
               </p>
             </div>
-            <button
-              onClick={handleCreateClick}
-              disabled={isLoading || isSubmitting}
-              className="flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50 font-semibold"
-            >
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => navigate('/foods/new')}
+                disabled={isLoading || isSubmitting}
+                className="flex items-center justify-center space-x-2 bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-white/20 hover:border-white/40 font-semibold"
+              >
+                <ChefHat size={20} />
+                <span>Compose with ingredients</span>
+              </button>
+              <button
+                onClick={handleCreateClick}
+                disabled={isLoading || isSubmitting}
+                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50 font-semibold"
+              >
               <Plus size={20} />
               <span>Add Food</span>
             </button>
+          </div>
           </div>
         </div>
 

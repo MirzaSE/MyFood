@@ -18,7 +18,6 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
-using MyFood.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,9 +34,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCustomCors("AllowAllOrigins");
 
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
+
+// Repositories
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
-builder.Services.AddScoped<IFoodService, FoodService>();
 builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
+
+// Application services
+builder.Services.AddScoped<IFoodService, FoodService>();
+builder.Services.AddScoped<IIngredientService, IngredientService>();
+
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
@@ -58,7 +63,7 @@ builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
-    
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                .AddEntityFrameworkStores<FoodDbContext>()
                .AddDefaultTokenProviders();
@@ -81,8 +86,6 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
         };
     });
-
-builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 var app = builder.Build();
 
@@ -110,15 +113,12 @@ else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
-//app.UseMiddleware<ExceptionHandlingMiddleware>();
-//app.UseMiddleware<RequestLoggingMiddleware>();
 
-//Add support to logging request with SERILOG
+// Add support to logging request with SERILOG
 app.UseSerilogRequestLogging();
 
 app.UseCors("AllowAllOrigins");
 //app.UseHttpsRedirection(); // can cause docker issue
-
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -126,3 +126,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Make Program accessible to WebApplicationFactory<Program> in MyFood.Tests.
+public partial class Program { }
