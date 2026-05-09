@@ -12,7 +12,7 @@ namespace MyFood.Infrastructure.Repositories
         }
 
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
-        public DbSet<IngredientEntity> Ingredients { get; set; } = null!; 
+        public DbSet<IngredientEntity> Ingredients { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,5 +25,5 @@ namespace MyFood.Infrastructure.Repositories
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
-    
+
 }
