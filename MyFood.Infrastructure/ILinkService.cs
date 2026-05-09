@@ -7,6 +7,8 @@ namespace MyFood.Infrastructure
     {
         object ExpandSingleFoodItem(object resource, int identifier, ApiVersion version);
 
+        object ExpandSingleIngredientItem(object resource, int identifier, ApiVersion version);
+
         List<LinkDto> CreateLinksForCollection(QueryParameters queryParameters, int totalCount, ApiVersion version);
     }
 }
