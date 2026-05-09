@@ -28,13 +28,12 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* User Info & Logout */}
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-6 flex-col">
             <div className="hidden sm:block">
-              <p className="text-sm text-gray-300">Welcome back</p>
-              <p className="text-lg font-semibold text-white">{username}</p>
+              <p className="text-sm text-gray-300">
+                Welcome back, <span className="text-lg font-semibold text-white">{username}</span>
+              </p>
             </div>
-
-            <div className="w-px h-8 bg-white/10"></div>
 
             <button
               onClick={handleLogout}

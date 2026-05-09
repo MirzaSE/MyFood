@@ -4,6 +4,7 @@ import { Navbar } from '../components/Navbar';
 import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
 import { foodService } from '../services/foodService';
+import { formatApiError } from '../utils/formatApiError';
 import type { Food, FoodCreateDto } from '../types';
 
 export const FoodPage: React.FC = () => {
@@ -26,7 +27,7 @@ export const FoodPage: React.FC = () => {
       const data = await foodService.getAllFoods();
       setFoods(data);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load foods');
+      setError(formatApiError(err) || 'Failed to load foods');
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +61,7 @@ export const FoodPage: React.FC = () => {
       setModalOpen(false);
       setSelectedFood(null);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to save food');
+      setError(formatApiError(err) || 'Failed to save food');
     } finally {
       setIsSubmitting(false);
     }
@@ -72,7 +73,7 @@ export const FoodPage: React.FC = () => {
       await foodService.deleteFood(id);
       setFoods(foods.filter(f => f.id !== id));
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete food');
+      setError(formatApiError(err) || 'Failed to delete food');
       throw err;
     }
   };
@@ -86,7 +87,7 @@ export const FoodPage: React.FC = () => {
         {error && (
           <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start space-x-3 backdrop-blur">
             <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
-            <p className="text-red-200">{error}</p>
+            <p className="text-red-200 whitespace-pre-line">{error}</p>
           </div>
         )}
 
