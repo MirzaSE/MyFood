@@ -1,6 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/useAuth';
 import { LogOut, ChefHat } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -27,18 +27,40 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* User Info & Logout */}
-          <div className="flex items-center">
-            <div className="flex flex-col items-end gap-2">
-              <p className="text-sm text-gray-300 text-right">Welcome back, {username}</p>
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
+          <div className="hidden md:flex items-center gap-3">
+            {[
+              { to: '/foods', label: 'Foods' },
+              { to: '/foods/new', label: 'Create Food' },
+              { to: '/ingredients', label: 'Ingredients' },
+            ].map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                    isActive
+                      ? 'bg-white/15 text-white border border-white/20'
+                      : 'text-gray-300 hover:text-white hover:bg-white/10'
+                  }`
+                }
               >
-                <LogOut size={18} />
-                <span className="font-medium">Logout</span>
-              </button>
-            </div>
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
+
+          {/* User Info & Logout — stacked vertically */}
+          <div className="flex flex-col items-end space-y-1">
+            <p className="text-sm text-gray-300">
+              Welcome back, <span className="font-semibold text-white">{username}</span>
+            </p>
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-1 px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50 text-sm"
+            >
+              <LogOut size={14} />
+              <span className="font-medium">Logout</span>
+            </button>
           </div>
         </div>
       </div>

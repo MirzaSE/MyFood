@@ -1,9 +1,12 @@
 import { authService } from './authService';
+import type { LoginRequest, RegisterRequest } from '../types';
+
+type AuthRequest = LoginRequest | RegisterRequest;
 
 // Mock apiClient
 jest.mock('./api', () => ({
   default: {
-    post: jest.fn((url: string, data: any) => {
+    post: jest.fn((url: string, data: AuthRequest) => {
       if (url.includes('login')) {
         return Promise.resolve({ data: { token: 'abc', username: data.username } });
       }

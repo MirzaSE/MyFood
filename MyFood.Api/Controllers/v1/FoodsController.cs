@@ -1,4 +1,4 @@
-﻿﻿using AutoMapper;
+﻿﻿﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +47,7 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers["X-Pagination"] = JsonSerializer.Serialize(paginationMetadata);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
             var toReturn = foodDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
@@ -66,7 +66,7 @@ namespace MyFood.Api.Controllers.v1
 
             if (id < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
+                return BadRequest(new { message = "ID must be non-negative." });
             }
 
             var foodDto = await _foodService.GetFoodByIdAsync(id);
@@ -94,7 +94,7 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers["X-Pagination"] = JsonSerializer.Serialize(paginationMetadata);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
             var toReturn = foodDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
@@ -112,11 +112,6 @@ namespace MyFood.Api.Controllers.v1
             if (foodCreateDto == null)
             {
                 return BadRequest();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return ValidationProblem(ModelState);
             }
 
             var foodDto = await _foodService.CreateFoodAsync(foodCreateDto);
@@ -177,11 +172,6 @@ namespace MyFood.Api.Controllers.v1
             if (foodUpdateDto == null)
             {
                 return BadRequest();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return ValidationProblem(ModelState);
             }
 
             var updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);

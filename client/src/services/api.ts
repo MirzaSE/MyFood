@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { AxiosInstance } from 'axios';
+import type { AxiosError, AxiosInstance } from 'axios';
 import type { ApiValidationProblem } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
@@ -41,8 +41,9 @@ const createApiClient = (): AxiosInstance => {
   return client;
 };
 
-export const extractApiErrorMessage = (error: any): string => {
-  const data = error?.response?.data as ApiValidationProblem | undefined;
+export const extractApiErrorMessage = (error: unknown): string => {
+  const axiosError = error as AxiosError<ApiValidationProblem>;
+  const data = axiosError.response?.data;
 
   if (data?.message) {
     return data.message;

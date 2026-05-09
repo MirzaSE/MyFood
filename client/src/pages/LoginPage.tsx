@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { AlertCircle } from 'lucide-react';
 import { extractApiErrorMessage } from '../services/api';
 
@@ -31,7 +31,7 @@ export const LoginPage: React.FC = () => {
       setError(null);
       await login(data.username, data.password);
       navigate('/foods');
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(extractApiErrorMessage(err));
     }
   };
@@ -45,7 +45,7 @@ export const LoginPage: React.FC = () => {
       }
       await registerUser(data.username, data.email, data.password);
       navigate('/foods');
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(extractApiErrorMessage(err));
     }
   };

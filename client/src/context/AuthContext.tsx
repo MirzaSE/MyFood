@@ -1,71 +1,58 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import type { AuthContextType } from '../types';
+import React, { useEffect, useState } from 'react';
 import { authService } from '../services/authService';
+import { AuthContext } from './AuthContextValue';
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const getStoredAuthState = () => {
+  const storedToken = authService.getToken();
+  const storedUsername = authService.getUsername();
+
+  return {
+    token: storedToken,
+    username: storedUsername,
+    isAuthenticated: Boolean(storedToken && storedUsername),
+  };
+};
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-
-  // Initialize from localStorage on mount
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUsername = localStorage.getItem('username');
-    if (storedToken && storedUsername) {
-      setToken(storedToken);
-      setUsername(storedUsername);
-      setIsAuthenticated(true);
-    }
-  }, []);
+  const [authState, setAuthState] = useState(getStoredAuthState);
 
   const login = async (username: string, password: string) => {
     const response = await authService.login(username, password);
-    setToken(response.token);
-    setUsername(response.username);
-    setIsAuthenticated(true);
+    setAuthState({
+      token: response.token,
+      username: response.username,
+      isAuthenticated: true,
+    });
   };
 
   const register = async (username: string, email: string, password: string) => {
     const response = await authService.register(username, email, password);
-    setToken(response.token);
-    setUsername(response.username);
-    setIsAuthenticated(true);
+    setAuthState({
+      token: response.token,
+      username: response.username,
+      isAuthenticated: true,
+    });
   };
 
   const logout = () => {
     authService.logout();
-    setToken(null);
-    setUsername(null);
-    setIsAuthenticated(false);
+    setAuthState({
+      token: null,
+      username: null,
+      isAuthenticated: false,
+    });
   };
 
   useEffect(() => {
-    const syncAuthState = () => {
-      const storedToken = authService.getToken();
-      const storedUsername = authService.getUsername();
-
-      setToken(storedToken);
-      setUsername(storedUsername);
-      setIsAuthenticated(Boolean(storedToken && storedUsername));
-    };
+    const syncAuthState = () => setAuthState(getStoredAuthState());
 
     window.addEventListener('storage', syncAuthState);
     return () => window.removeEventListener('storage', syncAuthState);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, username, token, login, register, logout }}>
+    <AuthContext.Provider value={{ ...authState, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
 };

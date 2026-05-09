@@ -20,50 +20,28 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var useInMemoryDatabase = builder.Environment.IsEnvironment("Testing") ||
+                          builder.Configuration.GetValue<bool>("UseInMemoryDatabase");
 
-// ======================
-// HOST
-// ======================
-builder.WebHost.UseUrls("http://0.0.0.0:8080");
-
-// ======================
-// CONTROLLERS
-// ======================
+// Add services to the container.
+builder.WebHost.UseUrls("http://*:8080");
 builder.Services.AddControllers()
-    .AddNewtonsoftJson(options =>
-        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+                .AddNewtonsoftJson(options =>
+                       options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
-// ======================
-// SWAGGER
-// ======================
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ======================
-// CORS (FIXED)
-// ======================
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("FrontendPolicy", policy =>
-    {
-        policy
-            .WithOrigins(
-                "http://localhost:5173", // Vite
-                "http://localhost:3000"  // fallback (React/Next)
-            )
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-    });
-});
+builder.Services.AddCustomCors("AllowAllOrigins");
 
-// ======================
-// APP SERVICES
-// ======================
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
+builder.Services.AddScoped<MyFood.Application.Services.IIngredientRepository, IngredientSqlRepository>();
 builder.Services.AddScoped<IFoodService, FoodService>();
+builder.Services.AddScoped<IIngredientService, IngredientService>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
@@ -71,98 +49,87 @@ builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
-// ======================
-// DB
-// ======================
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-    opt.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        b => b.MigrationsAssembly("MyFood.Infrastructure")
-    )
-);
+{
+    if (useInMemoryDatabase)
+    {
+        opt.UseInMemoryDatabase("MyFoodTestDatabase");
+    }
+    else
+    {
+        opt.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            b => b.MigrationsAssembly("MyFood.Infrastructure"));
+    }
+});
 
-// ======================
-// AUTOMAPPER
-// ======================
-builder.Services.AddAutoMapper(typeof(FoodMappings));
-
-// ======================
-// LOGGING
-// ======================
-builder.Host.UseSerilog((context, configuration) =>
-    configuration.ReadFrom.Configuration(context.Configuration));
-
-// ======================
-// IDENTITY
-// ======================
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<FoodDbContext>()
     .AddDefaultTokenProviders();
 
-// ======================
-// JWT
-// ======================
+builder.Services.AddAutoMapper(typeof(FoodMappings), typeof(IngredientMappings));
+
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.SaveToken = true;
-    options.RequireHttpsMetadata = false;
-
-    options.TokenValidationParameters = new TokenValidationParameters()
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-    };
-});
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["JWT:ValidAudience"],
+            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+        };
+    });
 
 var app = builder.Build();
 
-// ======================
-// SWAGGER
-// ======================
-var apiVersionDescriptionProvider =
-    app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
-var loggerFactory =
-    app.Services.GetRequiredService<ILoggerFactory>();
-
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+    app.UseSwaggerUI(
+        options =>
         {
-            options.SwaggerEndpoint(
-                $"/swagger/{description.GroupName}/swagger.json",
-                description.GroupName.ToUpperInvariant());
-        }
-    });
+            foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+            {
+                options.SwaggerEndpoint(
+                    $"/swagger/{description.GroupName}/swagger.json",
+                    description.GroupName.ToUpperInvariant());
+            }
+        });
 
+}
+
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
+{
     app.SeedData();
 }
 else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
+//app.UseMiddleware<ExceptionHandlingMiddleware>();
+//app.UseMiddleware<RequestLoggingMiddleware>();
 
-// ======================
-// MIDDLEWARE ORDER (IMPORTANT)
-// ======================
+//Add support to logging request with SERILOG
 app.UseSerilogRequestLogging();
 
-app.UseRouting();
+app.UseCors("AllowAllOrigins");
+//app.UseHttpsRedirection(); // can cause docker issue
 
-// 🔥 CORS MUST BE HERE
-app.UseCors("FrontendPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();

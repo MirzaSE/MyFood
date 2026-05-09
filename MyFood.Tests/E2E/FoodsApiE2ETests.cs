@@ -121,7 +121,7 @@ namespace MyFood.Tests.E2E
             var response = await Client.GetAsync("/api/v1/foods/-1");
 
             // Assert
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode); // Should be BadRequest, but currently returns InternalServerError due to unhandled exception
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [Fact]
