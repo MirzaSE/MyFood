@@ -255,13 +255,29 @@ namespace MyFood.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("FoodEntityId")
+                    b.Property<decimal>("CaloriesPerUnit")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal?>("Carbs")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal?>("Fat")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int?>("FoodEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal?>("Protein")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("Unit")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
@@ -326,8 +342,7 @@ namespace MyFood.Infrastructure.Migrations
                     b.HasOne("MyFood.Domain.Entities.FoodEntity", "FoodEntity")
                         .WithMany("Ingredients")
                         .HasForeignKey("FoodEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("FoodEntity");
                 });

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, AlertCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Plus, AlertCircle, Sparkles } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
@@ -101,14 +102,23 @@ export const FoodPage: React.FC = () => {
                 {foods.length} {foods.length === 1 ? 'item' : 'items'} in your collection
               </p>
             </div>
-            <button
-              onClick={handleCreateClick}
-              disabled={isLoading || isSubmitting}
-              className="flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50 font-semibold"
-            >
-              <Plus size={20} />
-              <span>Add Food</span>
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                to="/foods/new"
+                className="flex items-center justify-center space-x-2 bg-white/5 hover:bg-white/10 text-purple-200 px-6 py-3 rounded-lg transition-all duration-200 border border-purple-500/30 hover:border-purple-400/60 font-semibold"
+              >
+                <Sparkles size={20} />
+                <span>Compose with ingredients</span>
+              </Link>
+              <button
+                onClick={handleCreateClick}
+                disabled={isLoading || isSubmitting}
+                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50 font-semibold"
+              >
+                <Plus size={20} />
+                <span>Add Food</span>
+              </button>
+            </div>
           </div>
         </div>
 
