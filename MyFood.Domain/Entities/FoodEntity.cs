@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyFood.Domain.Entities
 {
     public class FoodEntity
     {
         public int Id { get; set; }
-        [MaxLength(250)]
+        [MaxLength(1000)]
         public string? Name { get; set; }
         [MaxLength(50)]
         public string? Type { get; set; }
