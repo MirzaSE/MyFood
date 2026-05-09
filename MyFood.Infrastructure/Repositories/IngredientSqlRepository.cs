@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
-using MyFood.Application.Entities;
+using MyFood.Application.Services;
+using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Helpers;
 
 namespace MyFood.Infrastructure.Repositories
@@ -17,7 +15,7 @@ namespace MyFood.Infrastructure.Repositories
             _foodDbContext = foodDbContext;
         }
 
-        public IngredientEntity GetSingle(int id)
+        public IngredientEntity? GetSingle(int id)
         {
             return _foodDbContext.Ingredients.FirstOrDefault(x => x.Id == id);
         }
@@ -29,10 +27,10 @@ namespace MyFood.Infrastructure.Repositories
 
         public void Delete(int id)
         {
-            IngredientEntity ingredientItem = GetSingle(id);
-            if (ingredientItem != null)
+            var item = GetSingle(id);
+            if (item != null)
             {
-                _foodDbContext.Ingredients.Remove(ingredientItem);
+                _foodDbContext.Ingredients.Remove(item);
             }
         }
 
@@ -44,17 +42,31 @@ namespace MyFood.Infrastructure.Repositories
 
         public IQueryable<IngredientEntity> GetAll(QueryParameters queryParameters)
         {
-            IQueryable<IngredientEntity> _allItems = _foodDbContext.Ingredients.OrderBy(x => x.Name);
+            IQueryable<IngredientEntity> all = _foodDbContext.Ingredients.OrderBy(x => x.Name);
 
             if (queryParameters.HasQuery())
             {
-                _allItems = _allItems
-                    .Where(x => x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+                var q = queryParameters.Query.ToLowerInvariant();
+                all = all.Where(x => x.Name.ToLower().Contains(q) || x.Unit.ToLower().Contains(q));
             }
 
-            return _allItems
+            return all
                 .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
                 .Take(queryParameters.PageCount);
+        }
+
+        public IEnumerable<IngredientEntity> SearchByName(string name)
+        {
+            var pattern = $"%{name}%";
+            return _foodDbContext.Ingredients
+                .Where(i => EF.Functions.Like(i.Name, pattern))
+                .ToList();
+        }
+
+        public bool ExistsByName(string name)
+        {
+            var lowered = (name ?? string.Empty).ToLower();
+            return _foodDbContext.Ingredients.Any(i => i.Name.ToLower() == lowered);
         }
 
         public int Count()
@@ -64,7 +76,7 @@ namespace MyFood.Infrastructure.Repositories
 
         public bool Save()
         {
-            return (_foodDbContext.SaveChanges() >= 0);
+            return _foodDbContext.SaveChanges() >= 0;
         }
     }
 }

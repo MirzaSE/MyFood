@@ -1,17 +1,17 @@
-using System.Linq;
 using MyFood.Application;
-using MyFood.Application.Entities;
-using MyFood.Infrastructure.Helpers;
+using MyFood.Domain.Entities;
 
-namespace MyFood.Infrastructure.Repositories
+namespace MyFood.Application.Services
 {
     public interface IIngredientRepository
     {
-        IngredientEntity GetSingle(int id);
+        IngredientEntity? GetSingle(int id);
         void Add(IngredientEntity item);
         void Delete(int id);
         IngredientEntity Update(int id, IngredientEntity item);
         IQueryable<IngredientEntity> GetAll(QueryParameters queryParameters);
+        IEnumerable<IngredientEntity> SearchByName(string name);
+        bool ExistsByName(string name);
         int Count();
         bool Save();
     }

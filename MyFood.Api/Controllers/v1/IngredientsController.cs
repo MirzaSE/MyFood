@@ -1,116 +1,194 @@
-using Microsoft.AspNetCore.Mvc;
-using MyFood.Application.Entities;
-using MyFood.Infrastructure.Repositories;
-using MyFood.Infrastructure.Helpers;
-using System.Linq;
-using MyFood.Application;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using MyFood.Application;
 using MyFood.Application.Dtos;
-using System.Collections.Generic;
+using MyFood.Application.Services;
+using MyFood.Infrastructure;
+using MyFood.Infrastructure.Helpers;
+using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
 {
+    [Authorize]
+    [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    [ApiController]
     public class IngredientsController : ControllerBase
     {
-        private readonly IIngredientRepository _ingredientRepository;
+        private readonly IIngredientService _ingredientService;
         private readonly IMapper _mapper;
+        private readonly ILinkService<IngredientsController> _linkService;
 
-        public IngredientsController(IIngredientRepository ingredientRepository, IMapper mapper)
+        public IngredientsController(
+            IIngredientService ingredientService,
+            IMapper mapper,
+            ILinkService<IngredientsController> linkService)
         {
-            _ingredientRepository = ingredientRepository;
+            _ingredientService = ingredientService;
             _mapper = mapper;
+            _linkService = linkService;
+        }
+
+        [HttpGet(Name = nameof(GetAllIngredients))]
+        public async Task<ActionResult> GetAllIngredients(ApiVersion version, [FromQuery] QueryParameters queryParameters)
+        {
+            var ingredientDtos = await _ingredientService.GetAllAsync(queryParameters);
+            var allItemCount = await _ingredientService.GetTotalCountAsync();
+
+            var paginationMetadata = new
+            {
+                totalCount = allItemCount,
+                pageSize = queryParameters.PageCount,
+                currentPage = queryParameters.Page,
+                totalPages = queryParameters.GetTotalPages(allItemCount)
+            };
+
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+            var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
+            var toReturn = ingredientDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+
+            return Ok(new
+            {
+                value = toReturn,
+                links
+            });
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] QueryParameters queryParameters)
+        [Route("{id:int}", Name = nameof(GetSingleIngredient))]
+        public async Task<ActionResult> GetSingleIngredient(ApiVersion version, int id)
         {
-            var ingredients = _ingredientRepository.GetAll(queryParameters).ToList();
+            if (id < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
+            }
 
-            var ingredientsDto = _mapper.Map<IEnumerable<IngredientDto>>(ingredients);
+            var ingredientDto = await _ingredientService.GetByIdAsync(id);
 
-            return Ok(ingredientsDto);
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetSingle(int id)
-        {
-            var ingredient = _ingredientRepository.GetSingle(id);
-            if (ingredient == null)
+            if (ingredientDto == null)
             {
                 return NotFound();
             }
 
-            var ingredientDto = _mapper.Map<IngredientDto>(ingredient);
-
-            return Ok(ingredientDto);
+            return Ok(_linkService.ExpandSingleFoodItem(ingredientDto, ingredientDto.Id, version));
         }
 
-        [HttpPost]
-        public IActionResult Add([FromBody] IngredientCreateDto ingredientCreateDto)
+        [HttpGet]
+        [Route("search", Name = nameof(SearchIngredientsByName))]
+        public async Task<ActionResult> SearchIngredientsByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return BadRequest(new { message = "Search name is required." });
+            }
+
+            var ingredientDtos = await _ingredientService.SearchAsync(name);
+
+            var allItemCount = ingredientDtos.Count();
+            var paginationMetadata = new
+            {
+                totalCount = allItemCount,
+                pageSize = queryParameters.PageCount,
+                currentPage = queryParameters.Page,
+                totalPages = queryParameters.GetTotalPages(allItemCount)
+            };
+
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+            var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
+            var toReturn = ingredientDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+
+            return Ok(new
+            {
+                value = toReturn,
+                links
+            });
+        }
+
+        [HttpPost(Name = nameof(AddIngredient))]
+        public async Task<ActionResult<IngredientDto>> AddIngredient(ApiVersion version, [FromBody] IngredientCreateDto ingredientCreateDto)
         {
             if (ingredientCreateDto == null)
             {
-                return BadRequest("Ingredient object is null");
+                return BadRequest();
             }
 
-            var ingredientEntity = _mapper.Map<IngredientEntity>(ingredientCreateDto);
-
-            _ingredientRepository.Add(ingredientEntity);
-
-            if (!_ingredientRepository.Save())
+            try
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                var ingredientDto = await _ingredientService.CreateAsync(ingredientCreateDto);
+
+                return CreatedAtRoute(nameof(GetSingleIngredient),
+                    new { version = version.ToString(), id = ingredientDto.Id },
+                    _linkService.ExpandSingleFoodItem(ingredientDto, ingredientDto.Id, version));
             }
-
-
-            var ingredientToReturn = _mapper.Map<IngredientDto>(ingredientEntity);
-
-            return CreatedAtAction(nameof(GetSingle), new { id = ingredientToReturn.Id, version = "1.0" }, ingredientToReturn);
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] IngredientUpdateDto ingredientUpdateDto)
+        [HttpPut]
+        [Route("{id:int}", Name = nameof(UpdateIngredient))]
+        public async Task<ActionResult<IngredientDto>> UpdateIngredient(ApiVersion version, int id, [FromBody] IngredientUpdateDto ingredientUpdateDto)
         {
             if (ingredientUpdateDto == null)
             {
-                return BadRequest("Ingredient object is null");
+                return BadRequest();
             }
 
-            var existingIngredient = _ingredientRepository.GetSingle(id);
-            if (existingIngredient == null)
+            var updatedDto = await _ingredientService.UpdateAsync(id, ingredientUpdateDto);
+
+            if (updatedDto == null)
             {
                 return NotFound();
             }
 
-            _mapper.Map(ingredientUpdateDto, existingIngredient);
-
-            _ingredientRepository.Update(id, existingIngredient);
-
-            if (!_ingredientRepository.Save())
-            {
-                return StatusCode(500, "A problem happened while handling your request.");
-            }
-
-            return Ok(_mapper.Map<IngredientDto>(existingIngredient));
+            return Ok(_linkService.ExpandSingleFoodItem(updatedDto, updatedDto.Id, version));
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [HttpPatch("{id:int}", Name = nameof(PartiallyUpdateIngredient))]
+        public async Task<ActionResult<IngredientDto>> PartiallyUpdateIngredient(ApiVersion version, int id, [FromBody] JsonPatchDocument<IngredientUpdateDto> patchDoc)
         {
-            var existingIngredient = _ingredientRepository.GetSingle(id);
-            if (existingIngredient == null)
+            if (patchDoc == null)
+            {
+                return BadRequest();
+            }
+
+            var existingDto = await _ingredientService.GetByIdAsync(id);
+            if (existingDto == null)
             {
                 return NotFound();
             }
 
-            _ingredientRepository.Delete(id);
+            IngredientUpdateDto ingredientUpdateDto = _mapper.Map<IngredientUpdateDto>(existingDto);
+            patchDoc.ApplyTo(ingredientUpdateDto);
 
-            if (!_ingredientRepository.Save())
+            TryValidateModel(ingredientUpdateDto);
+            if (!ModelState.IsValid)
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return BadRequest(ModelState);
+            }
+
+            var updatedDto = await _ingredientService.UpdateAsync(id, ingredientUpdateDto);
+            return Ok(_linkService.ExpandSingleFoodItem(updatedDto!, updatedDto!.Id, version));
+        }
+
+        [HttpDelete]
+        [Route("{id:int}", Name = nameof(RemoveIngredient))]
+        public async Task<ActionResult> RemoveIngredient(int id)
+        {
+            var result = await _ingredientService.DeleteAsync(id);
+
+            if (!result)
+            {
+                return NotFound();
             }
 
             return NoContent();

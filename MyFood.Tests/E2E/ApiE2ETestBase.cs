@@ -15,7 +15,7 @@ namespace MyFood.Tests.E2E
         {
             Factory = new WebApplicationFactory<Program>();
             Client = Factory.CreateClient();
-            
+
             // Use localhost with port 8080 as configured in Program.cs
             Client.BaseAddress = new Uri("http://localhost:8080");
         }
@@ -46,13 +46,13 @@ namespace MyFood.Tests.E2E
                 new MediaTypeHeaderValue("application/json"));
 
             var loginResponse = await Client.PostAsync("/api/authenticate/login", loginContent);
-            
+
             if (loginResponse.IsSuccessStatusCode)
             {
                 var responseBody = await loginResponse.Content.ReadAsStringAsync();
                 using var jsonDoc = JsonDocument.Parse(responseBody);
                 var root = jsonDoc.RootElement;
-                
+
                 if (root.TryGetProperty("token", out var tokenElement))
                 {
                     return tokenElement.GetString() ?? string.Empty;
