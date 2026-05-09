@@ -1,12 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MyFood.Domain.Entities
+namespace MyFood.Application.Dtos
 {
-    public class IngredientEntity
+    public class IngredientCreateDto
     {
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(260)]
         public string? Name { get; set; }
@@ -14,9 +11,7 @@ namespace MyFood.Domain.Entities
         [Required]
         public string? Quantity { get; set; }
 
-        [ForeignKey(nameof(Food))]
+        [Required]
         public int FoodEntityId { get; set; }
-
-        public FoodEntity? Food { get; set; }
     }
 }

@@ -19,8 +19,11 @@ namespace MyFood.Infrastructure.Repositories
 
         public FoodEntity GetSingle(int id)
         {
-            return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
+            return _foodDbContext.FoodItems
+                .Include(f => f.Ingredients)
+                .FirstOrDefault(x => x.Id == id);
         }
+
 
         public void Add(FoodEntity item)
         {
@@ -41,7 +44,9 @@ namespace MyFood.Infrastructure.Repositories
 
         public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
         {
-            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
+            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems
+                .Include(f => f.Ingredients)
+                .OrderBy(x => x.Name);
 
             if (queryParameters.HasQuery())
             {
@@ -80,10 +85,9 @@ namespace MyFood.Infrastructure.Repositories
         public IEnumerable<FoodEntity> SearchFoodsByName(string name)
         {
             return _foodDbContext.FoodItems
+                .Include(f => f.Ingredients)
                 .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
                 .ToList();
-
-            // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
         }
 
         private FoodEntity GetRandomItem(string type)
