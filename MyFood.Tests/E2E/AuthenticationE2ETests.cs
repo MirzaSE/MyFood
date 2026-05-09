@@ -11,9 +11,11 @@ namespace MyFood.Tests.E2E
         public async Task Register_WithValidCredentials_ReturnsOk()
         {
             // Arrange
+            var un = "test" + Guid.NewGuid().ToString("N").Substring(0, 8);
             var model = new
             {
-                username = "test"+ Guid.NewGuid().ToString("N").Substring(0, 8), // Ensure unique username
+                username = un,
+                email = $"{un}@test.com",
                 password = "SecurePass@123"
             };
 
@@ -28,7 +30,7 @@ namespace MyFood.Tests.E2E
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var responseBody = await response.Content.ReadAsStringAsync();
-            Assert.Contains("successfully", responseBody, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("token", responseBody, StringComparison.OrdinalIgnoreCase);
         }
 
         [Fact]
@@ -37,8 +39,8 @@ namespace MyFood.Tests.E2E
             // Arrange
             var username = "duplicateuser";
             var password = "Test@123";
-            
-            var model = new { username, password };
+
+            var model = new { username, email = $"{username}@test.com", password };
             var content = new StringContent(
                 JsonSerializer.Serialize(model),
                 Encoding.UTF8,
@@ -54,8 +56,8 @@ namespace MyFood.Tests.E2E
                 "application/json");
             var response = await Client.PostAsync("/api/authenticate/register", content);
 
-            // Assert
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            // Assert — controller returns Conflict (409) for duplicate usernames
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         }
 
         [Fact]
@@ -64,9 +66,9 @@ namespace MyFood.Tests.E2E
             // Arrange
             var username = "loginuser";
             var password = "Test@123";
-            
+
             // Register first
-            var registerModel = new { username, password };
+            var registerModel = new { username, email = $"{username}@test.com", password };
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
                 Encoding.UTF8,
@@ -98,9 +100,9 @@ namespace MyFood.Tests.E2E
             // Arrange
             var username = "validuser";
             var password = "ValidPass@123";
-            
+
             // Register
-            var registerModel = new { username, password };
+            var registerModel = new { username, email = $"{username}@test.com", password };
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
                 Encoding.UTF8,
