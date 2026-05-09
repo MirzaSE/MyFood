@@ -4,6 +4,7 @@ export interface Food {
   type: string;
   calories: number;
   created: string;
+  createdDate?: string;
 }
 
 export interface FoodCreateDto {
@@ -42,3 +43,5 @@ export interface AuthContextType {
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
+
+export * from './ingredient';

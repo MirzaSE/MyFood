@@ -12,18 +12,12 @@ namespace MyFood.Infrastructure.Repositories
         }
 
         public DbSet<FoodEntity> FoodItems { get; set; } = null!;
-        public DbSet<IngredientEntity> Ingredients { get; set; } = null!; 
+        public DbSet<IngredientEntity> Ingredients { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<FoodEntity>()
-                .HasMany(f => f.Ingredients)
-                .WithOne(i => i.FoodEntity)
-                .HasForeignKey(i => i.FoodEntityId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
-    
+
 }

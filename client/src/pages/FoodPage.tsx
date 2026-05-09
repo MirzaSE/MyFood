@@ -14,17 +14,24 @@ export const FoodPage: React.FC = () => {
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load foods on component mount
   useEffect(() => {
     loadFoods();
   }, []);
+
+  const normalizeFoodDate = (food: Food): Food => {
+    return {
+      ...food,
+      createdDate: food.createdDate || new Date().toISOString(),
+    } as Food;
+  };
 
   const loadFoods = async () => {
     try {
       setIsLoading(true);
       setError(null);
+
       const data = await foodService.getAllFoods();
-      setFoods(data);
+      setFoods(data.map(normalizeFoodDate));
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to load foods');
     } finally {
@@ -48,13 +55,22 @@ export const FoodPage: React.FC = () => {
       setError(null);
 
       if (selectedFood) {
-        // Update existing food
         const updatedFood = await foodService.updateFood(selectedFood.id, data);
-        setFoods(foods.map(f => f.id === selectedFood.id ? updatedFood : f));
+        const fixedUpdatedFood = normalizeFoodDate({
+          ...selectedFood,
+          ...updatedFood,
+        });
+
+        setFoods((previousFoods) =>
+          previousFoods.map((food) =>
+            food.id === selectedFood.id ? fixedUpdatedFood : food
+          )
+        );
       } else {
-        // Create new food
         const newFood = await foodService.createFood(data);
-        setFoods([...foods, newFood]);
+        const fixedNewFood = normalizeFoodDate(newFood);
+
+        setFoods((previousFoods) => [...previousFoods, fixedNewFood]);
       }
 
       setModalOpen(false);
@@ -69,8 +85,9 @@ export const FoodPage: React.FC = () => {
   const handleDelete = async (id: number) => {
     try {
       setError(null);
+
       await foodService.deleteFood(id);
-      setFoods(foods.filter(f => f.id !== id));
+      setFoods((previousFoods) => previousFoods.filter((food) => food.id !== id));
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to delete food');
       throw err;
@@ -82,7 +99,6 @@ export const FoodPage: React.FC = () => {
       <Navbar />
 
       <div className="container mx-auto px-6 py-16">
-        {/* Error Banner */}
         {error && (
           <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start space-x-3 backdrop-blur">
             <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
@@ -90,7 +106,6 @@ export const FoodPage: React.FC = () => {
           </div>
         )}
 
-        {/* Page Header */}
         <div className="mb-16">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-10">
             <div>
@@ -101,6 +116,7 @@ export const FoodPage: React.FC = () => {
                 {foods.length} {foods.length === 1 ? 'item' : 'items'} in your collection
               </p>
             </div>
+
             <button
               onClick={handleCreateClick}
               disabled={isLoading || isSubmitting}
@@ -112,7 +128,6 @@ export const FoodPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Loading State */}
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="relative w-16 h-16 mb-4">
@@ -122,19 +137,15 @@ export const FoodPage: React.FC = () => {
             <p className="text-gray-300 font-medium">Loading your foods...</p>
           </div>
         ) : (
-          /* Content */
-          <div>
-            <FoodTable
-              foods={foods}
-              onEdit={handleEditClick}
-              onDelete={handleDelete}
-              isLoading={isSubmitting}
-            />
-          </div>
+          <FoodTable
+            foods={foods}
+            onEdit={handleEditClick}
+            onDelete={handleDelete}
+            isLoading={isSubmitting}
+          />
         )}
       </div>
 
-      {/* Modal */}
       <FoodModal
         isOpen={modalOpen}
         onClose={() => {
