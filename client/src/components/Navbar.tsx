@@ -1,7 +1,7 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { LogOut, ChefHat } from "lucide-react";
+import { LogOut, ChefHat, Leaf, UtensilsCrossed } from "lucide-react";
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -27,19 +27,78 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* User Info & Logout */}
-          <div className="flex flex-col items-end gap-2">
-            <p className="text-sm font-semibold text-white">
-              Welcome back, {username}
-            </p>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
-            >
-              <LogOut size={18} />
-              <span className="hidden sm:inline font-medium">Logout</span>
-            </button>
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-2">
+              <NavLink
+                to="/foods"
+                className={({ isActive }) =>
+                  `inline-flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${
+                    isActive
+                      ? "bg-white/15 border-white/25 text-white"
+                      : "bg-white/5 border-white/10 text-gray-300 hover:text-white hover:bg-white/10"
+                  }`
+                }
+              >
+                <UtensilsCrossed size={17} />
+                <span className="text-sm font-medium">Foods</span>
+              </NavLink>
+              <NavLink
+                to="/ingredients"
+                className={({ isActive }) =>
+                  `inline-flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${
+                    isActive
+                      ? "bg-white/15 border-white/25 text-white"
+                      : "bg-white/5 border-white/10 text-gray-300 hover:text-white hover:bg-white/10"
+                  }`
+                }
+              >
+                <Leaf size={17} />
+                <span className="text-sm font-medium">Ingredients</span>
+              </NavLink>
+            </div>
+
+            {/* User Info & Logout */}
+            <div className="flex flex-col items-end gap-2">
+              <p className="text-sm font-semibold text-white">
+                Welcome back, {username}
+              </p>
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
+              >
+                <LogOut size={18} />
+                <span className="hidden sm:inline font-medium">Logout</span>
+              </button>
+            </div>
           </div>
+        </div>
+        <div className="md:hidden mt-4 grid grid-cols-2 gap-2">
+          <NavLink
+            to="/foods"
+            className={({ isActive }) =>
+              `inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border transition-all ${
+                isActive
+                  ? "bg-white/15 border-white/25 text-white"
+                  : "bg-white/5 border-white/10 text-gray-300"
+              }`
+            }
+          >
+            <UtensilsCrossed size={17} />
+            <span className="text-sm font-medium">Foods</span>
+          </NavLink>
+          <NavLink
+            to="/ingredients"
+            className={({ isActive }) =>
+              `inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border transition-all ${
+                isActive
+                  ? "bg-white/15 border-white/25 text-white"
+                  : "bg-white/5 border-white/10 text-gray-300"
+              }`
+            }
+          >
+            <Leaf size={17} />
+            <span className="text-sm font-medium">Ingredients</span>
+          </NavLink>
         </div>
       </div>
     </nav>

@@ -68,6 +68,20 @@ export const FoodTable: React.FC<FoodTableProps> = ({
                 <span className="text-gray-400 text-sm">Calories</span>
                 <span className="text-white font-semibold">{food.calories} kcal</span>
               </div>
+              <div className="grid grid-cols-3 gap-2">
+                <div className="p-2 bg-white/5 rounded-lg border border-white/5">
+                  <span className="block text-gray-400 text-xs">Protein</span>
+                  <span className="text-white text-sm font-semibold">{(food.protein ?? 0).toFixed(1)}g</span>
+                </div>
+                <div className="p-2 bg-white/5 rounded-lg border border-white/5">
+                  <span className="block text-gray-400 text-xs">Carbs</span>
+                  <span className="text-white text-sm font-semibold">{(food.carbs ?? 0).toFixed(1)}g</span>
+                </div>
+                <div className="p-2 bg-white/5 rounded-lg border border-white/5">
+                  <span className="block text-gray-400 text-xs">Fat</span>
+                  <span className="text-white text-sm font-semibold">{(food.fat ?? 0).toFixed(1)}g</span>
+                </div>
+              </div>
               <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5">
                 <span className="text-gray-400 text-sm">Added</span>
                 <span className="text-gray-300 text-sm">{new Date(food.created).toLocaleDateString()}</span>
@@ -127,4 +141,3 @@ export const FoodTable: React.FC<FoodTableProps> = ({
     </div>
   );
 };
-

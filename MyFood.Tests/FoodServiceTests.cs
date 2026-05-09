@@ -69,6 +69,41 @@ public class FoodServiceTests
     }
 
     [Fact]
+    public async Task CreateFoodAsync_AddsIngredientCaloriesToFoodCalories()
+    {
+        var ingredientRepoMock = new Mock<IIngredientRepository>();
+        var service = new FoodService(_repoMock.Object, ingredientRepoMock.Object, _mapperMock.Object);
+        var createDto = new FoodCreateDto
+        {
+            Name = "Bowl",
+            Calories = 100,
+            Ingredients = new List<FoodIngredientSelectionDto>
+            {
+                new FoodIngredientSelectionDto { IngredientId = 7, Quantity = 2 }
+            }
+        };
+        var entity = new FoodEntity { Id = 10, Name = "Bowl", Calories = 100 };
+        var ingredient = new IngredientEntity { Id = 7, Name = "Rice", Quantity = 5, CaloriesPerUnit = 50 };
+
+        _mapperMock.Setup(m => m.Map<FoodEntity>(createDto)).Returns(entity);
+        ingredientRepoMock.Setup(r => r.GetSingle(7)).Returns(ingredient);
+        _repoMock.Setup(r => r.Add(entity));
+        _repoMock.Setup(r => r.Save()).Returns(true);
+        _repoMock.Setup(r => r.GetSingle(entity.Id)).Returns(entity);
+        _mapperMock.Setup(m => m.Map<FoodDto>(entity)).Returns((FoodEntity source) => new FoodDto
+        {
+            Id = source.Id,
+            Name = source.Name,
+            Calories = source.Calories
+        });
+
+        var result = await service.CreateFoodAsync(createDto);
+
+        Assert.Equal(200, entity.Calories);
+        Assert.Equal(200, result.Calories);
+    }
+
+    [Fact]
     public async Task UpdateFoodAsync_UpdatesAndReturnsDto()
     {
         var updateDto = new FoodUpdateDto { Name = "Updated" };

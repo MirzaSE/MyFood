@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
 import type { Food, FoodCreateDto } from "../types";
+import type { SelectedIngredient } from "../types/ingredient";
+import { FoodIngredientsPicker } from "./FoodIngredientsPicker";
 
 interface FoodModalProps {
   isOpen: boolean;
@@ -18,18 +20,43 @@ export const FoodModal: React.FC<FoodModalProps> = ({
   initialData,
   isLoading = false,
 }) => {
+  const [selectedIngredients, setSelectedIngredients] = React.useState<SelectedIngredient[]>([]);
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<FoodCreateDto>({
     defaultValues: {
       name: "",
       type: "",
       calories: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0,
+      ingredients: [],
     },
   });
+
+  const nutritionTotals = React.useMemo(
+    () =>
+      selectedIngredients.reduce(
+        (total, item) => ({
+          calories: total.calories + item.ingredient.caloriesPerUnit * item.quantity,
+          protein: total.protein + item.ingredient.protein * item.quantity,
+          carbs: total.carbs + item.ingredient.carbs * item.quantity,
+          fat: total.fat + item.ingredient.fat * item.quantity,
+        }),
+        { calories: 0, protein: 0, carbs: 0, fat: 0 },
+      ),
+    [selectedIngredients],
+  );
+
+  const hasSelectedIngredients = selectedIngredients.length > 0;
+  const baseCalories = watch("calories");
+  const totalCalories =
+    (Number.isFinite(baseCalories) ? baseCalories : 0) + nutritionTotals.calories;
 
   useEffect(() => {
     if (!isOpen) {
@@ -40,11 +67,17 @@ export const FoodModal: React.FC<FoodModalProps> = ({
       name: initialData?.name ?? "",
       type: initialData?.type ?? "",
       calories: initialData?.calories ?? 0,
+      protein: initialData?.protein ?? 0,
+      carbs: initialData?.carbs ?? 0,
+      fat: initialData?.fat ?? 0,
+      ingredients: [],
     });
+    setSelectedIngredients([]);
   }, [isOpen, initialData, reset]);
 
   const handleClose = () => {
     reset();
+    setSelectedIngredients([]);
     onClose();
   };
 
@@ -54,6 +87,13 @@ export const FoodModal: React.FC<FoodModalProps> = ({
         name: data.name.trim(),
         type: data.type.trim(),
         calories: data.calories,
+        protein: data.protein,
+        carbs: data.carbs,
+        fat: data.fat,
+        ingredients: selectedIngredients.map((item) => ({
+          ingredientId: item.ingredient.id,
+          quantity: item.quantity,
+        })),
       });
       reset();
     } catch (error) {
@@ -65,7 +105,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center">
           <h2 className="text-xl font-bold text-white">
@@ -131,7 +171,6 @@ export const FoodModal: React.FC<FoodModalProps> = ({
             </label>
             <input
               {...register("calories", {
-                required: "Calories is required",
                 valueAsNumber: true,
                 validate: (value) => {
                   if (!Number.isFinite(value)) {
@@ -151,6 +190,26 @@ export const FoodModal: React.FC<FoodModalProps> = ({
                 {errors.calories.message}
               </span>
             )}
+          </div>
+
+          <FoodIngredientsPicker
+            selected={selectedIngredients}
+            onChange={setSelectedIngredients}
+            disabled={isLoading}
+          />
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
+            {[
+              ['Calories', `${Math.round(totalCalories)} kcal`],
+              ['Protein', `${hasSelectedIngredients ? nutritionTotals.protein.toFixed(1) : '0.0'}g`],
+              ['Carbs', `${hasSelectedIngredients ? nutritionTotals.carbs.toFixed(1) : '0.0'}g`],
+              ['Fat', `${hasSelectedIngredients ? nutritionTotals.fat.toFixed(1) : '0.0'}g`],
+            ].map(([label, value]) => (
+              <div key={label} className="rounded-lg border border-white/10 bg-white/[0.04] p-3">
+                <p className="text-xs text-gray-400">{label}</p>
+                <p className="text-sm font-semibold text-white">{value}</p>
+              </div>
+            ))}
           </div>
 
           <div className="flex space-x-3 pt-6">

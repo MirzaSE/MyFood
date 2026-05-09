@@ -30,9 +30,16 @@ namespace MyFood.Api.Middleware
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = exception is ArgumentException or InvalidOperationException
+                ? (int)HttpStatusCode.BadRequest
+                : (int)HttpStatusCode.InternalServerError;
 
-            var response = new { message = "An error occurred while processing your request." };
+            var response = new
+            {
+                message = context.Response.StatusCode == (int)HttpStatusCode.BadRequest
+                    ? exception.Message
+                    : "An error occurred while processing your request."
+            };
             return context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
     }

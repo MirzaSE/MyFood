@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Api;
+using MyFood.Api.Middleware;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Services;
 using MyFood.Application.Services;
@@ -119,7 +120,7 @@ else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
-//app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 //app.UseMiddleware<RequestLoggingMiddleware>();
 
 //Add support to logging request with SERILOG
