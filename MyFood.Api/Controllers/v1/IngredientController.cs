@@ -3,12 +3,9 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
 using MyFood.Application.Dtos;
-using MyFood.Application.Entities;
+using MyFood.Application.Services;
 using MyFood.Domain.Entities;
-using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
-using MyFood.Infrastructure.Migrations;
-using MyFood.Infrastructure.Repositories;
 using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
@@ -20,30 +17,20 @@ namespace MyFood.Api.Controllers.v1
     public class IngredientController : ControllerBase
     {
         private readonly IIngredientRepository _ingredientRepository;
-        private readonly IFoodRepository _foodRepository;
         private readonly IMapper _mapper;
 
         public IngredientController(
             IIngredientRepository ingredientRepository,
-            IFoodRepository foodRepository,
             IMapper mapper)
         {
             _ingredientRepository = ingredientRepository;
-            _foodRepository=foodRepository;
             _mapper = mapper;
         }
 
         [HttpPost(Name= nameof(AddIngredient))]
         public ActionResult AddIngredient(IngridientCreateDto ingridientCreateDto)
         {
-            var food = _foodRepository.GetSingle(ingridientCreateDto.FoodId);
-            if (food == null)
-            {
-                return BadRequest("FoodEntity Not found");
-            }
-
             var ingredientEntity = _mapper.Map<IngredientEntity>(ingridientCreateDto);
-            ingredientEntity.Food = food;
            
             _ingredientRepository.Add(ingredientEntity);
             if (!_ingredientRepository.Save())
