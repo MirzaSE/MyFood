@@ -4,7 +4,14 @@ import { Navbar } from '../components/Navbar';
 import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
 import { foodService } from '../services/foodService';
+import { ingredientService } from '../services/ingredientService';
 import type { Food, FoodCreateDto } from '../types';
+
+interface SelectedIngredient {
+  ingredientId: number;
+  name: string;
+  quantity: string;
+}
 
 export const FoodPage: React.FC = () => {
   const [foods, setFoods] = useState<Food[]>([]);
@@ -42,7 +49,7 @@ export const FoodPage: React.FC = () => {
     setModalOpen(true);
   };
 
-  const handleModalSubmit = async (data: FoodCreateDto) => {
+  const handleModalSubmit = async (data: FoodCreateDto, selectedIngredients: SelectedIngredient[]) => {
     try {
       setIsSubmitting(true);
       setError(null);
@@ -54,6 +61,20 @@ export const FoodPage: React.FC = () => {
       } else {
         // Create new food
         const newFood = await foodService.createFood(data);
+
+        // Attach each selected ingredient to the new food by updating its FoodId
+        for (const sel of selectedIngredients) {
+          try {
+            await ingredientService.updateIngredient(sel.ingredientId, {
+              name: sel.name,
+              quantity: sel.quantity,
+              foodId: newFood.id,
+            });
+          } catch (attachErr) {
+            console.error(`Failed to attach ingredient ${sel.name}:`, attachErr);
+          }
+        }
+
         setFoods([...foods, newFood]);
       }
 

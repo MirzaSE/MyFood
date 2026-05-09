@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
+import { FoodIngredientsPicker } from './FoodIngredientsPicker';
+
+interface SelectedIngredient {
+  ingredientId: number;
+  name: string;
+  quantity: string;
+}
 
 interface FoodModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: FoodCreateDto) => Promise<void>;
+  onSubmit: (data: FoodCreateDto, selectedIngredients: SelectedIngredient[]) => Promise<void>;
   initialData?: Food | null;
   isLoading?: boolean;
 }
@@ -23,23 +30,40 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FoodCreateDto>({
-    defaultValues: initialData ? {
-      name: initialData.name,
-      type: initialData.type,
-      calories: initialData.calories,
-    } : undefined,
-  });
+  } = useForm<FoodCreateDto>();
+
+  const [selectedIngredients, setSelectedIngredients] = useState<SelectedIngredient[]>([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedIngredients([]);
+      if (initialData) {
+        reset({
+          name: initialData.name,
+          type: initialData.type,
+          calories: initialData.calories,
+        });
+      } else {
+        reset({
+          name: '',
+          type: '',
+          calories: 0,
+        });
+      }
+    }
+  }, [isOpen, initialData, reset]);
 
   const handleClose = () => {
     reset();
+    setSelectedIngredients([]);
     onClose();
   };
 
   const onSubmitForm = async (data: FoodCreateDto) => {
     try {
-      await onSubmit(data);
+      await onSubmit(data, selectedIngredients);
       reset();
+      setSelectedIngredients([]);
     } catch (error) {
       console.error('Form submission error:', error);
     }
@@ -49,9 +73,9 @@ export const FoodModal: React.FC<FoodModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center">
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center flex-shrink-0">
           <h2 className="text-xl font-bold text-white">
             {initialData ? 'Edit Food' : 'Add New Food'}
           </h2>
@@ -64,9 +88,9 @@ export const FoodModal: React.FC<FoodModalProps> = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8">
-          <div className="mt-8">
-            <label className="block text-sm font-semibold text-gray-300 mb-2" >
+        <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8 overflow-y-auto">
+          <div>
+            <label className="block text-sm font-semibold text-gray-300 mb-2">
               Food Name
             </label>
             <input
@@ -79,7 +103,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
             {errors.name && <span className="text-red-400 text-xs mt-1 block">{errors.name.message}</span>}
           </div>
 
-          <div className="mt-8">
+          <div className="mt-6">
             <label className="block text-sm font-semibold text-gray-300 mb-2">
               Food Type
             </label>
@@ -93,7 +117,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
             {errors.type && <span className="text-red-400 text-xs mt-1 block">{errors.type.message}</span>}
           </div>
 
-          <div>
+          <div className="mt-6">
             <label className="block text-sm font-semibold text-gray-300 mb-2">
               Calories
             </label>
@@ -110,6 +134,16 @@ export const FoodModal: React.FC<FoodModalProps> = ({
             />
             {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
           </div>
+
+          {/* Ingredients picker - only when creating */}
+          {!initialData && (
+            <div className="mt-6 pt-6 border-t border-white/10">
+              <FoodIngredientsPicker
+                selectedIngredients={selectedIngredients}
+                onChange={setSelectedIngredients}
+              />
+            </div>
+          )}
 
           <div className="flex space-x-3 pt-6">
             <button

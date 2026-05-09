@@ -1,16 +1,24 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, ChefHat } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { username, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
+
+  const navLinkClass = (path: string) =>
+    `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+      location.pathname.startsWith(path)
+        ? 'bg-white/15 text-white'
+        : 'text-gray-300 hover:text-white hover:bg-white/10'
+    }`;
 
   return (
     <nav className="bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 border-b border-white/10 backdrop-blur-lg sticky top-0 z-50">
@@ -27,22 +35,28 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
+          {/* Nav Links */}
+          <div className="flex items-center space-x-2">
+            <button onClick={() => navigate('/foods')} className={navLinkClass('/foods')}>
+              Foods
+            </button>
+            <button onClick={() => navigate('/ingredients')} className={navLinkClass('/ingredients')}>
+              Ingredients
+            </button>
+          </div>
+
           {/* User Info & Logout */}
           <div className="flex items-center space-x-6">
-            <div className="hidden sm:block">
-              <p className="text-sm text-gray-300">Welcome back</p>
-              <p className="text-lg font-semibold text-white">{username}</p>
+            <div className="text-right">
+              <p className="text-sm font-semibold text-white">Welcome back, {username}</p>
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-1 mt-1 ml-auto px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50 text-sm"
+              >
+                <LogOut size={14} />
+                <span className="font-medium">Logout</span>
+              </button>
             </div>
-
-            <div className="w-px h-8 bg-white/10"></div>
-
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
-            >
-              <LogOut size={18} />
-              <span className="hidden sm:inline font-medium">Logout</span>
-            </button>
           </div>
         </div>
       </div>
