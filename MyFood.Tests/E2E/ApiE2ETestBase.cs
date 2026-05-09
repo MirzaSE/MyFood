@@ -32,7 +32,7 @@ namespace MyFood.Tests.E2E
         protected async Task<string> RegisterAndLogin(string username = "testuser", string password = "Test@123")
         {
             // Register
-            var registerModel = new { username, password };
+            var registerModel = new { username, email = $"{username}@test.com", password };
             var registerContent = new StringContent(
                 JsonSerializer.Serialize(registerModel),
                 new MediaTypeHeaderValue("application/json"));

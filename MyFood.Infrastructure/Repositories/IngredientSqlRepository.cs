@@ -2,7 +2,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
-using MyFood.Application.Entities;
+using MyFood.Application.Services;
+using MyFood.Domain.Entities;
 using MyFood.Infrastructure.Helpers;
 
 namespace MyFood.Infrastructure.Repositories
@@ -18,12 +19,12 @@ namespace MyFood.Infrastructure.Repositories
 
         public async Task<IngredientEntity?> GetSingle(int id)
         {
-            return await _DbContext.IngredientItems.FirstOrDefaultAsync(x => x.Id == id);
+            return await _DbContext.Ingredients.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IngredientEntity> Add(IngredientEntity item)
         {
-            _DbContext.IngredientItems.Add(item);
+            _DbContext.Ingredients.Add(item);
             await _DbContext.SaveChangesAsync();
             return item;
         }
@@ -33,7 +34,7 @@ namespace MyFood.Infrastructure.Repositories
             var ingredientItem = await GetSingle(id);
             if (ingredientItem != null)
             {
-                _DbContext.IngredientItems.Remove(ingredientItem);
+                _DbContext.Ingredients.Remove(ingredientItem);
                 await _DbContext.SaveChangesAsync();
             }
             return ingredientItem;
@@ -41,7 +42,7 @@ namespace MyFood.Infrastructure.Repositories
 
         public async Task<IngredientEntity> Update(int id, IngredientEntity item)
         {
-            var existingItem = await _DbContext.IngredientItems.FindAsync(id);
+            var existingItem = await _DbContext.Ingredients.FindAsync(id);
             if (existingItem != null)
             {
                 _DbContext.Entry(existingItem).CurrentValues.SetValues(item);
@@ -52,7 +53,7 @@ namespace MyFood.Infrastructure.Repositories
 
         public async Task<IEnumerable<IngredientEntity>> GetAll(QueryParameters queryParameters)
         {
-            return await _DbContext.IngredientItems
+            return await _DbContext.Ingredients
                 .OrderBy(x => x.Name)
                 .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
                 .Take(queryParameters.PageCount)
@@ -61,7 +62,7 @@ namespace MyFood.Infrastructure.Repositories
 
         public async Task<int> Count()
         {
-            return await _DbContext.IngredientItems.CountAsync();
+            return await _DbContext.Ingredients.CountAsync();
         }
     }
 }
