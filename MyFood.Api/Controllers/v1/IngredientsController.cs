@@ -1,12 +1,15 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyFood.Application;
 using MyFood.Application.Dtos;
-using MyFood.Application.Entities;
-using MyFood.Infrastructure.Repositories;
+using MyFood.Application.Services;
+using MyFood.Domain.Entities;
 
 namespace MyFood.Api.Controllers.v1
 {
     [ApiController]
+    [Authorize]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/foods/{foodId:int}/ingredients")]
     public class IngredientsController : ControllerBase
@@ -23,6 +26,13 @@ namespace MyFood.Api.Controllers.v1
             _foodRepository = foodRepository;
             _ingredientRepository = ingredientRepository;
             _mapper = mapper;
+        }
+
+        [HttpGet("/api/v{version:apiVersion}/ingredients", Name = nameof(GetAllIngredients))]
+        public ActionResult<IEnumerable<IngredientDto>> GetAllIngredients([FromQuery] QueryParameters queryParameters)
+        {
+            var ingredients = _ingredientRepository.GetAll(queryParameters);
+            return Ok(_mapper.Map<IEnumerable<IngredientDto>>(ingredients));
         }
 
         [HttpGet(Name = nameof(GetIngredientsForFood))]
@@ -70,7 +80,7 @@ namespace MyFood.Api.Controllers.v1
             }
 
             var ingredient = _mapper.Map<IngredientEntity>(ingredientCreateDto);
-            ingredient.FoodId = foodId;
+            ingredient.FoodEntityId = foodId;
 
             _ingredientRepository.Add(ingredient);
 
@@ -109,7 +119,7 @@ namespace MyFood.Api.Controllers.v1
             }
 
             _mapper.Map(ingredientUpdateDto, existingIngredient);
-            existingIngredient.FoodId = foodId;
+            existingIngredient.FoodEntityId = foodId;
 
             _ingredientRepository.Update(existingIngredient);
 

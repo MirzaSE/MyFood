@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyFood.Api.Services;
 using MyFood.Infrastructure.Repositories;
@@ -19,3 +20,4 @@ namespace MyFood.Infrastructure.Helpers
         }
     }
 }
+

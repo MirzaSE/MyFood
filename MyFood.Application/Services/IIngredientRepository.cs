@@ -1,9 +1,13 @@
-using MyFood.Application.Entities;
+using MyFood.Application;
+using MyFood.Domain.Entities;
 
-namespace MyFood.Infrastructure.Repositories
+namespace MyFood.Application.Services
 {
     public interface IIngredientRepository
     {
+        IQueryable<IngredientEntity> GetAll(QueryParameters queryParameters);
+        IEnumerable<IngredientEntity> Search(string query);
+        IngredientEntity? GetById(int id);
         IEnumerable<IngredientEntity> GetAllForFood(int foodId);
         IngredientEntity? GetSingle(int foodId, int ingredientId);
         void Add(IngredientEntity item);
