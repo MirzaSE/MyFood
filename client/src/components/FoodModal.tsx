@@ -9,6 +9,7 @@ interface FoodModalProps {
   onSubmit: (data: FoodCreateDto) => Promise<void>;
   initialData?: Food | null;
   isLoading?: boolean;
+  fieldErrors?: Record<string, string>;
 }
 
 export const FoodModal: React.FC<FoodModalProps> = ({
@@ -17,6 +18,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
   onSubmit,
   initialData,
   isLoading = false,
+  fieldErrors = {},
 }) => {
   const {
     register,
@@ -30,6 +32,18 @@ export const FoodModal: React.FC<FoodModalProps> = ({
       calories: initialData.calories,
     } : undefined,
   });
+
+  React.useEffect(() => {
+    if (initialData) {
+      reset({
+        name: initialData.name,
+        type: initialData.type,
+        calories: initialData.calories,
+      });
+    } else {
+      reset();
+    }
+  }, [initialData, reset]);
 
   const handleClose = () => {
     reset();
@@ -70,13 +84,16 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Name
             </label>
             <input
-              {...register('name', { required: 'Name is required' })}
+              {...register('name', { 
+                required: 'Name is required',
+                maxLength: { value: 250, message: 'Food name cannot exceed 250 characters' }
+              })}
               type="text"
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 text-base transition-all"
               placeholder="e.g., Grilled Chicken"
               disabled={isLoading}
             />
-            {errors.name && <span className="text-red-400 text-xs mt-1 block">{errors.name.message}</span>}
+            {(errors.name || fieldErrors.name) && <span className="text-red-400 text-xs mt-1 block">{errors.name?.message || fieldErrors.name}</span>}
           </div>
 
           <div className="mt-8">
@@ -84,13 +101,16 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Type
             </label>
             <input
-              {...register('type', { required: 'Type is required' })}
+              {...register('type', { 
+                required: 'Type is required',
+                maxLength: { value: 50, message: 'Food type cannot exceed 50 characters' }
+              })}
               type="text"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
               placeholder="e.g., Protein, Vegetable"
               disabled={isLoading}
             />
-            {errors.type && <span className="text-red-400 text-xs mt-1 block">{errors.type.message}</span>}
+            {(errors.type || fieldErrors.type) && <span className="text-red-400 text-xs mt-1 block">{errors.type?.message || fieldErrors.type}</span>}
           </div>
 
           <div>
@@ -108,7 +128,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               placeholder="e.g., 250"
               disabled={isLoading}
             />
-            {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
+            {(errors.calories || fieldErrors.calories) && <span className="text-red-400 text-xs mt-1 block">{errors.calories?.message || fieldErrors.calories}</span>}
           </div>
 
           <div className="flex space-x-3 pt-6">
