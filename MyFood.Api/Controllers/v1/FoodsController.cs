@@ -66,7 +66,7 @@ namespace MyFood.Api.Controllers.v1
 
             if (id < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
+                return BadRequest("ID must be non-negative.");
             }
 
             var foodDto = await _foodService.GetFoodByIdAsync(id);
@@ -112,6 +112,11 @@ namespace MyFood.Api.Controllers.v1
             if (foodCreateDto == null)
             {
                 return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             var foodDto = await _foodService.CreateFoodAsync(foodCreateDto);
@@ -172,6 +177,11 @@ namespace MyFood.Api.Controllers.v1
             if (foodUpdateDto == null)
             {
                 return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             var updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);

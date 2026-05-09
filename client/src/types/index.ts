@@ -6,10 +6,16 @@ export interface Food {
   created: string;
 }
 
+export interface FoodIngredient {
+  ingredientId: number;
+  quantity: number;
+}
+
 export interface FoodCreateDto {
   name: string;
   type: string;
   calories: number;
+  ingredients?: FoodIngredient[];
 }
 
 export interface FoodUpdateDto {
