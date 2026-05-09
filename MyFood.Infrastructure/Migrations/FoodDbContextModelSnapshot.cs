@@ -247,11 +247,7 @@ namespace MyFood.Infrastructure.Migrations
                     b.ToTable("FoodItems");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
-=======
-            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
->>>>>>> origin/spring2026/assignment1/almir.bajric/220302201
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -259,7 +255,6 @@ namespace MyFood.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-<<<<<<< HEAD
                     b.Property<int>("FoodEntityId")
                         .HasColumnType("int");
 
@@ -271,26 +266,10 @@ namespace MyFood.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FoodEntityId");
-=======
-                    b.Property<int>("FoodId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(260)
-                        .HasColumnType("nvarchar(260)");
-
-                    b.Property<string>("Quantity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FoodId");
->>>>>>> origin/spring2026/assignment1/almir.bajric/220302201
 
                     b.ToTable("Ingredients");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -354,20 +333,6 @@ namespace MyFood.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>
-=======
-            modelBuilder.Entity("MyFood.Application.Entities.IngredientEntity", b =>
-                {
-                    b.HasOne("MyFood.Application.Entities.FoodEntity", "Food")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("FoodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Food");
-                });
-
-            modelBuilder.Entity("MyFood.Application.Entities.FoodEntity", b =>
->>>>>>> origin/spring2026/assignment1/almir.bajric/220302201
                 {
                     b.Navigation("Ingredients");
                 });
