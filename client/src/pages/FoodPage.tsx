@@ -61,6 +61,7 @@ export const FoodPage: React.FC = () => {
       setSelectedFood(null);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to save food');
+      throw err;
     } finally {
       setIsSubmitting(false);
     }

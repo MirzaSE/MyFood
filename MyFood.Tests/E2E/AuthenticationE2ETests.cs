@@ -28,7 +28,8 @@ namespace MyFood.Tests.E2E
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var responseBody = await response.Content.ReadAsStringAsync();
-            Assert.Contains("successfully", responseBody, StringComparison.OrdinalIgnoreCase);
+            using var jsonDoc = JsonDocument.Parse(responseBody);
+            Assert.True(jsonDoc.RootElement.TryGetProperty("token", out _));
         }
 
         [Fact]
@@ -55,7 +56,7 @@ namespace MyFood.Tests.E2E
             var response = await Client.PostAsync("/api/authenticate/register", content);
 
             // Assert
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         }
 
         [Fact]
