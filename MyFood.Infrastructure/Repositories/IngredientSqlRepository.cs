@@ -50,7 +50,7 @@ namespace MyFood.Infrastructure.Repositories
             {
                 _allItems = _allItems
                     .Where(x => x.Quantity.ToString().Contains(queryParameters.Query.ToLowerInvariant())
-                    || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+                    || (x.Name != null && x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant())));
             }
 
             return _allItems
@@ -61,7 +61,7 @@ namespace MyFood.Infrastructure.Repositories
         public IEnumerable<IngredientEntity> SearchIngredientsByName(string name)
         {
             return _foodDbContext.Ingredients
-                .Where(x => EF.Functions.Like(x.Name, $"%{name}%"))
+                .Where(x => x.Name != null && EF.Functions.Like(x.Name, $"%{name}%"))
                 .ToList();
         } 
 

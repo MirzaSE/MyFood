@@ -5,6 +5,7 @@ import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
 import { foodService } from '../services/foodService';
 import type { Food, FoodCreateDto } from '../types';
+import { useNavigate } from 'react-router-dom';
 
 export const FoodPage: React.FC = () => {
   const [foods, setFoods] = useState<Food[]>([]);
@@ -13,7 +14,7 @@ export const FoodPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const navigate = useNavigate();
   // Load foods on component mount
   useEffect(() => {
     loadFoods();
@@ -33,8 +34,7 @@ export const FoodPage: React.FC = () => {
   };
 
   const handleCreateClick = () => {
-    setSelectedFood(null);
-    setModalOpen(true);
+    navigate('/foods/create');
   };
 
   const handleEditClick = (food: Food) => {
