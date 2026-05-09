@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyFood.Application.Dtos
 {
@@ -16,5 +16,16 @@ namespace MyFood.Application.Dtos
         public int Calories { get; set; }
 
         public DateTime Created { get; set; }
+
+        public List<FoodIngredientCreateDto>? Ingredients { get; set; }
+    }
+
+    public class FoodIngredientCreateDto
+    {
+        [Range(1, int.MaxValue)]
+        public int IngredientId { get; set; }
+
+        [Range(0.01, double.MaxValue)]
+        public double Quantity { get; set; }
     }
 }

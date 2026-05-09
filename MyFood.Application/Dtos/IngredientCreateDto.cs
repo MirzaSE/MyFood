@@ -7,9 +7,25 @@ namespace MyFood.Application.Dtos
         [Required]
         [MaxLength(260)]
         public string Name { get; set; } = string.Empty;
+
         [Required]
-        public int Quantity { get; set; }
+        [MaxLength(50)]
+        public string Unit { get; set; } = string.Empty;
+
         [Required]
-        public int FoodEntityId { get; set; }
+        [Range(0, double.MaxValue)]
+        public double CaloriesPerUnit { get; set; }
+
+        [Required]
+        [Range(0, double.MaxValue)]
+        public double Protein { get; set; }
+
+        [Required]
+        [Range(0, double.MaxValue)]
+        public double Carbs { get; set; }
+
+        [Required]
+        [Range(0, double.MaxValue)]
+        public double Fat { get; set; }
     }
 }

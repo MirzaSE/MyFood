@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
-import type { Food, FoodCreateDto } from '../types';
+import type { Food, FoodCreateDto, FoodIngredientCreateDto } from '../types';
+import type { Ingredient, SelectedIngredient } from '../types/ingredient';
+import { FoodIngredientsPicker } from './ingredients/FoodIngredientsPicker';
+import { ingredientService } from '../services/ingredientService';
 
 interface FoodModalProps {
   isOpen: boolean;
@@ -18,53 +20,93 @@ export const FoodModal: React.FC<FoodModalProps> = ({
   initialData,
   isLoading = false,
 }) => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FoodCreateDto>({
-    defaultValues: initialData ? {
-      name: initialData.name,
-      type: initialData.type,
-      calories: initialData.calories,
-    } : undefined,
-  });
+  const [name, setName] = useState('');
+  const [type, setType] = useState('');
+  const [calories, setCalories] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [allIngredients, setAllIngredients] = useState<Ingredient[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<SelectedIngredient[]>([]);
 
-  const handleClose = () => {
-    reset();
-    onClose();
+  useEffect(() => {
+    if (isOpen) {
+      ingredientService.getAll(1, 100).then(setAllIngredients).catch(console.error);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (initialData) {
+      setName(initialData.name || '');
+      setType(initialData.type || '');
+      setCalories(initialData.calories?.toString() || '');
+      // Map existing ingredients to SelectedIngredient
+      if (initialData.ingredients && initialData.ingredients.length > 0) {
+        setSelectedIngredients(
+          initialData.ingredients.map((fi) => ({
+            ingredientId: fi.ingredientId,
+            quantity: fi.quantity,
+          }))
+        );
+      } else {
+        setSelectedIngredients([]);
+      }
+    } else {
+      setName('');
+      setType('');
+      setCalories('');
+      setSelectedIngredients([]);
+    }
+  }, [initialData, isOpen]);
+
+  const validate = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    if (!name.trim()) newErrors.name = 'Name is required';
+    if (!type.trim()) newErrors.type = 'Type is required';
+    const cal = parseFloat(calories);
+    if (isNaN(cal) || cal < 0) newErrors.calories = 'Calories must be >= 0';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const onSubmitForm = async (data: FoodCreateDto) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    const ingredients: FoodIngredientCreateDto[] = selectedIngredients.map((si) => ({
+      ingredientId: si.ingredientId,
+      quantity: si.quantity,
+    }));
+
+    const data: FoodCreateDto = {
+      name: name.trim(),
+      type: type.trim(),
+      calories: parseFloat(calories) || 0,
+      ingredients: ingredients.length > 0 ? ingredients : undefined,
+    };
+
     try {
       await onSubmit(data);
-      reset();
     } catch (error) {
       console.error('Form submission error:', error);
     }
   };
 
-  useEffect(()=>{
-	  reset({
-			name: initialData?.name || "",
-			type: initialData?.type || "",
-			calories: initialData?.calories || undefined,
-	});
-  }, [initialData]);
-
   if (!isOpen) return null;
+
+  const inputClass = (field: string) =>
+    `w-full px-4 py-3 bg-white/10 border ${
+      errors[field] ? 'border-red-500/70' : 'border-white/20'
+    } rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 transition-all`;
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center">
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center sticky top-0 z-10">
           <h2 className="text-xl font-bold text-white">
             {initialData ? 'Edit Food' : 'Add New Food'}
           </h2>
           <button
-            onClick={handleClose}
+            onClick={onClose}
             className="text-white/80 hover:text-white transition-colors disabled:opacity-50"
             disabled={isLoading}
           >
@@ -72,63 +114,64 @@ export const FoodModal: React.FC<FoodModalProps> = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8">
-          <div className="mt-8">
-            <label className="block text-sm font-semibold text-gray-300 mb-2" >
-              Food Name
-            </label>
+        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          {/* Name */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-300 mb-2">Food Name</label>
             <input
-              {...register('name', {
-                required: 'Name is required',
-                validate: (value) => value.trim().length > 0 || 'Name cannot be empty',
-              })}
               type="text"
-              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 text-base transition-all"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={inputClass('name')}
               placeholder="e.g., Grilled Chicken"
               disabled={isLoading}
             />
-            {errors.name && <span className="text-red-400 text-xs mt-1 block">{errors.name.message}</span>}
+            {errors.name && <span className="text-red-400 text-xs mt-1 block">{errors.name}</span>}
           </div>
 
-          <div className="mt-8">
-            <label className="block text-sm font-semibold text-gray-300 mb-2">
-              Food Type
-            </label>
+          {/* Type */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-300 mb-2">Food Type</label>
             <input
-              {...register('type', {
-                required: 'Type is required',
-                validate: (value) => value.trim().length > 0 || 'Type cannot be empty',
-              })}
               type="text"
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className={inputClass('type')}
               placeholder="e.g., Protein, Vegetable"
               disabled={isLoading}
             />
-            {errors.type && <span className="text-red-400 text-xs mt-1 block">{errors.type.message}</span>}
+            {errors.type && <span className="text-red-400 text-xs mt-1 block">{errors.type}</span>}
           </div>
 
+          {/* Calories */}
           <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-2">
-              Calories
-            </label>
+            <label className="block text-sm font-semibold text-gray-300 mb-2">Calories</label>
             <input
-              {...register('calories', {
-                required: 'Calories is required',
-                valueAsNumber: true,
-                min: { value: 0, message: 'Calories must be positive' },
-              })}
               type="number"
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
+              value={calories}
+              onChange={(e) => setCalories(e.target.value)}
+              className={inputClass('calories')}
               placeholder="e.g., 250"
               disabled={isLoading}
+              min="0"
             />
-            {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
+            {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories}</span>}
           </div>
 
-          <div className="flex space-x-3 pt-6">
+          {/* Ingredients Picker */}
+          <div className="border-t border-white/10 pt-4">
+            <FoodIngredientsPicker
+              availableIngredients={allIngredients}
+              selected={selectedIngredients}
+              onChange={setSelectedIngredients}
+            />
+          </div>
+
+          {/* Buttons */}
+          <div className="flex space-x-3 pt-2">
             <button
               type="button"
-              onClick={handleClose}
+              onClick={onClose}
               className="flex-1 px-4 py-3 border border-white/20 hover:border-white/40 text-gray-300 hover:text-white rounded-lg transition-all duration-200 disabled:opacity-50 font-medium"
               disabled={isLoading}
             >

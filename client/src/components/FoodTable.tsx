@@ -74,6 +74,23 @@ export const FoodTable: React.FC<FoodTableProps> = ({
               </div>
             </div>
 
+            {/* Ingredients */}
+            {food.ingredients && food.ingredients.length > 0 && (
+              <div className="mb-4">
+                <p className="text-xs text-gray-400 mb-1.5 font-medium">Ingredients</p>
+                <div className="flex flex-wrap gap-1">
+                  {food.ingredients.map((fi, idx) => (
+                    <span
+                      key={idx}
+                      className="px-2 py-0.5 bg-blue-500/20 text-blue-300 text-xs rounded-full border border-blue-500/30"
+                    >
+                      {fi.ingredientName} ({fi.quantity} {fi.unit})
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Card Actions */}
             <div className="flex space-x-2 gap-2">
               <button
