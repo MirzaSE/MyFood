@@ -2,6 +2,17 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { AuthContextType } from '../types';
 import { authService } from '../services/authService';
 
+const getUsernameFromToken = (token: string): string | null => {
+  try {
+    const payload = token.split('.')[1];
+    if (!payload) return null;
+    const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+    return decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || decoded.unique_name || null;
+  } catch {
+    return null;
+  }
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -13,9 +24,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     const storedUsername = localStorage.getItem('username');
-    if (storedToken && storedUsername) {
+    const hasValidUsername = !!storedUsername && storedUsername !== 'undefined';
+
+    if (storedToken && hasValidUsername) {
       setToken(storedToken);
       setUsername(storedUsername);
+      setIsAuthenticated(true);
+    } else if (storedToken) {
+      const fallbackUsername = getUsernameFromToken(storedToken);
+      setToken(storedToken);
+      setUsername(fallbackUsername);
       setIsAuthenticated(true);
     }
   }, []);

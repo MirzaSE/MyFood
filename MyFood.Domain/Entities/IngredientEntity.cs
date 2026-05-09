@@ -14,5 +14,16 @@ namespace MyFood.Domain.Entities
         
         [ForeignKey("FoodEntityId")]
         public FoodEntity FoodEntity { get; set; }
+        
+        [MaxLength(50)]
+        public string? Unit { get; set; }
+
+        public double? CaloriesPerUnit { get; set; }
+
+        public double? Protein { get; set; }
+
+        public double? Carbs { get; set; }
+
+        public double? Fat { get; set; }
     }
 }

@@ -10,12 +10,14 @@ export interface FoodCreateDto {
   name: string;
   type: string;
   calories: number;
+  ingredientIds?: number[];
 }
 
 export interface FoodUpdateDto {
   name: string;
   type: string;
   calories: number;
+  ingredientIds?: number[];
 }
 
 export interface LoginRequest {

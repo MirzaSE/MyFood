@@ -29,10 +29,16 @@ export const Navbar: React.FC = () => {
 
           {/* User Info & Logout */}
           <div className="flex items-center space-x-6">
-            <div className="hidden sm:block">
-              <p className="text-sm text-gray-300">Welcome back</p>
-              <p className="text-lg font-semibold text-white">{username}</p>
-            </div>
+              <div className="hidden sm:flex sm:items-center sm:space-x-6">
+                <div className="hidden sm:block">
+                  <p className="text-sm text-gray-300">Welcome back</p>
+                  <p className="text-lg font-semibold text-white">{username}</p>
+                </div>
+                <div className="hidden sm:flex sm:space-x-4">
+                  <button onClick={() => navigate('/foods')} className="text-sm text-gray-200 hover:underline">Foods</button>
+                  <button onClick={() => navigate('/ingredients')} className="text-sm text-gray-200 hover:underline">Ingredients</button>
+                </div>
+              </div>
 
             <div className="w-px h-8 bg-white/10"></div>
 

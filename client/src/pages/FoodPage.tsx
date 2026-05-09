@@ -5,6 +5,8 @@ import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
 import { foodService } from '../services/foodService';
 import type { Food, FoodCreateDto } from '../types';
+import { ingredientService } from '../services/ingredientService';
+import type { Ingredient } from '../types/ingredient';
 
 export const FoodPage: React.FC = () => {
   const [foods, setFoods] = useState<Food[]>([]);
@@ -13,10 +15,13 @@ export const FoodPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [selectedIngredientIds, setSelectedIngredientIds] = useState<number[]>([]);
 
   // Load foods on component mount
   useEffect(() => {
     loadFoods();
+    loadIngredients();
   }, []);
 
   const loadFoods = async () => {
@@ -32,13 +37,24 @@ export const FoodPage: React.FC = () => {
     }
   };
 
+  const loadIngredients = async () => {
+    try {
+      const data = await ingredientService.getAll(1, 100);
+      setIngredients(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleCreateClick = () => {
     setSelectedFood(null);
+    setSelectedIngredientIds([]);
     setModalOpen(true);
   };
 
   const handleEditClick = (food: Food) => {
     setSelectedFood(food);
+    setSelectedIngredientIds([]);
     setModalOpen(true);
   };
 
@@ -49,11 +65,11 @@ export const FoodPage: React.FC = () => {
 
       if (selectedFood) {
         // Update existing food
-        const updatedFood = await foodService.updateFood(selectedFood.id, data);
+        const updatedFood = await foodService.updateFood(selectedFood.id, { ...data, ingredientIds: selectedIngredientIds });
         setFoods(foods.map(f => f.id === selectedFood.id ? updatedFood : f));
       } else {
         // Create new food
-        const newFood = await foodService.createFood(data);
+        const newFood = await foodService.createFood({ ...data, ingredientIds: selectedIngredientIds });
         setFoods([...foods, newFood]);
       }
 
@@ -144,6 +160,9 @@ export const FoodPage: React.FC = () => {
         onSubmit={handleModalSubmit}
         initialData={selectedFood}
         isLoading={isSubmitting}
+        ingredients={ingredients}
+        selectedIngredientIds={selectedIngredientIds}
+        onSelectedIngredientIdsChange={setSelectedIngredientIds}
       />
     </div>
   );

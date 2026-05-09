@@ -2,6 +2,8 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
+import { FoodIngredientsPicker } from './FoodIngredientsPicker';
+import type { Ingredient } from '../types/ingredient';
 
 interface FoodModalProps {
   isOpen: boolean;
@@ -9,6 +11,9 @@ interface FoodModalProps {
   onSubmit: (data: FoodCreateDto) => Promise<void>;
   initialData?: Food | null;
   isLoading?: boolean;
+  ingredients?: Ingredient[];
+  selectedIngredientIds?: number[];
+  onSelectedIngredientIdsChange?: (ids: number[]) => void;
 }
 
 export const FoodModal: React.FC<FoodModalProps> = ({
@@ -17,6 +22,9 @@ export const FoodModal: React.FC<FoodModalProps> = ({
   onSubmit,
   initialData,
   isLoading = false,
+  ingredients = [],
+  selectedIngredientIds = [],
+  onSelectedIngredientIdsChange,
 }) => {
   const {
     register,
@@ -110,6 +118,13 @@ export const FoodModal: React.FC<FoodModalProps> = ({
             />
             {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
           </div>
+
+          <FoodIngredientsPicker
+            ingredients={ingredients}
+            selectedIngredientIds={selectedIngredientIds}
+            onChange={onSelectedIngredientIdsChange ?? (() => undefined)}
+            disabled={isLoading}
+          />
 
           <div className="flex space-x-3 pt-6">
             <button

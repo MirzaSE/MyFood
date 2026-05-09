@@ -8,12 +8,14 @@ export const authService = {
       password,
     } as LoginRequest);
 
+    const resolvedUsername = response.data.username || username;
+
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('username', response.data.username);
+      localStorage.setItem('username', resolvedUsername);
     }
 
-    return response.data;
+    return { ...response.data, username: resolvedUsername };
   },
 
   async register(username: string, email: string, password: string): Promise<AuthResponse> {
