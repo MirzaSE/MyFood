@@ -1,5 +1,5 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization; // <-- added
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application.Dtos;
 using MyFood.Domain.Entities;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyFood.Api.Controllers.v1
 {
-    [Authorize] // <-- Protect all endpoints by default
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -24,8 +24,7 @@ namespace MyFood.Api.Controllers.v1
             _mapper = mapper;
         }
 
-        // GET: api/v1/Ingredient
-        [AllowAnonymous] // <-- public read access
+        [AllowAnonymous]
         [HttpGet(Name = nameof(GetAllIngredients))]
         public async Task<IActionResult> GetAllIngredients()
         {
@@ -34,53 +33,50 @@ namespace MyFood.Api.Controllers.v1
             return Ok(dtos);
         }
 
-        // GET: api/v1/Ingredient/5
-        [AllowAnonymous] // <-- public read access
+        [AllowAnonymous]
         [HttpGet("{id:int}", Name = nameof(GetIngredientById))]
         public async Task<IActionResult> GetIngredientById(int id)
         {
             var ingredient = await _ingredientRepository.GetByIdAsync(id);
             if (ingredient == null) return NotFound();
-
             var dto = _mapper.Map<IngredientDto>(ingredient);
             return Ok(dto);
         }
 
-        // POST: api/v1/Ingredient
         [HttpPost(Name = nameof(CreateIngredient))]
         public async Task<IActionResult> CreateIngredient([FromBody] IngredientCreateDto ingredientDto)
         {
             if (ingredientDto == null) return BadRequest();
-
             var entity = _mapper.Map<IngredientEntity>(ingredientDto);
             var created = await _ingredientRepository.AddAsync(entity);
             var dto = _mapper.Map<IngredientDto>(created);
-
             return CreatedAtRoute(nameof(GetIngredientById), new { id = dto.Id, version = "1.0" }, dto);
         }
 
-        // PUT: api/v1/Ingredient/5
         [HttpPut("{id:int}", Name = nameof(UpdateIngredient))]
         public async Task<IActionResult> UpdateIngredient(int id, [FromBody] IngredientUpdateDto ingredientDto)
         {
             if (ingredientDto == null) return BadRequest();
+            var existing = await _ingredientRepository.GetByIdAsync(id);
+            if (existing == null) return NotFound();
 
-            var entity = _mapper.Map<IngredientEntity>(ingredientDto);
-            var updated = await _ingredientRepository.UpdateAsync(id, entity);
+            if (!string.IsNullOrWhiteSpace(ingredientDto.Name))
+                existing.Name = ingredientDto.Name;
+            if (ingredientDto.Quantity.HasValue)
+                existing.Quantity = ingredientDto.Quantity.Value;
+            if (ingredientDto.FoodId.HasValue)
+                existing.FoodId = ingredientDto.FoodId.Value;
 
-            if (updated == null) return NotFound();
-
+            var updated = await _ingredientRepository.UpdateAsync(id, existing);
             var dto = _mapper.Map<IngredientDto>(updated);
             return Ok(dto);
         }
 
-        // DELETE: api/v1/Ingredient/5
         [HttpDelete("{id:int}", Name = nameof(DeleteIngredient))]
         public async Task<IActionResult> DeleteIngredient(int id)
         {
             var deleted = await _ingredientRepository.DeleteAsync(id);
             if (!deleted) return NotFound();
-
             return NoContent();
         }
     }

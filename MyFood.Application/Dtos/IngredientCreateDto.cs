@@ -12,6 +12,6 @@ namespace MyFood.Application.Dtos
         public int Quantity { get; set; }
 
         [Required]
-        public int Food_Id { get; set; }
+        public int FoodId { get; set; }  
     }
 }

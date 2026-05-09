@@ -10,6 +10,6 @@ namespace MyFood.Application.Dtos
         [Range(0, int.MaxValue)]
         public int? Quantity { get; set; }
 
-        public int? Food_Id { get; set; }
+        public int? FoodId { get; set; }
     }
 }

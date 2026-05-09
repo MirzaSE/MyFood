@@ -1,7 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, ChefHat, User } from 'lucide-react';
+import { LogOut, ChefHat, User, List, Utensils } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -12,7 +12,6 @@ export const Navbar: React.FC = () => {
     navigate('/login');
   };
 
-  // Don't render navbar if not authenticated
   if (!isAuthenticated) {
     return null;
   }
@@ -32,9 +31,26 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* User Section - Vertical layout with welcome message and logout button below */}
-          <div className="flex flex-col items-end space-y-2">
-            {/* Welcome back message - Single line format */}
+          {/* Navigation Links - Center */}
+          <div className="flex items-center space-x-8">
+            <Link
+              to="/foods"
+              className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white/10"
+            >
+              <Utensils size={18} />
+              <span className="font-medium">Foods</span>
+            </Link>
+            <Link
+              to="/ingredients"
+              className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white/10"
+            >
+              <List size={18} />
+              <span className="font-medium">Ingredients</span>
+            </Link>
+          </div>
+
+          {/* User Section */}
+          <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-2">
               <User size={16} className="text-purple-400" />
               <span className="text-gray-300 text-sm">
@@ -42,10 +58,9 @@ export const Navbar: React.FC = () => {
               </span>
             </div>
             
-            {/* Logout button - Below the welcome message */}
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50 text-sm"
+              className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
             >
               <LogOut size={16} />
               <span className="font-medium">Logout</span>
@@ -56,4 +71,3 @@ export const Navbar: React.FC = () => {
     </nav>
   );
 };
-
