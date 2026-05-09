@@ -1,7 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
+import { FoodIngredientsPicker } from './FoodIngredientsPicker';
+
+interface SelectedIngredient {
+    ingredientId: number;
+    name: string;
+    unit: string;
+    caloriesPerUnit: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    quantity: number;
+    totalCalories: number;
+    totalProtein: number;
+    totalCarbs: number;
+    totalFat: number;
+}
 
 interface FoodModalProps {
   isOpen: boolean;
@@ -25,7 +41,14 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     formState: { errors },
   } = useForm<FoodCreateDto>();
 
-  // ✅ FIX: Properly populate form when editing
+  const [selectedIngredients, setSelectedIngredients] = useState<SelectedIngredient[]>([]);
+  const [totalNutrition, setTotalNutrition] = useState({
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0
+  });
+
   useEffect(() => {
     if (isOpen && initialData) {
       reset({
@@ -39,18 +62,40 @@ export const FoodModal: React.FC<FoodModalProps> = ({
         type: '',
         calories: undefined,
       });
+      setSelectedIngredients([]);
+      setTotalNutrition({ calories: 0, protein: 0, carbs: 0, fat: 0 });
     }
   }, [isOpen, initialData, reset]);
 
   const handleClose = () => {
     reset();
+    setSelectedIngredients([]);
+    setTotalNutrition({ calories: 0, protein: 0, carbs: 0, fat: 0 });
     onClose();
+  };
+
+  const handleIngredientsChange = (ingredients: SelectedIngredient[], nutrition: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  }) => {
+    setSelectedIngredients(ingredients);
+    setTotalNutrition(nutrition);
   };
 
   const onSubmitForm = async (data: FoodCreateDto) => {
     try {
-      await onSubmit(data);
+      const foodData = {
+        name: data.name,
+        type: data.type,
+        calories: Math.round(totalNutrition.calories),  // Auto-calculated from ingredients
+      };
+      
+      await onSubmit(foodData);
       reset();
+      setSelectedIngredients([]);
+      setTotalNutrition({ calories: 0, protein: 0, carbs: 0, fat: 0 });
       onClose();
     } catch (error) {
       console.error('Form submission error:', error);
@@ -60,11 +105,11 @@ export const FoodModal: React.FC<FoodModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center">
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 flex justify-between items-center sticky top-0">
           <h2 className="text-xl font-bold text-white">
             {initialData ? 'Edit Food' : 'Add New Food'}
           </h2>
@@ -77,12 +122,12 @@ export const FoodModal: React.FC<FoodModalProps> = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8">
+        <form onSubmit={handleSubmit(onSubmitForm)} className="food-form p-8 space-y-6">
 
           {/* Name */}
-          <div className="mt-4">
+          <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">
-              Food Name
+              Food Name <span className="text-red-400">*</span>
             </label>
             <input
               {...register('name', {
@@ -100,9 +145,9 @@ export const FoodModal: React.FC<FoodModalProps> = ({
           </div>
 
           {/* Type */}
-          <div className="mt-4">
+          <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">
-              Food Type
+              Food Type <span className="text-red-400">*</span>
             </label>
             <select
               {...register('type', { required: 'Food type is required' })}
@@ -110,12 +155,8 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               disabled={isLoading}
             >
               <option value="">Select type</option>
-              <option value="Protein">Protein</option>
-              <option value="Vegetable">Vegetable</option>
-              <option value="Fruit">Fruit</option>
-              <option value="Carbohydrate">Carbohydrate</option>
-              <option value="Dairy">Dairy</option>
-              <option value="Snack">Snack</option>
+              <option value="Starter">Starter</option>
+              <option value="Main">Main</option>
               <option value="Dessert">Dessert</option>
             </select>
             {errors.type && (
@@ -123,33 +164,62 @@ export const FoodModal: React.FC<FoodModalProps> = ({
             )}
           </div>
 
-          {/* Calories */}
-          <div className="mt-4">
+          {/* Total Calories - Auto-calculated */}
+          <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">
-              Calories
+              Total Calories
             </label>
             <input
-              {...register('calories', {
-                required: 'Calories required',
-                valueAsNumber: true,
-                min: { value: 0, message: 'Cannot be negative' },
-                max: { value: 5000, message: 'Max 5000' },
-              })}
               type="number"
-              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white"
-              disabled={isLoading}
+              value={Math.round(totalNutrition.calories)}
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white font-semibold"
+              disabled
+              readOnly
             />
-            {errors.calories && (
-              <span className="text-red-400 text-xs">{errors.calories.message}</span>
-            )}
+            <p className="text-xs text-gray-400 mt-1">
+              Auto-calculated from selected ingredients
+            </p>
           </div>
+
+          {/* Ingredients Picker */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-300 mb-2">
+              Ingredients
+            </label>
+            <FoodIngredientsPicker onIngredientsChange={handleIngredientsChange} />
+          </div>
+
+          {/* Nutrition Summary */}
+          {selectedIngredients.length > 0 && (
+            <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-lg p-4 border border-white/10">
+              <h4 className="text-sm font-semibold text-white mb-2">Nutrition Summary</h4>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div>
+                  <p className="text-xs text-gray-400">Calories</p>
+                  <p className="text-lg font-bold text-yellow-400">{Math.round(totalNutrition.calories)}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Protein</p>
+                  <p className="text-lg font-bold text-green-400">{Math.round(totalNutrition.protein)}g</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Carbs</p>
+                  <p className="text-lg font-bold text-blue-400">{Math.round(totalNutrition.carbs)}g</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Fat</p>
+                  <p className="text-lg font-bold text-orange-400">{Math.round(totalNutrition.fat)}g</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Buttons */}
           <div className="flex space-x-3 pt-6">
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 px-4 py-2 border border-white/20 text-gray-300 rounded-lg"
+              className="flex-1 px-4 py-2 border border-white/20 text-gray-300 rounded-lg hover:bg-white/5 transition"
               disabled={isLoading}
             >
               Cancel
@@ -157,8 +227,8 @@ export const FoodModal: React.FC<FoodModalProps> = ({
 
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg"
-              disabled={isLoading}
+              disabled={selectedIngredients.length === 0 || isLoading}
+              className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:from-purple-600 hover:to-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading
                 ? 'Saving...'

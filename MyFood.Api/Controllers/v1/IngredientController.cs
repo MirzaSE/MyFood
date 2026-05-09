@@ -54,23 +54,41 @@ namespace MyFood.Api.Controllers.v1
         }
 
         [HttpPut("{id:int}", Name = nameof(UpdateIngredient))]
-        public async Task<IActionResult> UpdateIngredient(int id, [FromBody] IngredientUpdateDto ingredientDto)
-        {
-            if (ingredientDto == null) return BadRequest();
-            var existing = await _ingredientRepository.GetByIdAsync(id);
-            if (existing == null) return NotFound();
+public async Task<IActionResult> UpdateIngredient(int id, [FromBody] IngredientUpdateDto ingredientDto)
+{
+    if (ingredientDto == null) return BadRequest();
+    var existing = await _ingredientRepository.GetByIdAsync(id);
+    if (existing == null) return NotFound();
 
-            if (!string.IsNullOrWhiteSpace(ingredientDto.Name))
-                existing.Name = ingredientDto.Name;
-            if (ingredientDto.Quantity.HasValue)
-                existing.Quantity = ingredientDto.Quantity.Value;
-            if (ingredientDto.FoodId.HasValue)
-                existing.FoodId = ingredientDto.FoodId.Value;
+    // Update all fields
+    if (!string.IsNullOrWhiteSpace(ingredientDto.Name))
+        existing.Name = ingredientDto.Name;
+    
+    if (!string.IsNullOrWhiteSpace(ingredientDto.Unit))
+        existing.Unit = ingredientDto.Unit;
+    
+    if (ingredientDto.CaloriesPerUnit.HasValue)
+        existing.CaloriesPerUnit = ingredientDto.CaloriesPerUnit.Value;
+    
+    if (ingredientDto.Protein.HasValue)
+        existing.Protein = ingredientDto.Protein.Value;
+    
+    if (ingredientDto.Carbs.HasValue)
+        existing.Carbs = ingredientDto.Carbs.Value;
+    
+    if (ingredientDto.Fat.HasValue)
+        existing.Fat = ingredientDto.Fat.Value;
+    
+    if (ingredientDto.Quantity.HasValue)
+        existing.Quantity = ingredientDto.Quantity.Value;
+    
+    if (ingredientDto.FoodId.HasValue)
+        existing.FoodId = ingredientDto.FoodId.Value;
 
-            var updated = await _ingredientRepository.UpdateAsync(id, existing);
-            var dto = _mapper.Map<IngredientDto>(updated);
-            return Ok(dto);
-        }
+    var updated = await _ingredientRepository.UpdateAsync(id, existing);
+    var dto = _mapper.Map<IngredientDto>(updated);
+    return Ok(dto);
+}
 
         [HttpDelete("{id:int}", Name = nameof(DeleteIngredient))]
         public async Task<IActionResult> DeleteIngredient(int id)

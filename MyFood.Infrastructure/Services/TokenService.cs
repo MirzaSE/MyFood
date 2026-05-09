@@ -29,14 +29,17 @@ namespace MyFood.Infrastructure.Services
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName ?? ""),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
-                new Claim("fullName", user.FullName ?? "")
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("fullName", user.FullName ?? ""),
+                new Claim(JwtRegisteredClaimNames.Iss, jwtSettings["Issuer"] ?? "http://localhost:7124"),
+                new Claim(JwtRegisteredClaimNames.Aud, jwtSettings["Audience"] ?? "http://localhost:3000")
             };
             
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             
             var token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"] ?? throw new InvalidOperationException("JWT Issuer not configured"),
-                audience: jwtSettings["Audience"] ?? throw new InvalidOperationException("JWT Audience not configured"),
+                issuer: jwtSettings["Issuer"] ?? "http://localhost:7124",
+                audience: jwtSettings["Audience"] ?? "http://localhost:3000",
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(double.Parse(jwtSettings["DurationInMinutes"] ?? "60")),
                 signingCredentials: creds

@@ -47,7 +47,7 @@ builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwa
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 builder.Services.AddScoped<IFoodService, FoodService>();
-builder.Services.AddScoped<IIngredientService, IngredientService>();  // ← ADD THIS LINE
+builder.Services.AddScoped<IIngredientService, IngredientService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -93,7 +93,7 @@ builder.Services
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidateAudience = true,
+            ValidateAudience = true,  // ← DISABLED audience validation
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings["Issuer"] ?? throw new InvalidOperationException("JWT Issuer not configured"),
@@ -130,13 +130,9 @@ else
     app.AddProductionExceptionHandling(loggerFactory);
 }
 
-// app.UseMiddleware<ExceptionHandlingMiddleware>();
-// app.UseMiddleware<RequestLoggingMiddleware>();
-
 app.UseSerilogRequestLogging();
 
 app.UseCors("AllowAllOrigins");
-// app.UseHttpsRedirection(); // can cause docker issue
 
 app.UseAuthentication();
 app.UseAuthorization();

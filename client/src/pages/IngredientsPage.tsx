@@ -31,22 +31,25 @@ export const IngredientsPage: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (data: IngredientCreateDto) => {
-        setIsLoading(true);
-        try {
-            if (editingIngredient) {
-                await ingredientService.update(editingIngredient.id, data);
-            } else {
-                await ingredientService.create(data);
-            }
-            setIsModalOpen(false);
-            setRefreshTrigger((prev: number) => prev + 1);
-        } catch (error) {
-            console.error('Failed to save ingredient', error);
-        } finally {
-            setIsLoading(false);
+   const handleSubmit = async (data: IngredientCreateDto) => {
+    console.log('Updating with data:', data);  // ← ADD
+    setIsLoading(true);
+    try {
+        if (editingIngredient) {
+            console.log('Updating ingredient ID:', editingIngredient.id);  // ← ADD
+            await ingredientService.update(editingIngredient.id, data);
+            console.log('Update successful');  // ← ADD
+        } else {
+            await ingredientService.create(data);
         }
-    };
+        setIsModalOpen(false);
+        setRefreshTrigger((prev: number) => prev + 1);
+    } catch (error) {
+        console.error('Failed to save ingredient:', error);
+    } finally {
+        setIsLoading(false);
+    }
+};
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">

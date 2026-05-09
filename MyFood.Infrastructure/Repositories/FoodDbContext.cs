@@ -20,7 +20,7 @@ namespace MyFood.Infrastructure.Repositories
             // Your entity configurations
             modelBuilder.Entity<FoodEntity>()
                 .HasMany(f => f.Ingredients)
-                .WithOne(i => i.foodItem)
+                .WithOne(i => i.FoodItem)
                 .HasForeignKey(i => i.FoodId);
         }
     }

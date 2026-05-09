@@ -27,7 +27,6 @@ namespace MyFood.Infrastructure.Repositories
         {
             _context.Ingredients.Add(ingredient);
             await _context.SaveChangesAsync();
-
             return ingredient;
         }
 
@@ -39,11 +38,15 @@ namespace MyFood.Infrastructure.Repositories
                 return null;
 
             existing.Name = ingredient.Name;
+            existing.Unit = ingredient.Unit;
+            existing.CaloriesPerUnit = ingredient.CaloriesPerUnit;
+            existing.Protein = ingredient.Protein;
+            existing.Carbs = ingredient.Carbs;
+            existing.Fat = ingredient.Fat;
             existing.Quantity = ingredient.Quantity;
             existing.FoodId = ingredient.FoodId;
 
             await _context.SaveChangesAsync();
-
             return existing;
         }
 
@@ -56,7 +59,6 @@ namespace MyFood.Infrastructure.Repositories
 
             _context.Ingredients.Remove(ingredient);
             await _context.SaveChangesAsync();
-
             return true;
         }
     }
