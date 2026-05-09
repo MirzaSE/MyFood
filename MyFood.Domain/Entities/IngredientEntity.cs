@@ -11,7 +11,7 @@ namespace MyFood.Domain.Entities
         public string Name { get; set; }
 
         public int FoodEntityId { get; set; }
-        
+
         [ForeignKey("FoodEntityId")]
         public FoodEntity FoodEntity { get; set; }
     }
