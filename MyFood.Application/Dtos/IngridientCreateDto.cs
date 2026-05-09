@@ -1,21 +1,25 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MyFood.Domain.Entities;
+namespace MyFood.Application.Dtos;
 
-public class IngredientEntity
+public class IngridientCreateDto
 {
-    public int Id { get; set; }
-
     [MaxLength(100)]
+    [Required]    
     public string Name { get; set; } = string.Empty;
-
+    
+    [Required]
     public string Unit { get; set; } = "g";
-
+    
+    [Required]
     public double CaloriesPerUnit { get; set; }
-
+    
+    [Required]
     public double Protein { get; set; }
-
+    
+    [Required]
     public double Carbs { get; set; }
-
+    
+    [Required]
     public double Fat { get; set; }
 }

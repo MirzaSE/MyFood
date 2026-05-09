@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
@@ -30,6 +30,18 @@ export const FoodModal: React.FC<FoodModalProps> = ({
       calories: initialData.calories,
     } : undefined,
   });
+
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        name: initialData.name,
+        type: initialData.type,
+        calories: initialData.calories,
+      });
+    } else {
+      reset({ name: '', type: '', calories: undefined });
+    }
+  }, [initialData, reset]);
 
   const handleClose = () => {
     reset();
@@ -101,7 +113,8 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               {...register('calories', {
                 required: 'Calories is required',
                 valueAsNumber: true,
-                min: { value: 0, message: 'Calories must be positive' },
+                min: { value: 1, message: 'Calories must be at least 1' },
+                validate: (v) => !isNaN(v) || 'Calories must be a number',
               })}
               type="number"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
