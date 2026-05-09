@@ -82,6 +82,31 @@ namespace MyFood.Application.Services
                 existingEntity.Name = updateDto.Name;
             }
 
+            if (updateDto.Unit != null)
+            {
+                existingEntity.Unit = updateDto.Unit;
+            }
+
+            if (updateDto.CaloriesPerUnit.HasValue)
+            {
+                existingEntity.CaloriesPerUnit = updateDto.CaloriesPerUnit;
+            }
+
+            if (updateDto.Protein.HasValue)
+            {
+                existingEntity.Protein = updateDto.Protein;
+            }
+
+            if (updateDto.Carbs.HasValue)
+            {
+                existingEntity.Carbs = updateDto.Carbs;
+            }
+
+            if (updateDto.Fat.HasValue)
+            {
+                existingEntity.Fat = updateDto.Fat;
+            }
+
             if (updateDto.FoodId.HasValue)
             {
                 existingEntity.FoodId = updateDto.FoodId.Value;

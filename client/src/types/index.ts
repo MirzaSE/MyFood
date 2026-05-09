@@ -39,6 +39,55 @@ export interface AuthContextType {
   username: string | null;
   token: string | null;
   login: (username: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
+  register: (
+    username: string,
+    email: string,
+    password: string,
+  ) => Promise<void>;
   logout: () => void;
+}
+
+export interface Ingredient {
+  id: number;
+  name: string;
+  unit?: string;
+  caloriesPerUnit?: number;
+  protein?: number;
+  carbs?: number;
+  fat?: number;
+  foodId?: number;
+  quantity?: number;
+}
+
+export interface IngredientCreateDto {
+  name: string;
+  unit: string;
+  caloriesPerUnit: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  foodId: number;
+}
+
+export interface IngredientUpdateDto {
+  name?: string;
+  unit?: string;
+  caloriesPerUnit?: number;
+  protein?: number;
+  carbs?: number;
+  fat?: number;
+  foodId?: number;
+}
+
+export interface PaginatedResponse<T> {
+  value: T[];
+  pageSize: number;
+  pageNumber: number;
+  totalCount: number;
+}
+
+export interface SearchParams {
+  pageNumber?: number;
+  pageSize?: number;
+  searchTerm?: string;
 }

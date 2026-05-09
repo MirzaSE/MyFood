@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Plus, AlertCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Navbar } from "../components/Navbar";
 import { FoodTable } from "../components/FoodTable";
 import { FoodModal } from "../components/FoodModal";
@@ -7,6 +8,7 @@ import { foodService } from "../services/foodService";
 import type { Food, FoodCreateDto } from "../types";
 
 export const FoodPage: React.FC = () => {
+  const navigate = useNavigate();
   const [foods, setFoods] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -142,6 +144,13 @@ export const FoodPage: React.FC = () => {
             >
               <Plus size={20} />
               <span>Add Food</span>
+            </button>
+            <button
+              onClick={() => navigate("/foods/create")}
+              disabled={isLoading || isSubmitting}
+              className="flex items-center justify-center space-x-2 border border-white/15 bg-white/5 px-6 py-3 rounded-lg transition-all duration-200 text-white font-semibold hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span>Create Food</span>
             </button>
           </div>
         </div>
