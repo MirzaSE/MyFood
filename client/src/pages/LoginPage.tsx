@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { AlertCircle } from 'lucide-react';
+import { getApiErrorMessage } from '../services/api';
 
 type LoginFormData = {
   username: string;
@@ -30,8 +31,8 @@ export const LoginPage: React.FC = () => {
       setError(null);
       await login(data.username, data.password);
       navigate('/foods');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+    } catch (error: unknown) {
+      setError(getApiErrorMessage(error, 'Login failed. Please try again.'));
     }
   };
 
@@ -44,8 +45,8 @@ export const LoginPage: React.FC = () => {
       }
       await registerUser(data.username, data.email, data.password);
       navigate('/foods');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } catch (error: unknown) {
+      setError(getApiErrorMessage(error, 'Registration failed. Please try again.'));
     }
   };
 
@@ -136,7 +137,10 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      {...loginForm.register('password', { required: 'Password is required' })}
+                      {...loginForm.register('password', {
+                        required: 'Password is required',
+                        minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                      })}
                       type="password"
                       className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all text-base"
                       placeholder="Enter your password"
@@ -274,4 +278,3 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
-

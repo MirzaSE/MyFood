@@ -1,9 +1,8 @@
 ﻿using MyFood.Infrastructure.Repositories;
 
-namespace MyFood.Api.Services
+namespace MyFood.Api.Services;
+
+public interface ISeedDataService
 {
-    public interface ISeedDataService
-    {
-        void Initialize(FoodDbContext context);
-    }
+    void Initialize(FoodDbContext context);
 }

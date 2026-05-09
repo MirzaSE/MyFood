@@ -4,62 +4,61 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace MyFood.Api
+namespace MyFood.Api;
+
+public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
-    public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
+    readonly IApiVersionDescriptionProvider provider;
+
+    public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => this.provider = provider;
+
+    public void Configure(SwaggerGenOptions options)
     {
-        readonly IApiVersionDescriptionProvider provider;
-
-        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => this.provider = provider;
-
-        public void Configure(SwaggerGenOptions options)
+        foreach (var description in provider.ApiVersionDescriptions)
         {
-            foreach (var description in provider.ApiVersionDescriptions)
-            {
-                options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
-            }
-
-            // Include 'SecurityScheme' to use JWT Authentication
-            var jwtSecurityScheme = new OpenApiSecurityScheme
-            {
-                BearerFormat = "JWT",
-                Name = "JWT Authentication",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
-
-                Reference = new OpenApiReference
-                {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
-                }
-            };
-
-            options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                { jwtSecurityScheme, Array.Empty<string>() }
-            });
-
+            options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
         }
 
-        static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
+        // Include 'SecurityScheme' to use JWT Authentication
+        var jwtSecurityScheme = new OpenApiSecurityScheme
         {
-            var info = new OpenApiInfo()
-            {
-                Title = "Sample API",
-                Version = description.ApiVersion.ToString(),
-                Description = "A sample application with Swagger, Swashbuckle, and API versioning.",
-            };
+            BearerFormat = "JWT",
+            Name = "JWT Authentication",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.Http,
+            Scheme = JwtBearerDefaults.AuthenticationScheme,
+            Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
 
-            if (description.IsDeprecated)
+            Reference = new OpenApiReference
             {
-                info.Description += " This API version has been deprecated.";
+                Id = JwtBearerDefaults.AuthenticationScheme,
+                Type = ReferenceType.SecurityScheme
             }
+        };
 
-            return info;
+        options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            { jwtSecurityScheme, Array.Empty<string>() }
+        });
+
+    }
+
+    static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
+    {
+        var info = new OpenApiInfo()
+        {
+            Title = "Sample API",
+            Version = description.ApiVersion.ToString(),
+            Description = "A sample application with Swagger, Swashbuckle, and API versioning.",
+        };
+
+        if (description.IsDeprecated)
+        {
+            info.Description += " This API version has been deprecated.";
         }
+
+        return info;
     }
 }

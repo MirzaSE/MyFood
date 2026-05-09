@@ -5,9 +5,16 @@ namespace MyFood.Application.Dtos
     public class FoodCreateDto
     {
         [Required]
-        public string? Name { get; set; }
-        public string? Type { get; set; }
+        [MaxLength(250)]
+        public string Name { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(50)]
+        public string Type { get; set; } = string.Empty;
+
+        [Range(1, int.MaxValue, ErrorMessage = "Calories must be greater than zero.")]
         public int Calories { get; set; }
-        public DateTime Created { get; set; }
+
+        public ICollection<FoodIngredientDto>? Ingredients { get; set; }
     }
 }

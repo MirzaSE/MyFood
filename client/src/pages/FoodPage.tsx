@@ -3,6 +3,7 @@ import { Plus, AlertCircle } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
+import { getApiErrorMessage } from '../services/api';
 import { foodService } from '../services/foodService';
 import type { Food, FoodCreateDto } from '../types';
 
@@ -14,23 +15,22 @@ export const FoodPage: React.FC = () => {
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load foods on component mount
   useEffect(() => {
-    loadFoods();
-  }, []);
+    const fetchFoods = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const data = await foodService.getAllFoods();
+        setFoods(data);
+      } catch (error: unknown) {
+        setError(getApiErrorMessage(error, 'Failed to load foods'));
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const loadFoods = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const data = await foodService.getAllFoods();
-      setFoods(data);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load foods');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    void fetchFoods();
+  }, []);
 
   const handleCreateClick = () => {
     setSelectedFood(null);
@@ -50,17 +50,17 @@ export const FoodPage: React.FC = () => {
       if (selectedFood) {
         // Update existing food
         const updatedFood = await foodService.updateFood(selectedFood.id, data);
-        setFoods(foods.map(f => f.id === selectedFood.id ? updatedFood : f));
+        setFoods((currentFoods) => currentFoods.map(f => f.id === selectedFood.id ? updatedFood : f));
       } else {
         // Create new food
         const newFood = await foodService.createFood(data);
-        setFoods([...foods, newFood]);
+        setFoods((currentFoods) => [...currentFoods, newFood]);
       }
 
       setModalOpen(false);
       setSelectedFood(null);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to save food');
+    } catch (error: unknown) {
+      setError(getApiErrorMessage(error, 'Failed to save food'));
     } finally {
       setIsSubmitting(false);
     }
@@ -70,10 +70,10 @@ export const FoodPage: React.FC = () => {
     try {
       setError(null);
       await foodService.deleteFood(id);
-      setFoods(foods.filter(f => f.id !== id));
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete food');
-      throw err;
+      setFoods((currentFoods) => currentFoods.filter(f => f.id !== id));
+    } catch (error: unknown) {
+      setError(getApiErrorMessage(error, 'Failed to delete food'));
+      throw error;
     }
   };
 

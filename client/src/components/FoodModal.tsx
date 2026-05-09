@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import type { Food, FoodCreateDto } from '../types';
+import { FoodIngredientsPicker } from './FoodIngredientsPicker';
 
 interface FoodModalProps {
   isOpen: boolean;
@@ -22,24 +23,64 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FoodCreateDto>({
-    defaultValues: initialData ? {
+    defaultValues: {
+      name: '',
+      type: '',
+      calories: 0,
+      ingredients: [],
+    },
+  });
+  const selectedIngredients = watch('ingredients');
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    reset(initialData ? {
       name: initialData.name,
       type: initialData.type,
       calories: initialData.calories,
-    } : undefined,
-  });
+      ingredients: initialData.ingredients?.length
+        ? initialData.ingredients.map((ingredient) => ({
+          id: ingredient.id,
+          name: ingredient.name,
+          quantity: ingredient.quantity ?? 1,
+          unit: ingredient.unit,
+          caloriesPerUnit: ingredient.caloriesPerUnit,
+        }))
+        : [],
+    } : {
+      name: '',
+      type: '',
+      calories: 0,
+      ingredients: [],
+    });
+  }, [initialData, isOpen, reset]);
 
   const handleClose = () => {
-    reset();
+    reset({
+      name: '',
+      type: '',
+      calories: 0,
+      ingredients: [],
+    });
     onClose();
   };
 
   const onSubmitForm = async (data: FoodCreateDto) => {
     try {
       await onSubmit(data);
-      reset();
+      reset({
+        name: '',
+        type: '',
+        calories: 0,
+        ingredients: [],
+      });
     } catch (error) {
       console.error('Form submission error:', error);
     }
@@ -70,7 +111,10 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Name
             </label>
             <input
-              {...register('name', { required: 'Name is required' })}
+              {...register('name', {
+                required: 'Name is required',
+                maxLength: { value: 250, message: 'Name must be 250 characters or less' },
+              })}
               type="text"
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 text-base transition-all"
               placeholder="e.g., Grilled Chicken"
@@ -84,7 +128,10 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               Food Type
             </label>
             <input
-              {...register('type', { required: 'Type is required' })}
+              {...register('type', {
+                required: 'Type is required',
+                maxLength: { value: 50, message: 'Type must be 50 characters or less' },
+              })}
               type="text"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
               placeholder="e.g., Protein, Vegetable"
@@ -101,7 +148,7 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               {...register('calories', {
                 required: 'Calories is required',
                 valueAsNumber: true,
-                min: { value: 0, message: 'Calories must be positive' },
+                min: { value: 1, message: 'Calories must be greater than zero' },
               })}
               type="number"
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 text-white placeholder-gray-400 transition-all"
@@ -109,6 +156,14 @@ export const FoodModal: React.FC<FoodModalProps> = ({
               disabled={isLoading}
             />
             {errors.calories && <span className="text-red-400 text-xs mt-1 block">{errors.calories.message}</span>}
+          </div>
+
+          <div className="mt-8">
+            <FoodIngredientsPicker
+              disabled={isLoading}
+              onChange={(ingredients) => setValue('ingredients', ingredients, { shouldDirty: true, shouldValidate: true })}
+              value={selectedIngredients ?? []}
+            />
           </div>
 
           <div className="flex space-x-3 pt-6">

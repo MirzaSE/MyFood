@@ -22,7 +22,28 @@ namespace MyFood.Infrastructure.Repositories
                 .HasMany(f => f.Ingredients)
                 .WithOne(i => i.FoodEntity)
                 .HasForeignKey(i => i.FoodEntityId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<IngredientEntity>()
+                .Property(i => i.FoodEntityId)
+                .HasColumnName("FoodId");
+
+            modelBuilder.Entity<IngredientEntity>()
+                .Property(i => i.CaloriesPerUnit)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<IngredientEntity>()
+                .Property(i => i.Protein)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<IngredientEntity>()
+                .Property(i => i.Carbs)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<IngredientEntity>()
+                .Property(i => i.Fat)
+                .HasPrecision(10, 2);
         }
     }
     

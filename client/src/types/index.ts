@@ -1,22 +1,36 @@
+export type {
+  FoodIngredientInput,
+  Ingredient,
+  IngredientCreateDto,
+  IngredientUpdateDto,
+} from './ingredient';
+
+import type { FoodIngredientInput, Ingredient } from './ingredient';
+
 export interface Food {
   id: number;
   name: string;
   type: string;
   calories: number;
   created: string;
+  ingredients: Ingredient[];
 }
 
 export interface FoodCreateDto {
   name: string;
   type: string;
   calories: number;
+  ingredients: FoodIngredientInput[];
 }
 
 export interface FoodUpdateDto {
   name: string;
   type: string;
   calories: number;
+  ingredients: FoodIngredientInput[];
 }
+
+export type IngredientInput = FoodIngredientInput;
 
 export interface LoginRequest {
   username: string;
@@ -32,6 +46,7 @@ export interface RegisterRequest {
 export interface AuthResponse {
   token: string;
   username: string;
+  expiration: string;
 }
 
 export interface AuthContextType {

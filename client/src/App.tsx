@@ -1,8 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './context/useAuth';
 import { LoginPage } from './pages/LoginPage';
 import { FoodPage } from './pages/FoodPage';
+import { IngredientsPage } from './pages/IngredientsPage';
 import './App.css';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -29,6 +31,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <FoodPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ingredients"
+        element={
+          <ProtectedRoute>
+            <IngredientsPage />
           </ProtectedRoute>
         }
       />
