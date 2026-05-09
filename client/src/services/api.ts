@@ -20,18 +20,20 @@ const createApiClient = (): AxiosInstance => {
     return config;
   });
 
-  // Handle 401 responses
-  client.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        window.location.href = '/login';
-      }
-      return Promise.reject(error);
+  
+ // Handle 401 responses
+client.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const isAuthRoute = error.config?.url?.includes('/authenticate');
+    if (error.response?.status === 401 && !isAuthRoute) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      window.location.href = '/login';
     }
-  );
+    return Promise.reject(error);
+  }
+);
 
   return client;
 };
