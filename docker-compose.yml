@@ -1,0 +1,26 @@
+networks:
+    myFood-network:       
+ 
+services:
+    SqlServerDb:
+        container_name: SqlServerContainer
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        ports:
+            - 8002:1433
+        environment:
+            - ACCEPT_EULA=Y
+            - MSSQL_SA_PASSWORD=myStong_Password123# 
+    WebApi:
+        container_name: WebApiContainer
+        image: ${DOCKER_REGISTRY-}my-food-api-image
+        ports:
+            - 8001:8080 
+        #command: ["dotnet ef database update"]  # Specify your entrypoint script
+          
+        environment:
+            - "ConnectionStrings:DefaultConnection=Data Source=SqlServerDb;Initial Catalog=MyFood_Database;User Id=sa; Password=myStong_Password123#;Connect Timeout=30;TrustServerCertificate=True"
+        build:
+          context: .
+          dockerfile: Myfood.Api/Dockerfile
+        depends_on:
+            - SqlServerDb

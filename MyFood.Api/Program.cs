@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Api;
+using MyFood.Api.Middleware;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Services;
 using MyFood.Application.Services;
@@ -36,7 +37,10 @@ builder.Services.AddCustomCors("AllowAllOrigins");
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
 builder.Services.AddScoped<IFoodService, FoodService>();
+builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
+builder.Services.AddScoped<IIngredientService, IngredientService>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
+
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -46,20 +50,27 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-//opt.UseInMemoryDatabase("FoodDatabase"));
-opt.UseSqlServer(
-           builder.Configuration.GetConnectionString("DefaultConnection"),
-           b => b.MigrationsAssembly("MyFood.Infrastructure")));
+{
+    if (builder.Environment.IsEnvironment("Testing"))
+    {
+        opt.UseInMemoryDatabase(builder.Configuration["Testing:DatabaseName"] ?? "FoodDatabase");
+    }
+    else
+    {
+        opt.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            b => b.MigrationsAssembly("MyFood.Infrastructure"));
+    }
+});
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+               .AddEntityFrameworkStores<FoodDbContext>()
+               .AddDefaultTokenProviders();
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
-    
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-               .AddEntityFrameworkStores<FoodDbContext>()
-               .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -67,20 +78,21 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.SaveToken = true;
-        options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidAudience = builder.Configuration["JWT:ValidAudience"],
-            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+    };
+});
 
-builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 var app = builder.Build();
 
@@ -108,7 +120,7 @@ else
 {
     app.AddProductionExceptionHandling(loggerFactory);
 }
-//app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 //app.UseMiddleware<RequestLoggingMiddleware>();
 
 //Add support to logging request with SERILOG

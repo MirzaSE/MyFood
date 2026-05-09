@@ -3,20 +3,43 @@ export interface Food {
   name: string;
   type: string;
   calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
   created: string;
+}
+
+export interface FoodIngredientSelectionDto {
+  ingredientId: number;
+  quantity: number;
 }
 
 export interface FoodCreateDto {
   name: string;
   type: string;
   calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  ingredients: FoodIngredientSelectionDto[];
 }
 
 export interface FoodUpdateDto {
   name: string;
   type: string;
   calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  ingredients: FoodIngredientSelectionDto[];
 }
+
+export type {
+  Ingredient,
+  IngredientCreateDto,
+  IngredientUpdateDto,
+  SelectedIngredient,
+} from './ingredient';
 
 export interface LoginRequest {
   username: string;
@@ -32,6 +55,7 @@ export interface RegisterRequest {
 export interface AuthResponse {
   token: string;
   username: string;
+  expiration: string;
 }
 
 export interface AuthContextType {
