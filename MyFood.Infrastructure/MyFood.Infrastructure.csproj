@@ -23,4 +23,8 @@
     <ProjectReference Include="..\MyFood.Domain\MyFood.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Remove="**/*.resx" />
+  </ItemGroup>
+
 </Project>
