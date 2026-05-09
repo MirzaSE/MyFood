@@ -10,6 +10,7 @@ using MyFood.Api;
 using MyFood.Api.MappingProfiles;
 using MyFood.Api.Services;
 using MyFood.Application.Services;
+using MyFood.Application;
 using MyFood.Domain.Entities;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
@@ -36,6 +37,7 @@ builder.Services.AddCustomCors("AllowAllOrigins");
 builder.Services.AddSingleton<ISeedDataService, SeedDataService>();
 builder.Services.AddScoped<IFoodRepository, FoodSqlRepository>();
 builder.Services.AddScoped<IFoodService, FoodService>();
+builder.Services.AddScoped<IIngredientRepository, IngredientSqlRepository>();
 builder.Services.AddScoped(typeof(ILinkService<>), typeof(LinkService<>));
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
@@ -53,6 +55,7 @@ opt.UseSqlServer(
 
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
+builder.Services.AddAutoMapper(typeof(IngredientMappings));
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
@@ -79,8 +82,6 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
         };
     });
-
-builder.Services.AddAutoMapper(typeof(FoodMappings));
 
 var app = builder.Build();
 
