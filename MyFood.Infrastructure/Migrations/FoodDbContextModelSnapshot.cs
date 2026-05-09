@@ -17,7 +17,7 @@ namespace MyFood.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -174,6 +174,19 @@ namespace MyFood.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("EmailVerificationToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailVerificationTokenExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -235,8 +248,8 @@ namespace MyFood.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
@@ -255,7 +268,16 @@ namespace MyFood.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("FoodEntityId")
+                    b.Property<double>("CaloriesPerUnit")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Carbs")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Fat")
+                        .HasColumnType("float");
+
+                    b.Property<int>("FoodId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -263,9 +285,20 @@ namespace MyFood.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<double>("Protein")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("FoodEntityId");
+                    b.HasIndex("FoodId");
 
                     b.ToTable("Ingredients");
                 });
@@ -323,13 +356,13 @@ namespace MyFood.Infrastructure.Migrations
 
             modelBuilder.Entity("MyFood.Domain.Entities.IngredientEntity", b =>
                 {
-                    b.HasOne("MyFood.Domain.Entities.FoodEntity", "FoodEntity")
+                    b.HasOne("MyFood.Domain.Entities.FoodEntity", "FoodItem")
                         .WithMany("Ingredients")
-                        .HasForeignKey("FoodEntityId")
+                        .HasForeignKey("FoodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("FoodEntity");
+                    b.Navigation("FoodItem");
                 });
 
             modelBuilder.Entity("MyFood.Domain.Entities.FoodEntity", b =>

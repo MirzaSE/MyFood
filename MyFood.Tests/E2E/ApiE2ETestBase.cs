@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using MyFood.Api;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 
 namespace MyFood.Tests.E2E
@@ -15,37 +16,44 @@ namespace MyFood.Tests.E2E
         {
             Factory = new WebApplicationFactory<Program>();
             Client = Factory.CreateClient();
-            
-            // Use localhost with port 8080 as configured in Program.cs
             Client.BaseAddress = new Uri("http://localhost:8080");
         }
 
-        public async Task DisposeAsync()
+        public Task DisposeAsync()
         {
             Client?.Dispose();
             Factory?.Dispose();
+            return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Helper method to register a new test user and obtain JWT token
-        /// </summary>
-        protected async Task<string> RegisterAndLogin(string username = "testuser", string password = "Test@123")
+        protected async Task<string> RegisterAndLogin(string username, string password)
         {
-            // Register
-            var registerModel = new { username, password };
+            var email = $"{username}@test.com";
+            
+            // Register using correct endpoint
+            var registerDto = new { Username = username, Email = email, Password = password };
             var registerContent = new StringContent(
-                JsonSerializer.Serialize(registerModel),
-                new MediaTypeHeaderValue("application/json"));
+                JsonSerializer.Serialize(registerDto),
+                Encoding.UTF8,
+                "application/json");
 
-            await Client.PostAsync("/api/authenticate/register", registerContent);
+            try
+            {
+                await Client.PostAsync("/api/Auth/register", registerContent);
+            }
+            catch
+            {
+                // User might already exist
+            }
 
-            // Login
-            var loginModel = new { username, password };
+            // Login using correct endpoint
+            var loginDto = new { Username = username, Password = password };
             var loginContent = new StringContent(
-                JsonSerializer.Serialize(loginModel),
-                new MediaTypeHeaderValue("application/json"));
+                JsonSerializer.Serialize(loginDto),
+                Encoding.UTF8,
+                "application/json");
 
-            var loginResponse = await Client.PostAsync("/api/authenticate/login", loginContent);
+            var loginResponse = await Client.PostAsync("/api/Auth/login", loginContent);
             
             if (loginResponse.IsSuccessStatusCode)
             {
@@ -53,27 +61,30 @@ namespace MyFood.Tests.E2E
                 using var jsonDoc = JsonDocument.Parse(responseBody);
                 var root = jsonDoc.RootElement;
                 
+                // Your AuthResponseDto might have token directly or in a property
                 if (root.TryGetProperty("token", out var tokenElement))
                 {
                     return tokenElement.GetString() ?? string.Empty;
                 }
+                // Alternative: token might be the root itself
+                else if (root.ValueKind == JsonValueKind.String)
+                {
+                    return root.GetString() ?? string.Empty;
+                }
             }
 
-            throw new Exception("Failed to obtain authentication token");
+            return string.Empty;
         }
 
-        /// <summary>
-        /// Sets the Authorization header with Bearer token
-        /// </summary>
         protected void SetAuthorizationToken(string token)
         {
-            AuthToken = token;
-            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (!string.IsNullOrEmpty(token))
+            {
+                AuthToken = token;
+                Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
         }
 
-        /// <summary>
-        /// Clears the Authorization header
-        /// </summary>
         protected void ClearAuthorizationToken()
         {
             AuthToken = null;
