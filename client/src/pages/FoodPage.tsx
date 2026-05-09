@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
@@ -8,6 +9,7 @@ import { foodService } from '../services/foodService';
 import type { Food, FoodCreateDto } from '../types';
 
 export const FoodPage: React.FC = () => {
+  const navigate = useNavigate();
   const [foods, setFoods] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,9 +17,8 @@ export const FoodPage: React.FC = () => {
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load foods on component mount
   useEffect(() => {
-    loadFoods();
+    void loadFoods();
   }, []);
 
   const loadFoods = async () => {
@@ -31,11 +32,6 @@ export const FoodPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleCreateClick = () => {
-    setSelectedFood(null);
-    setModalOpen(true);
   };
 
   const handleEditClick = (food: Food) => {
@@ -77,33 +73,32 @@ export const FoodPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(245,158,11,0.16),_transparent_35%),linear-gradient(135deg,#0f172a_0%,#1e293b_45%,#111827_100%)]">
       <Navbar />
 
       <div className="container mx-auto px-6 py-16">
-        {/* Error Banner */}
         {error && (
-          <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start space-x-3 backdrop-blur">
-            <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
+          <div className="mb-6 flex items-start space-x-3 rounded-lg border border-red-500/50 bg-red-500/20 p-4 backdrop-blur">
+            <AlertCircle size={20} className="mt-0.5 flex-shrink-0 text-red-400" />
             <p className="text-red-200">{error}</p>
           </div>
         )}
 
-        {/* Page Header */}
         <div className="mb-16">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-10">
+          <div className="flex flex-col gap-10 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+              <p className="mb-3 text-sm uppercase tracking-[0.35em] text-amber-300">Food Overview</p>
+              <h1 className="text-4xl font-black text-white sm:text-5xl">
                 Food Management
               </h1>
-              <p className="text-gray-400">
+              <p className="mt-4 text-gray-400">
                 {foods.length} {foods.length === 1 ? 'item' : 'items'} in your collection
               </p>
             </div>
             <button
-              onClick={handleCreateClick}
+              onClick={() => navigate('/foods/new')}
               disabled={isLoading || isSubmitting}
-              className="flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50 font-semibold"
+              className="flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-6 py-3 font-semibold text-slate-900 transition disabled:opacity-50"
             >
               <Plus size={20} />
               <span>Add Food</span>
@@ -111,29 +106,24 @@ export const FoodPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Loading State */}
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="relative w-16 h-16 mb-4">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full animate-spin"></div>
-              <div className="absolute inset-2 bg-slate-900 rounded-full"></div>
+            <div className="relative mb-4 h-16 w-16">
+              <div className="absolute inset-0 animate-spin rounded-full bg-gradient-to-r from-amber-400 to-orange-500"></div>
+              <div className="absolute inset-2 rounded-full bg-slate-900"></div>
             </div>
-            <p className="text-gray-300 font-medium">Loading your foods...</p>
+            <p className="font-medium text-gray-300">Loading your foods...</p>
           </div>
         ) : (
-          /* Content */
-          <div>
-            <FoodTable
-              foods={foods}
-              onEdit={handleEditClick}
-              onDelete={handleDelete}
-              isLoading={isSubmitting}
-            />
-          </div>
+          <FoodTable
+            foods={foods}
+            onEdit={handleEditClick}
+            onDelete={handleDelete}
+            isLoading={isSubmitting}
+          />
         )}
       </div>
 
-      {/* Modal */}
       <FoodModal
         isOpen={modalOpen}
         onClose={() => {

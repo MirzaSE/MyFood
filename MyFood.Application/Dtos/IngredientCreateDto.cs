@@ -6,12 +6,22 @@ namespace MyFood.Application.Dtos
     {
         [Required]
         [MaxLength(260)]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string? Quantity { get; set; }
+        [MaxLength(50)]
+        public string Unit { get; set; } = string.Empty;
 
-        [Required]
-        public int FoodEntityId { get; set; }
+        [Range(0.01, 100000)]
+        public decimal CaloriesPerUnit { get; set; }
+
+        [Range(0, 100000)]
+        public decimal Protein { get; set; }
+
+        [Range(0, 100000)]
+        public decimal Carbs { get; set; }
+
+        [Range(0, 100000)]
+        public decimal Fat { get; set; }
     }
 }

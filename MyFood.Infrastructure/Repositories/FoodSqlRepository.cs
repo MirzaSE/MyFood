@@ -20,7 +20,8 @@ namespace MyFood.Infrastructure.Repositories
         public FoodEntity GetSingle(int id)
         {
             return _foodDbContext.FoodItems
-                .Include(f => f.Ingredients)
+                .Include(f => f.FoodIngredients)
+                .ThenInclude(fi => fi.Ingredient)
                 .FirstOrDefault(x => x.Id == id);
         }
 
@@ -45,7 +46,8 @@ namespace MyFood.Infrastructure.Repositories
         public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
         {
             IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems
-                .Include(f => f.Ingredients)
+                .Include(f => f.FoodIngredients)
+                .ThenInclude(fi => fi.Ingredient)
                 .OrderBy(x => x.Name);
 
             if (queryParameters.HasQuery())
@@ -85,7 +87,8 @@ namespace MyFood.Infrastructure.Repositories
         public IEnumerable<FoodEntity> SearchFoodsByName(string name)
         {
             return _foodDbContext.FoodItems
-                .Include(f => f.Ingredients)
+                .Include(f => f.FoodIngredients)
+                .ThenInclude(fi => fi.Ingredient)
                 .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
                 .ToList();
         }

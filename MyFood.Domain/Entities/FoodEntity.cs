@@ -15,6 +15,6 @@ namespace MyFood.Domain.Entities
         public int Calories { get; set; }
 
         public DateTime Created { get; set; }
-        public List<IngredientEntity> Ingredients { get; set; } = new List<IngredientEntity>();
+        public ICollection<FoodIngredientEntity> FoodIngredients { get; set; } = new List<FoodIngredientEntity>();
     }
 }

@@ -1,9 +1,15 @@
+import type { FoodIngredient, FoodIngredientInput, NutritionTotals } from './ingredient';
+
+export * from './ingredient';
+
 export interface Food {
   id: number;
   name: string;
   type: string;
   calories: number;
   created: string;
+  ingredients: FoodIngredient[];
+  nutritionTotals: NutritionTotals;
   links?: Array<{
     href: string;
     rel: string;
@@ -15,12 +21,14 @@ export interface FoodCreateDto {
   name: string;
   type: string;
   calories: number;
+  ingredients: FoodIngredientInput[];
 }
 
 export interface FoodUpdateDto {
   name: string;
   type: string;
   calories: number;
+  ingredients: FoodIngredientInput[];
 }
 
 export interface LoginRequest {

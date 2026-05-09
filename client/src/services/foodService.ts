@@ -7,6 +7,23 @@ const normalizeFood = (food: any): Food => ({
   type: food.type,
   calories: food.calories,
   created: food.created,
+  ingredients: (food.ingredients ?? []).map((ingredient: any) => ({
+    ingredientId: ingredient.ingredientId,
+    quantity: Number(ingredient.quantity),
+    name: ingredient.name,
+    unit: ingredient.unit,
+    caloriesPerUnit: Number(ingredient.caloriesPerUnit),
+    calories: Number(ingredient.calories),
+    protein: Number(ingredient.protein),
+    carbs: Number(ingredient.carbs),
+    fat: Number(ingredient.fat),
+  })),
+  nutritionTotals: {
+    calories: Number(food.nutritionTotals?.calories ?? food.calories ?? 0),
+    protein: Number(food.nutritionTotals?.protein ?? 0),
+    carbs: Number(food.nutritionTotals?.carbs ?? 0),
+    fat: Number(food.nutritionTotals?.fat ?? 0),
+  },
   links: food.links,
 });
 

@@ -12,8 +12,9 @@ namespace MyFood.Application.Dtos
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Food type must be between 2 and 50 characters")]
         public string? Type { get; set; }
 
-        [Range(1, 50000, ErrorMessage = "Calories must be between 1 and 50000")]
+        [Range(0, 50000, ErrorMessage = "Calories must be between 0 and 50000")]
         public int Calories { get; set; }
         public DateTime Created { get; set; }
+        public List<FoodIngredientInputDto> Ingredients { get; set; } = new();
     }
 }
