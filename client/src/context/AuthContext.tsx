@@ -22,15 +22,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string) => {
     const response = await authService.login(username, password);
-    setToken(response.token);
-    setUsername(response.username);
+    setToken(response.token || '');
+    setUsername(response.user?.fullName || username || '');
     setIsAuthenticated(true);
   };
 
   const register = async (username: string, email: string, password: string) => {
     const response = await authService.register(username, email, password);
-    setToken(response.token);
-    setUsername(response.username);
+    setToken(response.token || '');
+    setUsername(response.user?.fullName || username || '');
     setIsAuthenticated(true);
   };
 

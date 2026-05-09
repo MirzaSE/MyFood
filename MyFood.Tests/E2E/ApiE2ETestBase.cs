@@ -1,7 +1,9 @@
+ using System.Text;
 using Microsoft.AspNetCore.Mvc.Testing;
 using MyFood.Api;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyFood.Tests.E2E
 {
@@ -29,38 +31,59 @@ namespace MyFood.Tests.E2E
         /// <summary>
         /// Helper method to register a new test user and obtain JWT token
         /// </summary>
-        protected async Task<string> RegisterAndLogin(string username = "testuser", string password = "Test@123")
+        protected async Task<string> RegisterAndLogin(string FullName = "testuser", string password = "Test@123", string email = "")
+{
+    if (string.IsNullOrWhiteSpace(email))
+    {
+        email = $"{FullName}_{Guid.NewGuid().ToString("N").Substring(0, 8)}@example.com";
+    }
+
+    var registerModel = new { FullName, Email = email, Password = password };
+    var registerContent = new StringContent(
+        JsonSerializer.Serialize(registerModel),
+        Encoding.UTF8,
+        "application/json");
+
+    var registerResponse = await Client.PostAsync("/api/authenticate/register", registerContent);
+    var registerBody = await registerResponse.Content.ReadAsStringAsync();
+
+    if (!registerResponse.IsSuccessStatusCode)
+    {
+        if (registerResponse.StatusCode == System.Net.HttpStatusCode.Conflict)
         {
-            // Register
-            var registerModel = new { username, password };
-            var registerContent = new StringContent(
-                JsonSerializer.Serialize(registerModel),
-                new MediaTypeHeaderValue("application/json"));
-
-            await Client.PostAsync("/api/authenticate/register", registerContent);
-
-            // Login
-            var loginModel = new { username, password };
-            var loginContent = new StringContent(
-                JsonSerializer.Serialize(loginModel),
-                new MediaTypeHeaderValue("application/json"));
-
-            var loginResponse = await Client.PostAsync("/api/authenticate/login", loginContent);
-            
-            if (loginResponse.IsSuccessStatusCode)
-            {
-                var responseBody = await loginResponse.Content.ReadAsStringAsync();
-                using var jsonDoc = JsonDocument.Parse(responseBody);
-                var root = jsonDoc.RootElement;
-                
-                if (root.TryGetProperty("token", out var tokenElement))
-                {
-                    return tokenElement.GetString() ?? string.Empty;
-                }
-            }
-
-            throw new Exception("Failed to obtain authentication token");
+            // User already exists — attempt login only
         }
+        else
+        {
+            throw new Exception($"Register failed: {registerResponse.StatusCode}. Body: {registerBody}");
+        }
+    }
+
+    // Attempt login
+    var loginModel = new { FullName, Password = password };
+    var loginContent = new StringContent(
+        JsonSerializer.Serialize(loginModel),
+        Encoding.UTF8,
+        "application/json");
+
+    var loginResponse = await Client.PostAsync("/api/authenticate/login", loginContent);
+    var loginBody = await loginResponse.Content.ReadAsStringAsync();
+
+    if (!loginResponse.IsSuccessStatusCode)
+    {
+        throw new Exception($"Login failed: {loginResponse.StatusCode}. Body: {loginBody}");
+    }
+
+    using var jsonDoc = JsonDocument.Parse(loginBody);
+    var root = jsonDoc.RootElement;
+
+    if (root.TryGetProperty("token", out var tokenElement) && !string.IsNullOrEmpty(tokenElement.GetString()))
+    {
+        return tokenElement.GetString() ?? string.Empty;
+    }
+
+    throw new Exception($"Login response did not contain valid token. Body: {loginBody}");
+}
 
         /// <summary>
         /// Sets the Authorization header with Bearer token

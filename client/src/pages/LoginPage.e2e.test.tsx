@@ -1,38 +1,52 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import { LoginPage } from './LoginPage';
-import * as AuthContext from '../context/AuthContext';
 
-// E2E: Simulate a full user login and registration flow
-const mockLogin = jest.fn(async () => Promise.resolve());
-const mockRegister = jest.fn(async () => Promise.resolve());
+const mockAuth = {
+  login: jest.fn().mockResolvedValue(undefined),
+  register: jest.fn().mockResolvedValue(undefined),
+  logout: jest.fn(),
+  isAuthenticated: false,
+  username: null,
+  token: null,
+};
 
-jest.spyOn(AuthContext, 'useAuth').mockReturnValue({
-  login: mockLogin,
-  register: mockRegister,
-});
+jest.mock('../context/AuthContext', () => ({
+  useAuth: () => mockAuth,
+}));
+
+const renderLogin = () =>
+  render(
+    <MemoryRouter>
+      <LoginPage />
+    </MemoryRouter>
+  );
 
 describe('LoginPage E2E', () => {
   beforeEach(() => {
-    mockLogin.mockClear();
-    mockRegister.mockClear();
+    mockAuth.login.mockReset();
+    mockAuth.register.mockReset();
+    mockAuth.logout.mockReset();
   });
 
   it('user can register and then login', async () => {
-    render(<LoginPage />);
-    // Register
-    fireEvent.click(screen.getByText(/register/i));
-    fireEvent.change(screen.getByPlaceholderText(/choose a username/i), { target: { value: 'newuser' } });
-    fireEvent.change(screen.getByPlaceholderText(/enter your email/i), { target: { value: 'mail@mail.com' } });
-    fireEvent.change(screen.getByPlaceholderText(/enter a password/i), { target: { value: 'pass123' } });
-    fireEvent.change(screen.getByPlaceholderText(/confirm your password/i), { target: { value: 'pass123' } });
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }));
-    expect(mockRegister).toHaveBeenCalledWith('newuser', 'mail@mail.com', 'pass123');
+    renderLogin();
 
-    // Login
-    fireEvent.click(screen.getByText(/login/i));
-    fireEvent.change(screen.getByPlaceholderText(/enter your username/i), { target: { value: 'newuser' } });
-    fireEvent.change(screen.getByPlaceholderText(/enter your password/i), { target: { value: 'pass123' } });
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
-    expect(mockLogin).toHaveBeenCalledWith('newuser', 'pass123');
+    await userEvent.click(screen.getByText(/register/i));
+    await userEvent.type(screen.getByPlaceholderText(/choose a username/i), 'newuser');
+    await userEvent.type(screen.getByPlaceholderText(/enter your email/i), 'mail@mail.com');
+    await userEvent.type(screen.getByPlaceholderText(/enter a password/i), 'pass123');
+    await userEvent.type(screen.getByPlaceholderText(/confirm your password/i), 'pass123');
+    await userEvent.click(screen.getByRole('button', { name: /create account/i }));
+
+    expect(mockAuth.register).toHaveBeenCalledWith('newuser', 'mail@mail.com', 'pass123');
+
+    await userEvent.click(screen.getByText(/login/i));
+    await userEvent.type(screen.getByPlaceholderText(/enter your username/i), 'newuser');
+    await userEvent.type(screen.getByPlaceholderText(/enter your password/i), 'pass123');
+    await userEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    expect(mockAuth.login).toHaveBeenCalledWith('newuser', 'pass123');
   });
 });

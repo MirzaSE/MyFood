@@ -19,19 +19,21 @@ export interface FoodUpdateDto {
 }
 
 export interface LoginRequest {
-  username: string;
+  FullName: string;
   password: string;
 }
 
 export interface RegisterRequest {
-  username: string;
+  FullName: string;
   email: string;
   password: string;
 }
 
 export interface AuthResponse {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  user: any;
   token: string;
-  username: string;
+  FullName: string;
 }
 
 export interface AuthContextType {

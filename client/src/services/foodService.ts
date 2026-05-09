@@ -13,11 +13,17 @@ export const foodService = {
   },
 
   async createFood(data: FoodCreateDto): Promise<Food> {
+    if (!data.name || !data.type || data.calories === undefined) {
+      throw new Error('Name, type, and calories are required to create a food item');
+    }
     const response = await apiClient.post<Food>('/v1/foods', data);
     return response.data;
   },
 
   async updateFood(id: number, data: FoodUpdateDto): Promise<Food> {
+    if (!data.name || !data.type || data.calories === undefined) {
+      throw new Error('Name, type, and calories are required to update a food item');
+    }
     const response = await apiClient.put<Food>(`/v1/foods/${id}`, data);
     return response.data;
   },

@@ -1,99 +1,84 @@
 using AutoMapper;
 using MyFood.Application.Dtos;
-using MyFood.Application.Services;
 using MyFood.Domain.Entities;
 
-namespace MyFood.Application.Services
+namespace MyFood.Application.Services;
+public class FoodService : IFoodService
 {
-    public class FoodService : IFoodService
+    private readonly IFoodRepository _foodRepository;
+    private readonly IMapper _mapper;
+    public FoodService(IFoodRepository foodRepository, IMapper mapper)
     {
-        private readonly IFoodRepository _foodRepository;
-        private readonly IMapper _mapper;
+        _foodRepository = foodRepository;
+        _mapper = mapper;
+    }
+    public Task<FoodDto> CreateFoodAsync(FoodCreateDto foodCreateDto)
+    {
+        var foodEntity = _mapper.Map<FoodEntity>(foodCreateDto);
 
-        public FoodService(IFoodRepository foodRepository, IMapper mapper)
+        _foodRepository.Add(foodEntity);
+        _foodRepository.Save();
+
+        return Task.FromResult(_mapper.Map<FoodDto>(foodEntity));
+    }
+
+    public Task<bool> DeleteFoodAsync(int id)
+    {
+        var foodItem = _foodRepository.GetSingle(id);
+
+        if (foodItem == null)
         {
-            _foodRepository = foodRepository;
-            _mapper = mapper;
+            return Task.FromResult(false);
         }
 
-        public async Task<IEnumerable<FoodDto>> GetAllFoodsAsync(QueryParameters queryParameters)
+        _foodRepository.Delete(id);
+
+        return Task.FromResult(_foodRepository.Save());
+    }
+
+    public Task<IEnumerable<FoodDto>> GetAllFoodsAsync(QueryParameters queryParameters)
+    {
+        var foodEntities = _foodRepository.GetAll(queryParameters);
+
+        return Task.FromResult(_mapper.Map<IEnumerable<FoodDto>>(foodEntities));
+    }
+
+    public Task<FoodDto?> GetFoodByIdAsync(int id)
+    {
+        var foodEntity = _foodRepository.GetSingle(id);
+        return Task.FromResult(foodEntity != null ? _mapper.Map<FoodDto>(foodEntity) : null);
+    }
+
+    public Task<IEnumerable<FoodDto>> GetRandomMealAsync()
+    {
+        var randomMealEntities = _foodRepository.GetRandomMeal();
+        return Task.FromResult(_mapper.Map<IEnumerable<FoodDto>>(randomMealEntities));
+    }
+
+    public Task<int> GetTotalFoodCountAsync()
+    {
+        var count = _foodRepository.Count();
+        return Task.FromResult(count);
+    }
+
+    public Task<IEnumerable<FoodDto>> SearchFoodsByNameAsync(string name)
+    {
+        var foodEntities = _foodRepository.SearchFoodsByName(name);
+        return Task.FromResult(_mapper.Map<IEnumerable<FoodDto>>(foodEntities));
+    }
+
+    public Task<FoodDto?> UpdateFoodAsync(int id, FoodUpdateDto foodUpdateDto)
+    {
+        var existingFoodEntity = _foodRepository.GetSingle(id);
+
+        if (existingFoodEntity == null)
         {
-            var foodEntities = _foodRepository.GetAll(queryParameters);
-            return await Task.FromResult(_mapper.Map<IEnumerable<FoodDto>>(foodEntities));
+            return Task.FromResult<FoodDto?>(null);
         }
+        _mapper.Map(foodUpdateDto, existingFoodEntity);
+        _foodRepository.Update(id, existingFoodEntity);
+        _foodRepository.Save();
 
-        public async Task<FoodDto?> GetFoodByIdAsync(int id)
-        {
-            var foodEntity = _foodRepository.GetSingle(id);
-            return await Task.FromResult(foodEntity != null ? _mapper.Map<FoodDto>(foodEntity) : null);
-        }
-
-        public async Task<IEnumerable<FoodDto>> SearchFoodsByNameAsync(string name)
-        {
-            var foodEntities = _foodRepository.SearchFoodsByName(name);
-            return await Task.FromResult(_mapper.Map<IEnumerable<FoodDto>>(foodEntities));
-        }
-
-        public async Task<FoodDto> CreateFoodAsync(FoodCreateDto foodCreateDto)
-        {
-            var foodEntity = _mapper.Map<FoodEntity>(foodCreateDto);
-            _foodRepository.Add(foodEntity);
-
-            if (!_foodRepository.Save())
-            {
-                throw new Exception("Creating a food item failed on save.");
-            }
-
-            var newFoodEntity = _foodRepository.GetSingle(foodEntity.Id);
-            return await Task.FromResult(_mapper.Map<FoodDto>(newFoodEntity));
-        }
-
-        public async Task<FoodDto?> UpdateFoodAsync(int id, FoodUpdateDto foodUpdateDto)
-        {
-            var existingEntity = _foodRepository.GetSingle(id);
-            if (existingEntity == null)
-            {
-                return null;
-            }
-
-            _mapper.Map(foodUpdateDto, existingEntity);
-            var updatedEntity = _foodRepository.Update(id, existingEntity);
-
-            if (!_foodRepository.Save())
-            {
-                throw new Exception("Updating a food item failed on save.");
-            }
-
-            return await Task.FromResult(_mapper.Map<FoodDto>(updatedEntity));
-        }
-
-        public async Task<bool> DeleteFoodAsync(int id)
-        {
-            var foodEntity = _foodRepository.GetSingle(id);
-            if (foodEntity == null)
-            {
-                return false;
-            }
-
-            _foodRepository.Delete(id);
-
-            if (!_foodRepository.Save())
-            {
-                throw new Exception("Deleting a food item failed on save.");
-            }
-
-            return true;
-        }
-
-        public async Task<IEnumerable<FoodDto>> GetRandomMealAsync()
-        {
-            var foodEntities = _foodRepository.GetRandomMeal();
-            return await Task.FromResult(_mapper.Map<IEnumerable<FoodDto>>(foodEntities));
-        }
-
-        public async Task<int> GetTotalFoodCountAsync()
-        {
-            return await Task.FromResult(_foodRepository.Count());
-        }
+        return Task.FromResult(_mapper.Map<FoodDto?>(existingFoodEntity));
     }
 }

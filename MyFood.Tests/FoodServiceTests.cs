@@ -69,22 +69,32 @@ public class FoodServiceTests
     }
 
     [Fact]
-    public async Task UpdateFoodAsync_UpdatesAndReturnsDto()
-    {
-        var updateDto = new FoodUpdateDto { Name = "Updated" };
-        var entity = new FoodEntity { Id = 4, Name = "Old" };
-        var updatedEntity = new FoodEntity { Id = 4, Name = "Updated" };
-        var dto = new FoodDto { Id = 4, Name = "Updated" };
-        _repoMock.Setup(r => r.GetSingle(4)).Returns(entity);
-        _mapperMock.Setup(m => m.Map(updateDto, entity));
-        _repoMock.Setup(r => r.Update(4, entity)).Returns(updatedEntity);
-        _repoMock.Setup(r => r.Save()).Returns(true);
-        _mapperMock.Setup(m => m.Map<FoodDto>(updatedEntity)).Returns(dto);
+public async Task UpdateFoodAsync_UpdatesAndReturnsDto()
+{
+    var updateDto = new FoodUpdateDto { Name = "Updated" };
+    var entity = new FoodEntity { Id = 4, Name = "Old" };
+    var dto = new FoodDto { Id = 4, Name = "Updated" };
+    
+    _repoMock.Setup(r => r.GetSingle(4)).Returns(entity);
+    
+    // Mock mapper to update the entity in place
+    _mapperMock
+        .Setup(m => m.Map(updateDto, entity))
+        .Callback<FoodUpdateDto, FoodEntity>((src, dst) => { 
+            dst.Name = src.Name; 
+        });
+    
+    _repoMock.Setup(r => r.Update(It.IsAny<int>(), It.IsAny<FoodEntity>()));
+    _repoMock.Setup(r => r.Save()).Returns(true);
+    
+    // Mock the final DTO mapping — use It.IsAny since service uses the modified entity
+    _mapperMock.Setup(m => m.Map<FoodDto?>(It.IsAny<FoodEntity>())).Returns(dto);
 
-        var result = await _service.UpdateFoodAsync(4, updateDto);
-        Assert.NotNull(result);
-        Assert.Equal("Updated", result.Name);
-    }
+    var result = await _service.UpdateFoodAsync(4, updateDto);
+    
+    Assert.NotNull(result);
+    Assert.Equal("Updated", result.Name);
+}
 
     [Fact]
     public async Task UpdateFoodAsync_ReturnsNull_WhenNotFound()

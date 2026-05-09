@@ -2,17 +2,32 @@ import { authService } from './authService';
 
 // Mock apiClient
 jest.mock('./api', () => ({
+  __esModule: true,
   default: {
     post: jest.fn((url: string, data: any) => {
       if (url.includes('login')) {
-        return Promise.resolve({ data: { token: 'abc', username: data.username } });
+        return Promise.resolve({
+          data: {
+            success: true,
+            token: 'abc',
+            user: { username: data.FullName },
+          },
+        });
       }
+
       if (url.includes('register')) {
-        return Promise.resolve({ data: { token: 'xyz', username: data.username } });
+        return Promise.resolve({
+          data: {
+            success: true,
+            token: 'xyz',
+            user: { username: data.FullName },
+          },
+        });
       }
-      return Promise.resolve({ data: {} });
-    })
-  }
+
+      return Promise.resolve({ data: { success: true } });
+    }),
+  },
 }));
 
 describe('authService', () => {

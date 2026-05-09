@@ -27,23 +27,38 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* User Info & Logout */}
-          <div className="flex items-center space-x-6">
-            <div className="hidden sm:block">
-              <p className="text-sm text-gray-300">Welcome back</p>
-              <p className="text-lg font-semibold text-white">{username}</p>
-            </div>
+          {/* Navigation Links */}
+<div className="flex items-center space-x-3 mr-6">
+  <button
+    onClick={() => navigate('/foods')}
+    className="px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition"
+  >
+    Foods
+  </button>
+  <button
+    onClick={() => navigate('/ingredients')}
+    className="px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition"
+  >
+    Ingredients
+  </button>
+</div>
 
-            <div className="w-px h-8 bg-white/10"></div>
+{/* User Info & Logout */}
+<div className="flex items-center space-x-6">
+  <div className="flex flex-col items-end space-y-2">
+    <div>
+      <p className="text-sm text-gray-300">Welcome back, <span className="text-lg font-semibold text-white">{username}</span></p>
+    </div>
 
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
-            >
-              <LogOut size={18} />
-              <span className="hidden sm:inline font-medium">Logout</span>
-            </button>
-          </div>
+    <button
+      onClick={handleLogout}
+      className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
+    >
+      <LogOut size={18} />
+      <span className="hidden sm:inline font-medium">Logout</span>
+    </button>
+  </div>
+</div>
         </div>
       </div>
     </nav>
