@@ -7,8 +7,12 @@ const mockLogin = jest.fn(async () => Promise.resolve());
 const mockRegister = jest.fn(async () => Promise.resolve());
 
 jest.spyOn(AuthContext, 'useAuth').mockReturnValue({
+  isAuthenticated: false,
+  username: null,
+  token: null,
   login: mockLogin,
   register: mockRegister,
+  logout: jest.fn(),
 });
 
 describe('LoginPage E2E', () => {

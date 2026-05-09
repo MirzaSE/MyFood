@@ -1,159 +1,78 @@
-using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application.Dtos;
-using MyFood.Application.Entities;
-using MyFood.Infrastructure.Repositories;
+using MyFood.Application.Services;
 
 namespace MyFood.Api.Controllers.v1
 {
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class IngredientsController : ControllerBase
     {
-        private readonly IIngredientRepository _ingredientRepository;
-        private readonly IFoodRepository _foodRepository;
-        private readonly IMapper _mapper;
+        private readonly IIngredientService _service;
 
-        public IngredientsController(
-            IIngredientRepository ingredientRepository,
-            IFoodRepository foodRepository,
-            IMapper mapper)
+        public IngredientsController(IIngredientService service)
         {
-            _ingredientRepository = ingredientRepository;
-            _foodRepository = foodRepository;
-            _mapper = mapper;
-        }
-
-        [HttpGet(Name = nameof(GetAllIngredients))]
-        public ActionResult GetAllIngredients()
-        {
-            var ingredientEntities = _ingredientRepository.GetAll().ToList();
-            var ingredients = ingredientEntities.Select(x => _mapper.Map<IngredientDto>(x));
-
-            return Ok(ingredients);
+            _service = service;
         }
 
         [HttpGet]
-        [Route("{id:int}", Name = nameof(GetSingleIngredient))]
-        public ActionResult GetSingleIngredient(int id)
+        public async Task<ActionResult> GetAll()
         {
-            var ingredientEntity = _ingredientRepository.GetSingle(id);
+            var result = await _service.GetAllAsync();
 
-            if (ingredientEntity == null)
-            {
+            return Ok(result);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult> GetById(int id)
+        {
+            var ingredient = await _service.GetByIdAsync(id);
+
+            if (ingredient == null)
                 return NotFound();
-            }
 
-            var ingredient = _mapper.Map<IngredientDto>(ingredientEntity);
             return Ok(ingredient);
         }
 
-        [HttpGet]
-        [Route("food/{foodId:int}", Name = nameof(GetIngredientsByFoodId))]
-        public ActionResult GetIngredientsByFoodId(int foodId)
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody] IngredientCreateDto dto)
         {
-            var food = _foodRepository.GetSingle(foodId);
+            var created = await _service.CreateAsync(dto);
 
-            if (food == null)
-            {
-                return NotFound("Food item not found.");
-            }
-
-            var ingredientEntities = _ingredientRepository.GetByFoodId(foodId).ToList();
-            var ingredients = ingredientEntities.Select(x => _mapper.Map<IngredientDto>(x));
-
-            return Ok(ingredients);
+            return Ok(created);
         }
 
-        [HttpPost(Name = nameof(AddIngredient))]
-        public ActionResult AddIngredient([FromBody] IngredientCreateDto ingredientCreateDto)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Update(int id, [FromBody] IngredientUpdateDto dto)
         {
-            if (ingredientCreateDto == null)
-            {
-                return BadRequest();
-            }
+            var updated = await _service.UpdateAsync(id, dto);
 
-            var food = _foodRepository.GetSingle(ingredientCreateDto.FoodId);
-
-            if (food == null)
-            {
-                return BadRequest("Invalid FoodId. Food item does not exist.");
-            }
-
-            var ingredientEntity = _mapper.Map<IngredientEntity>(ingredientCreateDto);
-
-            _ingredientRepository.Add(ingredientEntity);
-
-            if (!_ingredientRepository.Save())
-            {
-                throw new Exception("Creating an ingredient failed on save.");
-            }
-
-            var createdIngredient = _ingredientRepository.GetSingle(ingredientEntity.Id);
-            var ingredientDto = _mapper.Map<IngredientDto>(createdIngredient);
-
-            return CreatedAtRoute(nameof(GetSingleIngredient),
-                new { version = "1.0", id = ingredientDto.Id },
-                ingredientDto);
-        }
-
-        [HttpPut]
-        [Route("{id:int}", Name = nameof(UpdateIngredient))]
-        public ActionResult UpdateIngredient(int id, [FromBody] IngredientUpdateDto ingredientUpdateDto)
-        {
-            if (ingredientUpdateDto == null)
-            {
-                return BadRequest();
-            }
-
-            var existingIngredient = _ingredientRepository.GetSingle(id);
-
-            if (existingIngredient == null)
-            {
+            if (updated == null)
                 return NotFound();
-            }
 
-            var food = _foodRepository.GetSingle(ingredientUpdateDto.FoodId);
-
-            if (food == null)
-            {
-                return BadRequest("Invalid FoodId. Food item does not exist.");
-            }
-
-            _mapper.Map(ingredientUpdateDto, existingIngredient);
-
-            _ingredientRepository.Update(id, existingIngredient);
-
-            if (!_ingredientRepository.Save())
-            {
-                throw new Exception("Updating an ingredient failed on save.");
-            }
-
-            var ingredientDto = _mapper.Map<IngredientDto>(existingIngredient);
-
-            return Ok(ingredientDto);
+            return Ok(updated);
         }
 
-        [HttpDelete]
-        [Route("{id:int}", Name = nameof(RemoveIngredient))]
-        public ActionResult RemoveIngredient(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
         {
-            var ingredient = _ingredientRepository.GetSingle(id);
+            var deleted = await _service.DeleteAsync(id);
 
-            if (ingredient == null)
-            {
+            if (!deleted)
                 return NotFound();
-            }
-
-            _ingredientRepository.Delete(id);
-
-            if (!_ingredientRepository.Save())
-            {
-                throw new Exception("Deleting an ingredient failed on save.");
-            }
 
             return NoContent();
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult> Search(string term)
+        {
+            var result = await _service.SearchAsync(term);
+
+            return Ok(result);
         }
     }
 }
