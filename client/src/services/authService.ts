@@ -10,25 +10,27 @@ export const authService = {
 
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('username', response.data.username);
+      localStorage.setItem('username', response.data.username || username);
+      return { token: response.data.token, username: response.data.username || username } as AuthResponse;
     }
 
-    return response.data;
+    throw new Error('Login failed');
   },
 
   async register(username: string, email: string, password: string): Promise<AuthResponse> {
     const response = await apiClient.post<AuthResponse>('/authenticate/register', {
       username,
-      //email,
+      email,
       password,
     } as RegisterRequest);
 
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('username', response.data.username);
+      localStorage.setItem('username', response.data.username || username);
+      return { token: response.data.token, username: response.data.username || username } as AuthResponse;
     }
 
-    return response.data;
+    throw new Error('Registration failed');
   },
 
   logout() {

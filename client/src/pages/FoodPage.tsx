@@ -13,32 +13,37 @@ export const FoodPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   // Load foods on component mount
   useEffect(() => {
-    loadFoods();
-  }, []);
+    const doLoad = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const data = await foodService.getAllFoods();
+        setFoods(data);
+      } catch (err: unknown) {
+        const apiErr = err as { response?: { data?: { message?: string } } };
+        const message = apiErr.response?.data?.message || (err instanceof Error ? err.message : 'Failed to load foods');
+        setError(message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const loadFoods = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const data = await foodService.getAllFoods();
-      setFoods(data);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load foods');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    void doLoad();
+  }, []);
 
   const handleCreateClick = () => {
     setSelectedFood(null);
+    setFieldErrors({});
     setModalOpen(true);
   };
 
   const handleEditClick = (food: Food) => {
     setSelectedFood(food);
+    setFieldErrors({});
     setModalOpen(true);
   };
 
@@ -46,6 +51,7 @@ export const FoodPage: React.FC = () => {
     try {
       setIsSubmitting(true);
       setError(null);
+      setFieldErrors({});
 
       if (selectedFood) {
         // Update existing food
@@ -59,8 +65,52 @@ export const FoodPage: React.FC = () => {
 
       setModalOpen(false);
       setSelectedFood(null);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to save food');
+      setFieldErrors({});
+    } catch (err: unknown) {
+      const apiErr = err as {
+        response?: {
+          data?: {
+            message?: string;
+            errors?: string[] | string;
+          };
+        };
+      };
+
+      const errors = apiErr.response?.data?.errors;
+      const messages = Array.isArray(errors) ? errors : typeof errors === 'string' ? [errors] : [];
+
+      const newFieldErrors: Record<string, string> = {};
+      let generalMessage = '';
+
+      messages.forEach((message) => {
+        const lowerMessage = message.toLowerCase();
+
+        if (lowerMessage.includes('name')) {
+          newFieldErrors['name'] = message;
+          return;
+        }
+
+        if (lowerMessage.includes('type')) {
+          newFieldErrors['type'] = message;
+          return;
+        }
+
+        if (lowerMessage.includes('calories')) {
+          newFieldErrors['calories'] = message;
+          return;
+        }
+
+        generalMessage = message;
+      });
+
+      setFieldErrors(newFieldErrors);
+
+      if (generalMessage) {
+        setError(generalMessage);
+      } else if (messages.length === 0) {
+        const fallbackMsg = err instanceof Error ? err.message : 'Failed to save food';
+        setError(fallbackMsg);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -71,8 +121,10 @@ export const FoodPage: React.FC = () => {
       setError(null);
       await foodService.deleteFood(id);
       setFoods(foods.filter(f => f.id !== id));
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete food');
+    } catch (err: unknown) {
+      const apiErr = err as { response?: { data?: { message?: string } } };
+      const message = apiErr.response?.data?.message || (err instanceof Error ? err.message : 'Failed to delete food');
+      setError(message);
       throw err;
     }
   };
@@ -140,10 +192,12 @@ export const FoodPage: React.FC = () => {
         onClose={() => {
           setModalOpen(false);
           setSelectedFood(null);
+          setFieldErrors({});
         }}
         onSubmit={handleModalSubmit}
         initialData={selectedFood}
         isLoading={isSubmitting}
+        fieldErrors={fieldErrors}
       />
     </div>
   );

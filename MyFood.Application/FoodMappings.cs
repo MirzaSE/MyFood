@@ -1,16 +1,1 @@
-﻿using AutoMapper;
-using MyFood.Application.Dtos;
-using MyFood.Domain.Entities;
-
-namespace MyFood.Api.MappingProfiles
-{
-    public class FoodMappings : Profile
-    {
-        public FoodMappings()
-        {
-            CreateMap<FoodEntity, FoodDto>().ReverseMap();
-            CreateMap<FoodEntity, FoodUpdateDto>().ReverseMap();
-            CreateMap<FoodEntity, FoodCreateDto>().ReverseMap();
-        }
-    }
-}
+// Mappings are defined in MyFood.Api/MappingProfiles/FoodMappings.cs
