@@ -14,5 +14,7 @@ namespace MyFood.Application.Dtos
         public int Calories { get; set; }
 
         public DateTime Created { get; set; }
+
+        public List<FoodIngredientDto>? Ingredients { get; set; }
     }
 }

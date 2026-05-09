@@ -66,7 +66,7 @@ namespace MyFood.Api.Controllers.v1
 
             if (id < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
+                return BadRequest("ID must be non-negative.");
             }
 
             var foodDto = await _foodService.GetFoodByIdAsync(id);

@@ -1,26 +1,13 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace MyFood.Domain.Entities
+namespace MyFood.Application.Dtos
 {
-    public class IngredientEntity
+    public class IngredientDto
     {
         public int Id { get; set; }
-
-        [MaxLength(100)]
         public string Name { get; set; } = string.Empty;
-
-        [MaxLength(50)]
         public string Unit { get; set; } = string.Empty;
-
         public decimal CaloriesPerUnit { get; set; }
-
         public decimal Protein { get; set; }
-
         public decimal Carbs { get; set; }
-
         public decimal Fat { get; set; }
-
-        // Many-to-many relationship with foods
-        public ICollection<FoodIngredient> FoodIngredients { get; set; } = new List<FoodIngredient>();
     }
 }
