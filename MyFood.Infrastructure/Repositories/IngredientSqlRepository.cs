@@ -70,8 +70,10 @@ namespace MyFood.Infrastructure.Repositories
 
         public IEnumerable<IngredientEntity> SearchIngredientsByName(string name)
         {
+            var normalizedName = name.ToLowerInvariant();
+
             return _foodDbContext.Ingredients
-                .Where(f => EF.Functions.Like(f.Name ?? string.Empty, $"%{name}%"));
+                .Where(f => f.Name != null && f.Name.ToLower().Contains(normalizedName));
         }
     }
 }

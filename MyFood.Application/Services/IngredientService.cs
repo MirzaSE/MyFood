@@ -23,6 +23,11 @@ namespace MyFood.Application.Services
 
         public async Task<IngredientDto?> GetIngredientByIdAsync(int id)
         {
+            if (id < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
+            }
+
             var ingredientEntity = _ingredientRepository.GetSingle(id);
             return await Task.FromResult(ingredientEntity != null ? _mapper.Map<IngredientDto>(ingredientEntity) : null);
         }
@@ -35,6 +40,22 @@ namespace MyFood.Application.Services
 
         public async Task<IngredientDto> CreateIngredientAsync(IngredientCreateDto ingredientCreateDto)
         {
+            if (ingredientCreateDto == null)
+            {
+                throw new ArgumentNullException(nameof(ingredientCreateDto));
+            }
+
+            if (string.IsNullOrWhiteSpace(ingredientCreateDto.Name))
+            {
+                throw new ArgumentException("Ingredient name is required.", nameof(ingredientCreateDto));
+            }
+
+            var existingIngredients = _ingredientRepository.SearchIngredientsByName(ingredientCreateDto.Name);
+            if (existingIngredients.Any(x => string.Equals(x.Name, ingredientCreateDto.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new InvalidOperationException("An ingredient with the same name already exists.");
+            }
+
             var ingredientEntity = _mapper.Map<IngredientEntity>(ingredientCreateDto);
             _ingredientRepository.Add(ingredientEntity);
 
@@ -49,12 +70,23 @@ namespace MyFood.Application.Services
 
         public async Task<IngredientDto?> UpdateIngredientAsync(int id, IngredientUpdateDto ingredientUpdateDto)
         {
+            if (ingredientUpdateDto == null)
+            {
+                throw new ArgumentNullException(nameof(ingredientUpdateDto));
+            }
+
             var existingEntity = _ingredientRepository.GetSingle(id);
             if (existingEntity == null)
             {
                 return null;
             }
 
+            if (!string.IsNullOrWhiteSpace(ingredientUpdateDto.Name))
+            {
+                existingEntity.Name = ingredientUpdateDto.Name;
+            }
+
+            existingEntity.Quantity = ingredientUpdateDto.Quantity;
             _mapper.Map(ingredientUpdateDto, existingEntity);
             var updatedEntity = _ingredientRepository.Update(id, existingEntity);
 

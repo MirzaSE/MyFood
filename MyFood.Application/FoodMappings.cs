@@ -27,6 +27,7 @@ namespace MyFood.Api.MappingProfiles
                 .ForMember(dest => dest.FoodEntityId, opt => opt.Ignore());
             CreateMap<IngredientUpdateDto, IngredientEntity>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Name, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.Name)))
                 .ForMember(dest => dest.FoodEntity, opt => opt.Ignore())
                 .ForMember(dest => dest.FoodEntityId, opt => opt.Ignore());
         }

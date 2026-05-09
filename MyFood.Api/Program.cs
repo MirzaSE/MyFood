@@ -49,10 +49,18 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddVersioning();
 
 builder.Services.AddDbContext<FoodDbContext>(opt =>
-//opt.UseInMemoryDatabase("FoodDatabase"));
-opt.UseSqlServer(
-           builder.Configuration.GetConnectionString("DefaultConnection"),
-           b => b.MigrationsAssembly("MyFood.Infrastructure")));
+{
+    if (builder.Environment.IsEnvironment("Testing"))
+    {
+        opt.UseInMemoryDatabase(builder.Configuration["Testing:DatabaseName"] ?? "FoodDatabase");
+    }
+    else
+    {
+        opt.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            b => b.MigrationsAssembly("MyFood.Infrastructure"));
+    }
+});
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                .AddEntityFrameworkStores<FoodDbContext>()
