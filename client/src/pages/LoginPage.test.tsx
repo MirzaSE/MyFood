@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { LoginPage } from './LoginPage';
-import * as AuthContext from '../context/AuthContext';
+import * as AuthContext from '../context/useAuth';
 
 const mockLogin = jest.fn();
 const mockRegister = jest.fn();

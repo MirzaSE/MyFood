@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { LoginPage } from './LoginPage';
-import * as AuthContext from '../context/AuthContext';
+import * as AuthContext from '../context/useAuth';
 
 // E2E: Simulate a full user login and registration flow
 const mockLogin = jest.fn(async () => Promise.resolve());

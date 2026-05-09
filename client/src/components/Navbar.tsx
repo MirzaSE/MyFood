@@ -1,6 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/useAuth';
 import { LogOut, ChefHat } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -27,21 +27,39 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* User Info & Logout */}
-          <div className="flex items-center space-x-6">
-            <div className="hidden sm:block">
-              <p className="text-sm text-gray-300">Welcome back</p>
-              <p className="text-lg font-semibold text-white">{username}</p>
-            </div>
+          <div className="hidden md:flex items-center gap-3">
+            {[
+              { to: '/foods', label: 'Foods' },
+              { to: '/foods/new', label: 'Create Food' },
+              { to: '/ingredients', label: 'Ingredients' },
+            ].map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                    isActive
+                      ? 'bg-white/15 text-white border border-white/20'
+                      : 'text-gray-300 hover:text-white hover:bg-white/10'
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
 
-            <div className="w-px h-8 bg-white/10"></div>
-
+          {/* User Info & Logout — stacked vertically */}
+          <div className="flex flex-col items-end space-y-1">
+            <p className="text-sm text-gray-300">
+              Welcome back, <span className="font-semibold text-white">{username}</span>
+            </p>
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
+              className="flex items-center space-x-1 px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg transition-all duration-200 border border-red-500/30 hover:border-red-500/50 text-sm"
             >
-              <LogOut size={18} />
-              <span className="hidden sm:inline font-medium">Logout</span>
+              <LogOut size={14} />
+              <span className="font-medium">Logout</span>
             </button>
           </div>
         </div>
@@ -49,4 +67,3 @@ export const Navbar: React.FC = () => {
     </nav>
   );
 };
-

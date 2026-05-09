@@ -1,35 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, AlertCircle, Search } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { FoodTable } from '../components/FoodTable';
 import { FoodModal } from '../components/FoodModal';
 import { foodService } from '../services/foodService';
+import { extractApiErrorMessage } from '../services/api';
 import type { Food, FoodCreateDto } from '../types';
 
 export const FoodPage: React.FC = () => {
+  const navigate = useNavigate();
   const [foods, setFoods] = useState<Food[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load foods on component mount
-  useEffect(() => {
-    loadFoods();
-  }, []);
-
-  const loadFoods = async () => {
+  const loadFoods = async (query?: string) => {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await foodService.getAllFoods();
+      const data = await foodService.getAllFoods(query);
       setFoods(data);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load foods');
+    } catch (err: unknown) {
+      setError(extractApiErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Load foods on component mount
+  useEffect(() => {
+    const loadInitialFoods = async () => {
+      try {
+        const data = await foodService.getAllFoods();
+        setFoods(data);
+      } catch (err: unknown) {
+        setError(extractApiErrorMessage(err));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadInitialFoods();
+  }, []);
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      void loadFoods(value);
+    }, 300);
   };
 
   const handleCreateClick = () => {
@@ -59,8 +83,8 @@ export const FoodPage: React.FC = () => {
 
       setModalOpen(false);
       setSelectedFood(null);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to save food');
+    } catch (err: unknown) {
+      setError(extractApiErrorMessage(err));
     } finally {
       setIsSubmitting(false);
     }
@@ -71,8 +95,8 @@ export const FoodPage: React.FC = () => {
       setError(null);
       await foodService.deleteFood(id);
       setFoods(foods.filter(f => f.id !== id));
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete food');
+    } catch (err: unknown) {
+      setError(extractApiErrorMessage(err));
       throw err;
     }
   };
@@ -101,14 +125,36 @@ export const FoodPage: React.FC = () => {
                 {foods.length} {foods.length === 1 ? 'item' : 'items'} in your collection
               </p>
             </div>
-            <button
-              onClick={handleCreateClick}
-              disabled={isLoading || isSubmitting}
-              className="flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50 font-semibold"
-            >
-              <Plus size={20} />
-              <span>Add Food</span>
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => navigate('/foods/new')}
+                className="flex items-center justify-center space-x-2 border border-white/20 text-white px-6 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 font-semibold"
+              >
+                <span>Create Food Page</span>
+              </button>
+              <button
+                onClick={handleCreateClick}
+                disabled={isLoading || isSubmitting}
+                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50 font-semibold"
+              >
+                <Plus size={20} />
+                <span>Add Food</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-8">
+          <div className="relative max-w-md">
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              placeholder="Search by name or calories..."
+              className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+            />
           </div>
         </div>
 

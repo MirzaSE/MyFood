@@ -1,5 +1,6 @@
 import axios from 'axios';
-import type { AxiosInstance } from 'axios';
+import type { AxiosError, AxiosInstance } from 'axios';
+import type { ApiValidationProblem } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
@@ -24,7 +25,11 @@ const createApiClient = (): AxiosInstance => {
   client.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response?.status === 401) {
+      console.log("API ERROR:", error.response?.data);
+      const requestUrl = error.config?.url as string | undefined;
+      const isAuthRequest = requestUrl?.includes('/authenticate/login') || requestUrl?.includes('/authenticate/register');
+
+      if (error.response?.status === 401 && !isAuthRequest) {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
         window.location.href = '/login';
@@ -34,6 +39,28 @@ const createApiClient = (): AxiosInstance => {
   );
 
   return client;
+};
+
+export const extractApiErrorMessage = (error: unknown): string => {
+  const axiosError = error as AxiosError<ApiValidationProblem>;
+  const data = axiosError.response?.data;
+
+  if (data?.message) {
+    return data.message;
+  }
+
+  if (data?.errors) {
+    const validationMessages = Object.values(data.errors).flat();
+    if (validationMessages.length > 0) {
+      return validationMessages.join(' ');
+    }
+  }
+
+  if (data?.title) {
+    return data.title;
+  }
+
+  return 'Something went wrong. Please try again.';
 };
 
 export const apiClient = createApiClient();
