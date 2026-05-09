@@ -1,84 +1,94 @@
-using AutoMapper;
-using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
 using MyFood.Application.Dtos;
-using MyFood.Application.Entities;
-using MyFood.Infrastructure;
+using MyFood.Application.Services;
 using MyFood.Infrastructure.Helpers;
-using MyFood.Infrastructure.Repositories;
 using System.Text.Json;
 
 namespace MyFood.Api.Controllers.v1
 {
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/ingredients")]
     public class IngredientController : ControllerBase
     {
-        private readonly IIngredientRepository _ingredientRepository;
+        private readonly IIngredientService _ingredientService;
 
-        public IngredientController(IIngredientRepository ingredientRepository)
+        public IngredientController(IIngredientService ingredientService)
         {
-            _ingredientRepository = ingredientRepository;
+            _ingredientService = ingredientService;
         }
 
         [HttpGet(Name = nameof(GetAllIngredients))]
-        public async Task<ActionResult<List<IngredientEntity>>> GetAllIngredients()
+        public async Task<ActionResult> GetAllIngredients([FromQuery] QueryParameters queryParameters)
         {
-            var ingredients = await _ingredientRepository.GetAllAsync();
+            var ingredients = await _ingredientService.GetAllAsync(queryParameters);
+            var totalCount = await _ingredientService.GetTotalCountAsync();
+
+            var paginationMetadata = new
+            {
+                totalCount,
+                pageSize = queryParameters.PageCount,
+                currentPage = queryParameters.Page,
+                totalPages = queryParameters.GetTotalPages(totalCount)
+            };
+
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
             return Ok(ingredients);
         }
 
-        [HttpGet("{id}", Name = nameof(GetIngredientById))]
-        public async Task<ActionResult<IngredientEntity>> GetIngredientById(int id)
+        [HttpGet("{id:int}", Name = nameof(GetIngredientById))]
+        public async Task<ActionResult<IngredientDto>> GetIngredientById(int id)
         {
-            var ingredient = await _ingredientRepository.GetByIdAsync(id);
-            if (ingredient == null)
-            {
-                return NotFound();
-            }
+            var ingredient = await _ingredientService.GetByIdAsync(id);
+            if (ingredient == null) return NotFound();
             return Ok(ingredient);
         }
 
+        [HttpGet("search", Name = nameof(SearchIngredients))]
+        public async Task<ActionResult> SearchIngredients([FromQuery] string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return BadRequest("Search term is required.");
+            var results = await _ingredientService.SearchAsync(name);
+            return Ok(results);
+        }
+
         [HttpPost(Name = nameof(CreateIngredient))]
-        public async Task<ActionResult<IngredientEntity>> CreateIngredient([FromBody] IngredientCreateDto ingredientDto)
+        public async Task<ActionResult<IngredientDto>> CreateIngredient([FromBody] IngredientCreateDto createDto)
         {
-            var ingredient = new IngredientEntity
-            {
-                Name = ingredientDto.Name,
-                Quantity = ingredientDto.Quantity
-            };
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var createdIngredient = await _ingredientRepository.AddAsync(ingredient);
-            return CreatedAtRoute(nameof(GetIngredientById), new { id = createdIngredient.Id }, createdIngredient);
-        }
-
-        [HttpPut("{id}", Name = nameof(UpdateIngredient))]
-        public async Task<ActionResult<IngredientEntity>> UpdateIngredient(int id, [FromBody] IngredientUpdateDto ingredientDto)
-        {
-            var ingredientToUpdate = new IngredientEntity
+            try
             {
-                Name = ingredientDto.Name,
-                Quantity = ingredientDto.Quantity
-            };
-
-            var updatedIngredient = await _ingredientRepository.UpdateAsync(id, ingredientToUpdate);
-            if (updatedIngredient == null)
-            {
-                return NotFound();
+                var created = await _ingredientService.CreateAsync(createDto);
+                return CreatedAtRoute(nameof(GetIngredientById), new { id = created.Id }, created);
             }
-            return Ok(updatedIngredient);
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
-        [HttpDelete("{id}", Name = nameof(DeleteIngredient))]
+        [HttpPut("{id:int}", Name = nameof(UpdateIngredient))]
+        public async Task<ActionResult<IngredientDto>> UpdateIngredient(int id, [FromBody] IngredientUpdateDto updateDto)
+        {
+            var updated = await _ingredientService.UpdateAsync(id, updateDto);
+            if (updated == null) return NotFound();
+            return Ok(updated);
+        }
+
+        [HttpDelete("{id:int}", Name = nameof(DeleteIngredient))]
         public async Task<ActionResult> DeleteIngredient(int id)
         {
-            var result = await _ingredientRepository.DeleteAsync(id);
-            if (!result)
-            {
-                return NotFound();
-            }
+            var result = await _ingredientService.DeleteAsync(id);
+            if (!result) return NotFound();
             return NoContent();
         }
     }

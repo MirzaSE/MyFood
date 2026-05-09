@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
-using MyFood.Application.Entities;
-using MyFood.Infrastructure.Helpers;
+using MyFood.Domain.Entities;
 
 namespace MyFood.Infrastructure.Repositories
 {
@@ -9,15 +8,22 @@ namespace MyFood.Infrastructure.Repositories
     {
         private readonly FoodDbContext _dbContext;
 
-        // Constructor uses your FoodDbContext
         public IngredientSqlRepository(FoodDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<List<IngredientEntity>> GetAllAsync()
+        public async Task<List<IngredientEntity>> GetAllAsync(QueryParameters queryParameters)
         {
-            return await _dbContext.Ingredients.ToListAsync();
+            return await _dbContext.Ingredients
+                .Skip((queryParameters.Page - 1) * queryParameters.PageCount)
+                .Take(queryParameters.PageCount)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountAsync()
+        {
+            return await _dbContext.Ingredients.CountAsync();
         }
 
         public async Task<IngredientEntity?> GetByIdAsync(int id)
@@ -34,14 +40,20 @@ namespace MyFood.Infrastructure.Repositories
 
         public async Task<IngredientEntity?> UpdateAsync(int id, IngredientEntity ingredient)
         {
-            var existingIngredient = await _dbContext.Ingredients.FindAsync(id);
-            if (existingIngredient == null) return null;
+            var existing = await _dbContext.Ingredients.FindAsync(id);
+            if (existing == null) return null;
 
-            existingIngredient.Name = ingredient.Name;
-            existingIngredient.Quantity = ingredient.Quantity;
+            if (ingredient.Name != null) existing.Name = ingredient.Name;
+            if (ingredient.Unit != null) existing.Unit = ingredient.Unit;
+            if (ingredient.CaloriesPerUnit != 0) existing.CaloriesPerUnit = ingredient.CaloriesPerUnit;
+            if (ingredient.Protein != 0) existing.Protein = ingredient.Protein;
+            if (ingredient.Carbs != 0) existing.Carbs = ingredient.Carbs;
+            if (ingredient.Fat != 0) existing.Fat = ingredient.Fat;
+            if (ingredient.Quantity != 0) existing.Quantity = ingredient.Quantity;
+            if (ingredient.FoodEntityId.HasValue) existing.FoodEntityId = ingredient.FoodEntityId;
 
             await _dbContext.SaveChangesAsync();
-            return existingIngredient;
+            return existing;
         }
 
         public async Task<bool> DeleteAsync(int id)
@@ -52,6 +64,19 @@ namespace MyFood.Infrastructure.Repositories
             _dbContext.Ingredients.Remove(ingredient);
             await _dbContext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<List<IngredientEntity>> SearchAsync(string name)
+        {
+            return await _dbContext.Ingredients
+                .Where(i => i.Name.ToLower().Contains(name.ToLower()))
+                .ToListAsync();
+        }
+
+        public async Task<bool> ExistsAsync(string name)
+        {
+            return await _dbContext.Ingredients
+                .AnyAsync(i => i.Name.ToLower() == name.ToLower());
         }
     }
 }
