@@ -37,6 +37,20 @@ namespace MyFood.Application.Services
         public async Task<FoodDto> CreateFoodAsync(FoodCreateDto foodCreateDto)
         {
             var foodEntity = _mapper.Map<FoodEntity>(foodCreateDto);
+
+            // Handle ingredient associations
+            if (foodCreateDto.Ingredients != null && foodCreateDto.Ingredients.Any())
+            {
+                foreach (var ingredientDto in foodCreateDto.Ingredients)
+                {
+                    foodEntity.FoodIngredients.Add(new FoodIngredientEntity
+                    {
+                        IngredientEntityId = ingredientDto.IngredientId,
+                        Quantity = ingredientDto.Quantity
+                    });
+                }
+            }
+
             _foodRepository.Add(foodEntity);
 
             if (!_foodRepository.Save())

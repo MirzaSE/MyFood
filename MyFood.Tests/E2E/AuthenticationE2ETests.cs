@@ -55,7 +55,7 @@ namespace MyFood.Tests.E2E
             var response = await Client.PostAsync("/api/authenticate/register", content);
 
             // Assert
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         }
 
         [Fact]

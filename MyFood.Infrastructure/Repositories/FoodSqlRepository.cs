@@ -1,5 +1,3 @@
-﻿
-
 using Microsoft.EntityFrameworkCore;
 using MyFood.Application;
 using MyFood.Application.Services;
@@ -19,7 +17,10 @@ namespace MyFood.Infrastructure.Repositories
 
         public FoodEntity GetSingle(int id)
         {
-            return _foodDbContext.FoodItems.FirstOrDefault(x => x.Id == id);
+            return _foodDbContext.FoodItems
+                .Include(f => f.FoodIngredients)
+                .ThenInclude(fi => fi.Ingredient)
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public void Add(FoodEntity item)
@@ -41,7 +42,10 @@ namespace MyFood.Infrastructure.Repositories
 
         public IQueryable<FoodEntity> GetAll(QueryParameters queryParameters)
         {
-            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems.OrderBy(x=>x.Name);
+            IQueryable<FoodEntity> _allItems = _foodDbContext.FoodItems
+                .Include(f => f.FoodIngredients)
+                .ThenInclude(fi => fi.Ingredient)
+                .OrderBy(x => x.Name);
 
             if (queryParameters.HasQuery())
             {
@@ -76,14 +80,13 @@ namespace MyFood.Infrastructure.Repositories
             return toReturn;
         }
 
-
         public IEnumerable<FoodEntity> SearchFoodsByName(string name)
         {
             return _foodDbContext.FoodItems
+                .Include(f => f.FoodIngredients)
+                .ThenInclude(fi => fi.Ingredient)
                 .Where(f => EF.Functions.Like(f.Name, $"%{name}%"))
                 .ToList();
-
-            // SELECT * FROM FoodItems WHERE Name LIKE '%name%'
         }
 
         private FoodEntity GetRandomItem(string type)
