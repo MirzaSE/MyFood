@@ -14,7 +14,7 @@ export const FoodIngredientsPicker: React.FC<Props> = ({ selected, onChange }) =
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    ingredientService.getAll(1, 100).then(data => {
+    ingredientService.getAll(1, 100).then(({ data }) => {
       setAllIngredients(data);
       setIsLoading(false);
     }).catch(() => setIsLoading(false));

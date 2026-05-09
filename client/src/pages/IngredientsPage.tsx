@@ -4,14 +4,16 @@ import { IngredientList } from '../components/IngredientList';
 
 export const IngredientsPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Navbar />
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Ingredients</h1>
-          <p className="text-gray-500 mt-1">Manage your ingredient library with nutritional information.</p>
+      <div className="container mx-auto px-6 py-16">
+        <div className="mb-12">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+            Ingredients
+          </h1>
+          <p className="text-gray-400">Manage your ingredient library with nutritional information.</p>
         </div>
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
           <IngredientList />
         </div>
       </div>
