@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MyFood.Application.Dtos;
 using MyFood.Domain.Entities;
 
@@ -11,6 +11,10 @@ namespace MyFood.Api.MappingProfiles
             CreateMap<FoodEntity, FoodDto>().ReverseMap();
             CreateMap<FoodEntity, FoodUpdateDto>().ReverseMap();
             CreateMap<FoodEntity, FoodCreateDto>().ReverseMap();
+
+            CreateMap<IngredientCreateDto, IngredientEntity>();
+            CreateMap<IngredientEntity, IngredientDto>();
+            CreateMap<IngredientUpdateDto, IngredientEntity>();
         }
     }
 }
