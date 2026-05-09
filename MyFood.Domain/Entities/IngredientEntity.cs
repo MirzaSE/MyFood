@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyFood.Domain.Entities
 {
@@ -8,11 +7,21 @@ namespace MyFood.Domain.Entities
         public int Id { get; set; }
 
         [MaxLength(100)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public int FoodEntityId { get; set; }
-        
-        [ForeignKey("FoodEntityId")]
-        public FoodEntity FoodEntity { get; set; }
+        [MaxLength(50)]
+        public string Unit { get; set; } = string.Empty;
+
+        [Range(0, double.MaxValue)]
+        public decimal CaloriesPerUnit { get; set; }
+
+        [Range(0, double.MaxValue)]
+        public decimal Protein { get; set; }
+
+        [Range(0, double.MaxValue)]
+        public decimal Carbs { get; set; }
+
+        [Range(0, double.MaxValue)]
+        public decimal Fat { get; set; }
     }
 }
