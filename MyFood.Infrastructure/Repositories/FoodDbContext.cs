@@ -20,8 +20,8 @@ namespace MyFood.Infrastructure.Repositories
 
             modelBuilder.Entity<FoodEntity>()
                 .HasMany(f => f.Ingredients)
-                .WithOne(i => i.FoodEntity)
-                .HasForeignKey(i => i.FoodEntityId)
+                .WithOne(i => i.Food)
+                .HasForeignKey(i => i.FoodId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

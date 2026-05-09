@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.JsonPatch; // Required for PATCH
 using Microsoft.AspNetCore.Mvc;
-using MyFood.Infrastructure.Repositories; // Where your interface lives
+using MyFood.Application.Services;
 using MyFood.Domain.Entities;
 
 namespace MyFood.Api.Controllers.v1

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using MyFood.Api;
 using MyFood.Api.MappingProfiles;
@@ -50,8 +51,9 @@ builder.Services.AddVersioning();
 builder.Services.AddDbContext<FoodDbContext>(opt =>
 //opt.UseInMemoryDatabase("FoodDatabase"));
 opt.UseSqlServer(
-           builder.Configuration.GetConnectionString("DefaultConnection"),
-           b => b.MigrationsAssembly("MyFood.Infrastructure")));
+       builder.Configuration.GetConnectionString("DefaultConnection"),
+       b => b.MigrationsAssembly("MyFood.Infrastructure"))
+   .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning)));
 
 
 builder.Services.AddAutoMapper(typeof(FoodMappings));
