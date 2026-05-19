@@ -1,11 +1,10 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MyFood.Application;
 using MyFood.Application.Dtos;
 using MyFood.Application.Services;
-using MyFood.Domain.Entities;
 using MyFood.Infrastructure;
 using MyFood.Infrastructure.Helpers;
 using System.Text.Json;
@@ -32,7 +31,6 @@ namespace MyFood.Api.Controllers.v1
             _linkService = linkService;
         }
 
-       
         [HttpGet(Name = nameof(GetAllFoods))]
         public async Task<ActionResult> GetAllFoods(ApiVersion version, [FromQuery] QueryParameters queryParameters)
         {
@@ -47,7 +45,7 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
             var toReturn = foodDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
@@ -55,15 +53,13 @@ namespace MyFood.Api.Controllers.v1
             return Ok(new
             {
                 value = toReturn,
-                links = links
+                links
             });
         }
 
-        [HttpGet]
-        [Route("{id:int}", Name = nameof(GetSingleFood))]
+        [HttpGet("{id:int}", Name = nameof(GetSingleFood))]
         public async Task<ActionResult> GetSingleFood(ApiVersion version, int id)
         {
-
             if (id < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(id), "ID must be non-negative.");
@@ -79,13 +75,12 @@ namespace MyFood.Api.Controllers.v1
             return Ok(_linkService.ExpandSingleFoodItem(foodDto, foodDto.Id, version));
         }
 
-        [HttpGet]
-        [Route("search", Name = nameof(SearchByName))]
-        public async Task<ActionResult> SearchByName(ApiVersion version,[FromQuery] QueryParameters queryParameters, string name)
+        [HttpGet("search", Name = nameof(SearchByName))]
+        public async Task<ActionResult> SearchByName(ApiVersion version, [FromQuery] QueryParameters queryParameters, [FromQuery] string name)
         {
             var foodDtos = await _foodService.SearchFoodsByNameAsync(name);
-
             var allItemCount = foodDtos.Count();
+
             var paginationMetadata = new
             {
                 totalCount = allItemCount,
@@ -94,7 +89,7 @@ namespace MyFood.Api.Controllers.v1
                 totalPages = queryParameters.GetTotalPages(allItemCount)
             };
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
             var toReturn = foodDtos.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
@@ -102,7 +97,7 @@ namespace MyFood.Api.Controllers.v1
             return Ok(new
             {
                 value = toReturn,
-                links = links
+                links
             });
         }
 
@@ -136,7 +131,7 @@ namespace MyFood.Api.Controllers.v1
                 return NotFound();
             }
 
-            FoodUpdateDto foodUpdateDto = _mapper.Map<FoodUpdateDto>(existingDto);
+            var foodUpdateDto = _mapper.Map<FoodUpdateDto>(existingDto);
             patchDoc.ApplyTo(foodUpdateDto);
 
             TryValidateModel(foodUpdateDto);
@@ -148,11 +143,15 @@ namespace MyFood.Api.Controllers.v1
 
             var updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
 
+            if (updatedDto == null)
+            {
+                return NotFound();
+            }
+
             return Ok(_linkService.ExpandSingleFoodItem(updatedDto, updatedDto.Id, version));
         }
 
-        [HttpDelete]
-        [Route("{id:int}", Name = nameof(RemoveFood))]
+        [HttpDelete("{id:int}", Name = nameof(RemoveFood))]
         public async Task<ActionResult> RemoveFood(int id)
         {
             var result = await _foodService.DeleteFoodAsync(id);
@@ -165,8 +164,7 @@ namespace MyFood.Api.Controllers.v1
             return NoContent();
         }
 
-        [HttpPut]
-        [Route("{id:int}", Name = nameof(UpdateFood))]
+        [HttpPut("{id:int}", Name = nameof(UpdateFood))]
         public async Task<ActionResult<FoodDto>> UpdateFood(ApiVersion version, int id, [FromBody] FoodUpdateDto foodUpdateDto)
         {
             if (foodUpdateDto == null)
@@ -188,16 +186,15 @@ namespace MyFood.Api.Controllers.v1
         public async Task<ActionResult> GetRandomMeal()
         {
             var foodDtos = await _foodService.GetRandomMealAsync();
-
-            var links = new List<LinkDto>();
-
-            // self 
-            links.Add(new LinkDto(Url.Link(nameof(GetRandomMeal), null), "self", "GET"));
+            var links = new List<LinkDto>
+            {
+                new(Url.Link(nameof(GetRandomMeal), null) ?? string.Empty, "self", "GET")
+            };
 
             return Ok(new
             {
                 value = foodDtos,
-                links = links
+                links
             });
         }
     }
