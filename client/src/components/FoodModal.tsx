@@ -23,13 +23,37 @@ export const FoodModal: React.FC<FoodModalProps> = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FoodCreateDto>({
-    defaultValues: initialData ? {
-      name: initialData.name,
-      type: initialData.type,
-      calories: initialData.calories,
-    } : undefined,
-  });
+  } = useForm<FoodCreateDto>(
+    {
+      defaultValues: initialData
+        ? {
+            name: initialData.name,
+            type: initialData.type,
+            calories: initialData.calories,
+          }
+        : {
+            name: '',
+            type: '',
+            calories: 0,
+          },
+    }
+  );
+
+  React.useEffect(() => {
+    reset(
+      initialData
+        ? {
+            name: initialData.name,
+            type: initialData.type,
+            calories: initialData.calories,
+          }
+        : {
+            name: '',
+            type: '',
+            calories: 0,
+          }
+    );
+  }, [initialData, reset]);
 
   const handleClose = () => {
     reset();

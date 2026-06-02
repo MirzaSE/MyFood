@@ -114,6 +114,11 @@ namespace MyFood.Api.Controllers.v1
                 return BadRequest();
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var foodDto = await _foodService.CreateFoodAsync(foodCreateDto);
 
             return CreatedAtRoute(nameof(GetSingleFood),
@@ -172,6 +177,11 @@ namespace MyFood.Api.Controllers.v1
             if (foodUpdateDto == null)
             {
                 return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             var updatedDto = await _foodService.UpdateFoodAsync(id, foodUpdateDto);
