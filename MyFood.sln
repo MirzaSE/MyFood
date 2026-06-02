@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFood.Domain", "MyFood.Dom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFood.Infrastructure", "MyFood.Infrastructure\MyFood.Infrastructure.csproj", "{974F7DFE-3E04-4C15-B271-EA9132B3C2FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFood.Tests", "MyFood.Tests\MyFood.Tests.csproj", "{D2B57D1F-5B86-4C45-997A-F8F7F5B9EA95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,7 +34,11 @@ Global
 		{974F7DFE-3E04-4C15-B271-EA9132B3C2FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{974F7DFE-3E04-4C15-B271-EA9132B3C2FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{974F7DFE-3E04-4C15-B271-EA9132B3C2FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{974F7DFE-3E04-4C15-B271-EA9132B3C2FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{974F7DFE-3E04-4C15-B271-E9132B3C2FC}.Release|Any CPU.Build.0 = Release|Any CPU
+	{D2B57D1F-5B86-4C45-997A-F8F7F5B9EA95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+	{D2B57D1F-5B86-4C45-997A-F8F7F5B9EA95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	{D2B57D1F-5B86-4C45-997A-F8F7F5B9EA95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	{D2B57D1F-5B86-4C45-997A-F8F7F5B9EA95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
