@@ -22,7 +22,7 @@ namespace MyFood.Infrastructure.Repositories
                 .ToList();
         }
 
-        public IngredientEntity GetSingle(int id)
+        public IngredientEntity? GetSingle(int id)
         {
             return _foodDbContext.Ingredients
                 .Include(i => i.Food)
@@ -44,14 +44,28 @@ namespace MyFood.Infrastructure.Repositories
 
         public IngredientEntity Update(int id, IngredientEntity ingredient)
         {
-            _foodDbContext.Ingredients.Update(ingredient);
-            return ingredient;
+            var existingIngredient = GetSingle(id);
+
+            if (existingIngredient == null)
+            {
+                throw new InvalidOperationException($"Ingredient with id {id} was not found.");
+            }
+
+            existingIngredient.Name = ingredient.Name;
+            existingIngredient.Quantity = ingredient.Quantity;
+            existingIngredient.FoodId = ingredient.FoodId;
+
+            return existingIngredient;
         }
 
         public void Delete(int id)
         {
-            IngredientEntity ingredient = GetSingle(id);
-            _foodDbContext.Ingredients.Remove(ingredient);
+            var ingredient = GetSingle(id);
+
+            if (ingredient != null)
+            {
+                _foodDbContext.Ingredients.Remove(ingredient);
+            }
         }
 
         public bool Save()

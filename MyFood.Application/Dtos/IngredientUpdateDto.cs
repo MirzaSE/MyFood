@@ -1,11 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MyFood.Application.Entities
+namespace MyFood.Application.Dtos
 {
-    public class IngredientEntity
+    public class IngredientUpdateDto
     {
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(260)]
         public string? Name { get; set; }
@@ -14,7 +12,7 @@ namespace MyFood.Application.Entities
         [MaxLength(100)]
         public string? Quantity { get; set; }
 
+        [Required]
         public int FoodId { get; set; }
-        public FoodEntity? Food { get; set; }
     }
 }

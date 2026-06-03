@@ -50,7 +50,9 @@ namespace MyFood.Api.Controllers.v1
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
-            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+            var toReturn = foodItems
+                .Select(x => _mapper.Map<FoodDto>(x))
+                .Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
 
             return Ok(new
             {
@@ -99,7 +101,9 @@ namespace MyFood.Api.Controllers.v1
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
             var links = _linkService.CreateLinksForCollection(queryParameters, allItemCount, version);
-            var toReturn = foodItems.Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
+            var toReturn = foodItems
+                .Select(x => _mapper.Map<FoodDto>(x))
+                .Select(x => _linkService.ExpandSingleFoodItem(x, x.Id, version));
 
             return Ok(new
             {
