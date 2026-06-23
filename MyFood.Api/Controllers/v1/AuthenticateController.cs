@@ -63,7 +63,7 @@ public class AuthenticateController : ControllerBase
 
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
+    public async Task<IActionResult> Register([FromBody] RegisterDto model)
     {
         var userExists = await userManager.FindByNameAsync(model.Username);
         if (userExists != null)
